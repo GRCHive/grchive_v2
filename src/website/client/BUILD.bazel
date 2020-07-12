@@ -1,0 +1,33 @@
+package(default_visibility=["//visibility:public"])
+load("@npm//webpack-cli:index.bzl", webpack = "webpack_cli")
+
+webpack(
+    name = "bundle",
+    outs = ["websiteClient.zip"],
+    args = [
+        "$(execpath src/ts/main.ts)",
+        "--config",
+    ] + select({
+        "//:production": ["$(execpath webpack/prod.config.js)"],
+        "//conditions:default": ["$(execpath webpack/dev.config.js)"],
+    }) + [
+        "--env.TSCONFIG",
+        "$(execpath tsconfig.json)",
+        "--env.LOADERTEMPL",
+        "$(execpath loader.ejs)",
+        "--env.OUTPUT",
+        "$@",
+    ],
+    data = glob([
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "src/**/*.scss",
+    ]) + [
+        "loader.ejs",
+        "webpack/base.config.js",
+        "webpack/dev.config.js",
+        "webpack/prod.config.js",
+        "tsconfig.json",
+        "@npm//:node_modules",
+    ],
+)

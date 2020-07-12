@@ -1,0 +1,43 @@
+@import '~vuetify/src/styles/styles.sass';
+@import './landing.scss';
+
+.max-height {
+    height: 100%; 
+}
+
+.max-width {
+    width: 100%;
+}
+
+.hide-overflow {
+    overflow: hidden;
+}
+
+.above-overlay {
+    z-index: 7;
+}
+
+.long-text {
+    word-break: keep-all !important;
+    white-space: pre-line !important;
+}
+
+.hide-long-text {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+.disable-flex {
+    flex: none !important;
+}
+
+.center-x {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-y {
+    margin-top: auto;
+    margin-bottom: auto;
+}

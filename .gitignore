@@ -1,0 +1,4 @@
+bazel-bin
+bazel-grchive-v2
+bazel-out
+bazel-testlogs

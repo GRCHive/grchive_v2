@@ -1,0 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix gitlab.com/grchive/grchive-v2
+gazelle(name = "gazelle")
+
+config_setting(
+    name = "production",
+    values = {"compilation_mode": "opt"},
+)
+
+config_setting(
+    name = "debug",
+    values = {"compilation_mode": "dbg"},
+)
