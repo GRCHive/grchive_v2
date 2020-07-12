@@ -17,11 +17,11 @@ type WebsiteApplication struct {
 	pages *Pages
 }
 
-func (w *WebsiteApplication) loadConfig(fname string) {
+func (w *WebsiteApplication) LoadConfig(fname string) {
 	w.cfg = w.loadConfigFromFile(fname)
 }
 
-func (w *WebsiteApplication) setupLogging() {
+func (w *WebsiteApplication) SetupLogging() {
 	// TODO: #9cn9hj
 	// Setup logger to output raw JSON to a central repository for machine analysis.
 	// This setup should be shared across all apps probably.
@@ -30,9 +30,7 @@ func (w *WebsiteApplication) setupLogging() {
 	w.log = zerolog.New(multi).With().Timestamp().Logger()
 }
 
-func (w *WebsiteApplication) run() {
-	defer w.websiteClientZipFs.Close()
-
+func (w *WebsiteApplication) Run() {
 	r := gin.New()
 	r.Use(logger.SetLogger(logger.Config{
 		Logger: &w.log,
@@ -46,5 +44,12 @@ func (w *WebsiteApplication) run() {
 	r.StaticFS("/static/client/", w.websiteClientZipFs)
 
 	r.GET("/", w.renderHomePage)
+	r.GET("/getting-started", w.renderGettingStartedPage)
+	r.GET("/learn", w.renderLearnMorePage)
+	r.GET("/contact-us", w.renderContactUsPage)
 	r.Run()
+}
+
+func (w *WebsiteApplication) Close() {
+	w.websiteClientZipFs.Close()
 }

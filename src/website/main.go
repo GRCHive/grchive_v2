@@ -11,8 +11,10 @@ func main() {
 	flag.Parse()
 
 	app := WebsiteApplication{}
-	app.setupLogging()
-	app.loadConfig(configFname)
-	app.loadPages()
-	app.run()
+	defer app.Close()
+
+	app.SetupLogging()
+	app.LoadConfig(configFname)
+	app.LoadPages()
+	app.Run()
 }

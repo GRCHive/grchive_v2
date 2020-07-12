@@ -32,7 +32,7 @@ func (p *Pages) loadPage(key templateKey, tmplFname string) {
 			)).Parse(p.jsCssLoaderTemplate))
 }
 
-func (w *WebsiteApplication) loadPages() {
+func (w *WebsiteApplication) LoadPages() {
 	w.pages = &Pages{
 		allTemplates: make(templateMap),
 	}
@@ -77,4 +77,16 @@ func (w *WebsiteApplication) renderGenericPage(key templateKey, r *gin.Context) 
 
 func (w *WebsiteApplication) renderHomePage(r *gin.Context) {
 	w.renderGenericPage(LandingPageTemplateKey, r)
+}
+
+func (w *WebsiteApplication) renderGettingStartedPage(r *gin.Context) {
+	w.renderGenericPage(GettingStartedPageTemplateKey, r)
+}
+
+func (w *WebsiteApplication) renderContactUsPage(r *gin.Context) {
+	w.renderGenericPage(ContactUsPageTemplateKey, r)
+}
+
+func (w *WebsiteApplication) renderLearnMorePage(r *gin.Context) {
+	w.renderGenericPage(LearnMorePageTemplateKey, r)
 }
