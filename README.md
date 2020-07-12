@@ -17,6 +17,7 @@ Our suite of products is meant to compete with the likes of:
 * HighBond
 * Audit Board
 * Logic Gate
+* Tugboat Logic***
 
 ## GRCHive Base
 
