@@ -36,8 +36,8 @@ Our Workflow product should provide the tools necessary to complete an audit fro
 
 1. Scoping: Determine what "objects" are in scope for the audit.
 1. PBC: For the given "object", request relevant data which could be documentation or samples.
-1. Test: Ensure that the data collected during the PBC process is accurate.
-1. Review: Allow higher-level employees to review the work to ensure that the work done is up to standards.
+1. Test: Ensure controls are designed and working properly using the data collected in the PBC process.
+1. Review: Allow higher-level employees to review and sign-off on the work to ensure that the work done is up to standards.
 1. Remediation: If a test or review fails, provide steps to fix the problem and redo the audit of this particular "object."
 
 Furthermore, the Workflow product should provide the tools to track the overall progress of the audit as well as progress within each particular step (if relevant).
@@ -108,6 +108,7 @@ All PBC requests will go through the following stages:
 * Automated notifications means that auditors no longer need to manually follow up on requests.
 * Specialized PBCs allow auditors to specifically request what they want (e.g. SQL query) instead of relying on auditees to accurately read, interpret, and respond to the request.
 * Integration with GRCHive Staging for better organization.
+* Progress dashboard (not an advantage over Suralink, AuditFile).
 
 ## GRCHive Data Repository
 
