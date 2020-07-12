@@ -31,6 +31,10 @@ func (w *WebsiteApplication) SetupLogging() {
 }
 
 func (w *WebsiteApplication) Run() {
+	if w.cfg.EnableReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.New()
 	r.Use(logger.SetLogger(logger.Config{
 		Logger: &w.log,
