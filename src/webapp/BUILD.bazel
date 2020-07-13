@@ -18,6 +18,8 @@ go_binary(
         "@com_github_rs_zerolog//:go_default_library",
         "@com_github_rs_zerolog//log:go_default_library",
         "//src/shared/golang/envconfig:lib",
+        "//src/shared/golang/gin_middleware/redirect_response:lib",
+        "//src/shared/golang/gin_middleware/reverse_proxy:lib",
         "//src/shared/golang/vault:lib",
         "//src/shared/golang/vault/auth:lib",
         "//src/shared/golang/zipfs:lib",

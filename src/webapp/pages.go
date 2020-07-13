@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/zipfs"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 )
 
 type Pages struct {
@@ -51,4 +53,11 @@ func (w *WebappApplication) LoadPages() {
 
 func (w *WebappApplication) renderApp(r *gin.Context) {
 	w.pages.appTemplate.ExecuteTemplate(r.Writer, "base", nil)
+}
+
+func (w *WebappApplication) renderLogin(r *gin.Context) {
+	r.Redirect(
+		http.StatusTemporaryRedirect,
+		w.cfg.FusionAuth.ExternalHost+fmt.Sprintf(w.cfg.FusionAuth.LoginEndpoint, w.cfg.FusionAuth.ClientId, w.cfg.Grchive.Domain),
+	)
 }

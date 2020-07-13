@@ -10,6 +10,7 @@ import (
 type FusionAuthConfig struct {
 	Host           string `env:"FUSIONAUTH_HOST,required"`
 	Port           int32  `env:"FUSIONAUTH_PORT,required"`
+	ExternalHost   string `env:"FUSIONAUTH_EXTERNAL_HOST,required"`
 	ClientId       string `env:"FUSIONAUTH_CLIENT_ID,required"`
 	LoginEndpoint  string `toml:"login_endpoint"`
 	LogoutEndpoint string `toml:"logout_endpoint"`
@@ -23,10 +24,15 @@ type VaultConfig struct {
 	SecretId string `env:"VAULT_APPROLE_SECRET_ID,required"`
 }
 
+type GrchiveConfig struct {
+	Domain string `env:"GRCHIVE_DOMAIN,required"`
+}
+
 type Config struct {
 	EnableReleaseMode bool             `toml:"enable_release_mode"`
 	FusionAuth        FusionAuthConfig `toml:"fusion_auth"`
 	Vault             VaultConfig
+	Grchive           GrchiveConfig
 }
 
 func (w *WebappApplication) LoadConfig(fname string) {
@@ -61,5 +67,8 @@ func (c *Config) loadConfigFromEnv(log zerolog.Logger) {
 	}
 	if err := envconfig.Load(&c.Vault); err != nil {
 		log.Fatal().Err(err).Msg("Failed to read Vault env config.")
+	}
+	if err := envconfig.Load(&c.Grchive); err != nil {
+		log.Fatal().Err(err).Msg("Failed to read Grchive env config.")
 	}
 }

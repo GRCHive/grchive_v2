@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/redirect_response"
 	"gitlab.com/grchive/grchive-v2/shared/vault"
 	"gitlab.com/grchive/grchive-v2/shared/vault/auth"
 	"gitlab.com/grchive/grchive-v2/shared/zipfs"
@@ -40,12 +41,17 @@ func (w *WebappApplication) Run() {
 		Logger: &w.log,
 	}))
 	r.Use(gin.Recovery())
+	r.Use(redirect_response.GinHTTPRedirectStatusCodes)
 
 	r.Static("/static/assets", "static/assets")
 	r.StaticFile("/robots.txt", "src/website/robots.txt")
 	r.StaticFS("/static/client/", w.clientZipFs)
 
-	r.GET("/", w.renderApp)
+	r.GET("/login", w.renderLogin)
+
+	appR := r.Group("/")
+	appR.GET("/", w.renderApp)
+
 	r.Run()
 }
 
