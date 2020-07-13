@@ -34,11 +34,13 @@ This document will walk you through setting up build environment and the necessa
     ```
     $GRCHIVE/deps/binaries/bazel/output
     $GRCHIVE/deps/binaries/flyway
+    $GRCHIVE/deps/binaries/vault
     ```
 1. Create the Docker containers for the backend services:
 
     ```
     bazel run //devops/database:postgres
+    bazel run //devops/vault:vault
     ```
 1. Run the Docker containers using Docker compose:
 
@@ -46,9 +48,23 @@ This document will walk you through setting up build environment and the necessa
     cd $GRCHIVE/devops/docker
     docker-compose up
     ```
-1. Apply the database migrations:
+1. Apply the database migrations (note that you will need to redo the Docker Compose step as Vault will not properly load until its tables are setup in this step):
 
     ```
     cd $GRCHIVE/devops/database/vault
     ./migrate.sh
+    ```
+1. Initialize and unseal Vault. Store the unseal key (`$VAULT_UNSEAL_KEY`) and root token (`$VAULT_TOKEN`) in a secure location.
+
+    ```
+    vault operator init -address="http://${VAULT_HOST}:8200" -n 1 -t 1
+    vault operator unseal -address="http://${VAULT_HOST}:8200"
+    ```
+
+    Note that you will need to perform the unseal step every time you bring up the containers using Docker Compose.
+1. Configure Vault. These steps must be run every time the `$GRCHIVE/devops/vault/vault_init.sh` file changes.
+    ```
+    cd $GRCHIVE/devops/vault
+    vault login -address="${VAULT_HOST}:8200" token=${VAULT_TOKEN}
+    ./vault_init.sh
     ```

@@ -1,5 +1,10 @@
+export VAULT_PROTOCOL=http
+export VAULT_HOST=172.22.0.3
 export VAULT_USER_PASSWORD=password
+
 export POSTGRES_HOST=172.22.0.2
 export POSTGRES_USER=postgres
 export POSTGRES_PASSWORD=password
+
+
 export PS1="[GRC] $PS1"

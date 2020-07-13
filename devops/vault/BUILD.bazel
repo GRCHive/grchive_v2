@@ -1,0 +1,23 @@
+package(default_visibility=["//visibility:public"])
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+
+genrule(
+    name = "vault_config",
+    srcs = select({
+        "//:production": ["config/dev.hcl"],
+        "//conditions:default": ["config/dev.hcl"],
+    }),
+    outs = [ "config.hcl" ],
+    cmd = "cp $< $@",
+)
+
+container_image(
+    name = "vault",
+    base = "@vault//image",
+    files = [
+        "vault_entrypoint.sh",
+        ":vault_config",
+    ],
+    directory = "grchive",
+    entrypoint = "exec /grchive/vault_entrypoint.sh",
+)
