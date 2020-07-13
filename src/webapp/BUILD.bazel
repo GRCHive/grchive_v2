@@ -1,0 +1,32 @@
+package(default_visibility=["//visibility:public"])
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+
+filegroup(
+    name = "templates",
+    srcs = glob([
+        "templates/**/*.tmpl"
+    ])
+)
+
+go_binary(
+    name = "webapp",
+    srcs = glob(["**/*.go"]),
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_gin_contrib_logger//:go_default_library",
+        "@com_github_pelletier_go_toml//:go_default_library",
+        "@com_github_rs_zerolog//:go_default_library",
+        "@com_github_rs_zerolog//log:go_default_library",
+        "//src/shared/golang/envconfig:lib",
+        "//src/shared/golang/vault:lib",
+        "//src/shared/golang/vault/auth:lib",
+        "//src/shared/golang/zipfs:lib",
+    ],
+    data = [
+        "//static/assets:assets",
+        "//src/webapp/client:bundle",
+        ":templates",
+        "robots.txt",
+    ],
+)
+

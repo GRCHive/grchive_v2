@@ -1,0 +1,6 @@
+exports_files([
+    "base.config.js",
+    "dev.config.js",
+    "prod.config.js",
+    "loader.ejs",
+])

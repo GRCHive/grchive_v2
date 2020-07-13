@@ -25,10 +25,11 @@ const babelLoader = {
 const badNodeModulesRegex = /node_modules\/(?!(query-string|split-on-first|strict-uri-encode|vuetify)\/).*/
 
 module.exports = (env, argv) => {
+    const workDir = path.resolve(process.cwd(), env.SRCDIR)
     return {
         mode: argv.mode,
         output: {
-            path: path.resolve(__dirname, '../dist'),
+            path: path.resolve(workDir, '../dist'),
             publicPath: '/static/client/',
         },
         module: {
@@ -134,7 +135,7 @@ module.exports = (env, argv) => {
         resolve: {
             alias: {
                 'vue$': 'vue/dist/vue.esm.js',
-                '@client': path.resolve(__dirname, '../src'),
+                '@client': path.resolve(workDir, 'src'),
             },
             extensions: ['.ts', '.js', '.vue', '.json', '.scss'],
         },

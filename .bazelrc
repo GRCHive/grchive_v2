@@ -1,0 +1,11 @@
+run --action_env=VAULT_PROTOCOL
+run --action_env=VAULT_HOST
+run --action_env=VAULT_PORT
+run --action_env=VAULT_TOKEN
+
+run --action_env=FUSIONAUTH_HOST
+run --action_env=FUSIONAUTH_PORT
+
+run --action_env=POSTGRES_HOST
+
+run --action_env=GRCHIVE_DOMAIN

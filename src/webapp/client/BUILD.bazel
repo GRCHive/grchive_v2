@@ -4,7 +4,7 @@ load("//src/shared/webpack:files.bzl", "webpack_config_files")
 
 webpack(
     name = "bundle",
-    outs = ["websiteClient.zip"],
+    outs = ["webappClient.zip"],
     args = [
         "$(execpath src/ts/main.ts)",
         "--config",
@@ -17,7 +17,7 @@ webpack(
         "--env.LOADERTEMPL",
         "$(execpath //src/shared/webpack:loader.ejs)",
         "--env.SRCDIR",
-        "src/website/client",
+        "src/webapp/client",
         "--env.OUTPUT",
         "$@",
     ],

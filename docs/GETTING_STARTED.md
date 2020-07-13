@@ -19,6 +19,7 @@ This document will walk you through setting up build environment and the necessa
 1. Load the developer environment variables into your shell.
 
     ```
+    cp $GRCHIVE/config/dev_env.tmpl $GRCHIVE/config/dev_env
     source $GRCHIVE/config/dev_env
     ```
     
@@ -66,9 +67,11 @@ This document will walk you through setting up build environment and the necessa
 1. Configure Vault. These steps must be run every time the `$GRCHIVE/devops/vault/vault_init.sh` file changes.
     ```
     cd $GRCHIVE/devops/vault
-    vault login -address="${VAULT_HOST}:8200" token=${VAULT_TOKEN}
+    vault login -address="http://${VAULT_HOST}:8200" token=${VAULT_TOKEN}
     ./vault_init.sh
     ```
+1. Modify `$GRCHIVE/config/dev_env` and set `VAULT_APPROLE_ROLE_ID` to the output of `vault read -address=http://${VAULT_HOST}:8200 auth/approle/role/webapp/role-id`.
+1. Run `vault write -f -address=http://${VAULT_HOST}:8200 auth/approle/role/webapp/secret-id` and in `$GRCHIVE/config/dev_env` set `VAULT_APPROLE_SECRET_ID` to the value corresponding to the `secret_id` key.
 1. In your browser, navigate to `${FUSIONAUTH_HOST}:9011` and setup an administrator account.
 1. Login and create a new application.
 
@@ -79,6 +82,7 @@ This document will walk you through setting up build environment and the necessa
     * Authorized redirect URLs: `http://localhost:8080/oauth2callback`
     * Authorized request origin URLs:  `http://localhost:8080`
     * Logout URL: `http://localhost:8080/logout`
+1. Set `FUSIONAUTH_CLIENT_ID`) in `$GRCHIVE/config/dev_env` to your application's client ID.
 1. Setup an SMTP server.
 
     ![Add Application](images/add_smtp.png)

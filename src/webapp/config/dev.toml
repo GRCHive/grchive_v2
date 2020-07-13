@@ -1,0 +1,5 @@
+enable_release_mode = false
+
+[fusion_auth]
+login_endpoint="/oauth2/authorize?client_id=%s&response_type=code&redirect_uri=%soauth2callback"
+logout_endpoint="/oauth2/logout?client_id=%s"
