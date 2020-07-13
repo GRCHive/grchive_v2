@@ -4,8 +4,9 @@ set -xe
 # This database will be setup later.
 createdb grchive
 
-# This database needs to be setup now.
+# These databases needs to be setup now.
 createdb vault
+createdb fusionauth
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname vault <<-EOSQL
     CREATE USER vault WITH

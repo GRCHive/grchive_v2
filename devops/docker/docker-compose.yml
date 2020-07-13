@@ -27,8 +27,32 @@ services:
         networks:
             c3p0:
                 ipv4_address: ${VAULT_HOST}
+        depends_on:
+            - postgres
+    fusionauth:
+        image: bazel/devops/fusionauth:fusionauth
+        volumes:
+            - type: volume
+              source: fa-config
+              target: /usr/local/fusionauth/config
+        environment:
+            - "DATABASE_URL=jdbc:postgresql://${POSTGRES_HOST}:5432/fusionauth?timezone=UTC"
+            - "DATABASE_ROOT_USER=${POSTGRES_USER}"
+            - "DATABASE_ROOT_PASSWORD=${POSTGRES_PASSWORD}"
+            - "DATABASE_USER=fusionauth"
+            - "DATABASE_PASSWORD=${FUSIONAUTH_USER_PASSWORD}"
+            - "FUSIONAUTH_MEMORY=1G"
+            - "FUSIONAUTH_SEARCH_ENGINE_TYPE=database"
+        ports:
+            - "9011:9011"
+        networks:
+            c3p0:
+                ipv4_address: ${FUSIONAUTH_HOST}
+        depends_on:
+            - postgres
 volumes:
     db-data:
+    fa-config:
 
 networks:
     c3p0:

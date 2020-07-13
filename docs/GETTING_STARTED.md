@@ -41,6 +41,7 @@ This document will walk you through setting up build environment and the necessa
     ```
     bazel run //devops/database:postgres
     bazel run //devops/vault:vault
+    bazel run //devops/fusionauth:fusionauth
     ```
 1. Run the Docker containers using Docker compose:
 
@@ -48,7 +49,7 @@ This document will walk you through setting up build environment and the necessa
     cd $GRCHIVE/devops/docker
     docker-compose up
     ```
-1. Apply the database migrations (note that you will need to redo the Docker Compose step as Vault will not properly load until its tables are setup in this step):
+1. Apply the database migrations:
 
     ```
     cd $GRCHIVE/devops/database/vault
@@ -68,3 +69,31 @@ This document will walk you through setting up build environment and the necessa
     vault login -address="${VAULT_HOST}:8200" token=${VAULT_TOKEN}
     ./vault_init.sh
     ```
+1. In your browser, navigate to `${FUSIONAUTH_HOST}:9011` and setup an administrator account.
+1. Login and create a new application.
+
+    ![Add Application](images/add_app.png)
+
+    Give the application a reasonable name and under the OAuth tab set:
+
+    * Authorized redirect URLs: `http://localhost:8080/oauth2callback`
+    * Authorized request origin URLs:  `http://localhost:8080`
+    * Logout URL: `http://localhost:8080/logout`
+1. Setup an SMTP server.
+
+    ![Add Application](images/add_smtp.png)
+
+    Under General, set:
+    * Issuer: grchive.com
+
+    Under Email, set:
+
+    * Host: smtp.sendgrid.net
+    * Port: 587
+    * Security: TLS
+    * Username: apikey
+    * Password: Sendgrid API key
+    * Verify Email: TRUE
+    * Verify email when changed: TRUE
+    * Verification template: Email Verification
+    * Delete unverified users: TRUE
