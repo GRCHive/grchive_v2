@@ -24,4 +24,5 @@ type User struct {
 	FullName         string `db:"full_name"`
 	Email            string `db:"email"`
 	FusionAuthUserId string `db:"fa_user_id"`
+	EmailVerified    bool   `db:"email_verified"`
 }

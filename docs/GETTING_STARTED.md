@@ -112,6 +112,7 @@ This document will walk you through setting up build environment and the necessa
     ```
     function populate(jwt, user, registration) {
         jwt.fullName = user.fullName;
+        jwt.verified = user.verified;
     }
     ```
 

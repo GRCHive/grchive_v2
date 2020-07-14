@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	"github.com/lestrrat-go/jwx/jwt"
+	"gitlab.com/grchive/grchive-v2/shared/backend"
 	gsess "gitlab.com/grchive/grchive-v2/shared/backend/sessions"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
@@ -24,12 +25,17 @@ var sessionDuration = time.Minute * time.Duration(30)
 var ForceOauthLogoutErr = errors.New("Force OAuth Logout")
 
 type LoginSession struct {
-	s       *sessions.Session
-	w       http.ResponseWriter
-	r       *http.Request
-	backend *gsess.SessionManager
+	s   *sessions.Session
+	w   http.ResponseWriter
+	r   *http.Request
+	itf *backend.BackendInterface
 
-	session *gsess.Session
+	session     *gsess.Session
+	sessionUser *users.User
+}
+
+func (l *LoginSession) GetSessionUser() *users.User {
+	return l.sessionUser
 }
 
 func (l *LoginSession) Logout(sess *gsess.Session, fa *fusionauth.FusionAuthClient) error {
@@ -45,8 +51,8 @@ func (l *LoginSession) Logout(sess *gsess.Session, fa *fusionauth.FusionAuthClie
 		return errors.New("Failed to force logout.")
 	}
 
-	return l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
-		return l.backend.DeleteSession(tx, sess.Id)
+	return l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.itf.Sessions.DeleteSession(tx, sess.Id)
 	})
 }
 
@@ -60,7 +66,7 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 		return nil
 	}
 
-	sess, err := l.backend.GetSessionFromId(sessionId.(string))
+	sess, err := l.itf.Sessions.GetSessionFromId(sessionId.(string))
 	if err != nil {
 		return err
 	}
@@ -100,12 +106,13 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 
 	// Bump up the expiration time since the user did something.
 	sess.SessionExpiration = time.Now().Add(sessionDuration).UTC()
-	err = l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
-		return l.backend.UpdateSession(tx, sess)
+	err = l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.itf.Sessions.UpdateSession(tx, sess)
 	})
 
 	l.session = sess
-	return nil
+	l.sessionUser, err = l.itf.Users.GetUserFromId(l.session.UserId)
+	return err
 }
 
 func (l *LoginSession) GetServerSession() *gsess.Session {
@@ -143,8 +150,8 @@ func (l *LoginSession) CreateUserSession(user *users.User, parsedToken jwt.Token
 		UserId:            user.Id,
 	}
 
-	err := l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
-		return l.backend.CreateSession(tx, &newSession)
+	err := l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.itf.Sessions.CreateSession(tx, &newSession)
 	})
 
 	if err != nil {
@@ -174,10 +181,10 @@ func (s *SessionStore) GetLoginSession(c *gin.Context) *LoginSession {
 	// That's fine - just create a new one and cause a little inconvenience.
 	sess, _ := s.store.Get(c.Request, loginSessionName)
 	ret := &LoginSession{
-		s:       sess,
-		w:       c.Writer,
-		r:       c.Request,
-		backend: s.backend,
+		s:   sess,
+		w:   c.Writer,
+		r:   c.Request,
+		itf: s.itf,
 	}
 
 	c.Set(contextKey, ret)
@@ -229,5 +236,24 @@ func (s *SessionStore) ValidateLogin(fa *fusionauth.FusionAuthClient) gin.Handle
 		} else {
 			c.Next()
 		}
+	}
+}
+
+// We need to figure out if the user has verified their email so we keep track of this information
+// here. If we detect that (our) user hasn't verified their email, then send out a request to FusionAuth
+// to update.
+func (s *SessionStore) SyncEmailVerification(fa *fusionauth.FusionAuthClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sess := s.GetLoginSession(c)
+		if sess.sessionUser != nil && !sess.sessionUser.EmailVerified {
+			resp, faErrs, err := fa.RetrieveUser(sess.sessionUser.FusionAuthUserId)
+			// Silently fail if we can't get the user -- assume that that's OK.
+			if err == nil && faErrs == nil && resp.User.SecureIdentity.Verified {
+				s.itf.Users.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+					return s.itf.Users.MarkUserVerified(tx, sess.sessionUser.Id)
+				})
+			}
+		}
+		c.Next()
 	}
 }

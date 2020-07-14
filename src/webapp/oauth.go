@@ -74,7 +74,7 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 	// benefits of having a secure session with less data by using a session ID.
 	// First check if we need to track the user in our database as this could be the first time
 	// the user is logging in with us (e.g. via SAML).
-	user, err := w.backend.userMgr.GetUserFromFusionAuthId(validatedToken.Subject())
+	user, err := w.backend.itf.Users.GetUserFromFusionAuthId(validatedToken.Subject())
 	if err != nil {
 		onError(err, "Failed to obtain user from FusionAuth ID.")
 		return
@@ -87,8 +87,8 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 			FusionAuthUserId: validatedToken.Subject(),
 		}
 
-		err = w.backend.userMgr.WrapDatabaseTx(func(tx *sqlx.Tx) error {
-			return w.backend.userMgr.CreateUser(tx, user)
+		err = w.backend.itf.Users.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+			return w.backend.itf.Users.CreateUser(tx, user)
 		})
 
 		if err != nil {
