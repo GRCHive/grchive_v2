@@ -79,6 +79,7 @@ export default class BaseAppBar extends Vue {
     }
 
     clickNav() {
+        this.$store.commit('appLayout/toggleMini')
     }
 }
 
