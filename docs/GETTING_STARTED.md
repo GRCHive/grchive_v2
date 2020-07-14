@@ -82,7 +82,7 @@ This document will walk you through setting up build environment and the necessa
     * Authorized redirect URLs: `http://localhost:8080/oauth2callback`
     * Authorized request origin URLs:  `http://localhost:8080`
     * Logout URL: `http://localhost:8080/logout`
-1. Set `FUSIONAUTH_CLIENT_ID`) in `$GRCHIVE/config/dev_env` to your application's client ID.
+1. Set `FUSIONAUTH_CLIENT_ID` and `FUSIONAUTH_CLIENT_SECRET` in `$GRCHIVE/config/dev_env` to your application's client ID and client secret respectively.
 1. Setup an SMTP server.
 
     ![Add Application](images/add_smtp.png)
@@ -101,3 +101,9 @@ This document will walk you through setting up build environment and the necessa
     * Verify email when changed: TRUE
     * Verification template: Email Verification
     * Delete unverified users: TRUE
+1. Setup a FusionAuth API key.
+
+    ![Add Application](images/add_api_key.png)
+
+    Copy the key and modify `FUSIONAUTH_API_KEY` in `$GRCHIVE/config/dev_env` to the key value.
+    TODO: Determine minimal set of endpoint permissions.

@@ -8,12 +8,12 @@ import (
 )
 
 type FusionAuthConfig struct {
-	Host           string `env:"FUSIONAUTH_HOST,required"`
-	Port           int32  `env:"FUSIONAUTH_PORT,required"`
-	ExternalHost   string `env:"FUSIONAUTH_EXTERNAL_HOST,required"`
-	ClientId       string `env:"FUSIONAUTH_CLIENT_ID,required"`
-	LoginEndpoint  string `toml:"login_endpoint"`
-	LogoutEndpoint string `toml:"logout_endpoint"`
+	Host         string `env:"FUSIONAUTH_HOST,required"`
+	Port         int32  `env:"FUSIONAUTH_PORT,required"`
+	ExternalHost string `env:"FUSIONAUTH_EXTERNAL_HOST,required"`
+	ClientId     string `env:"FUSIONAUTH_CLIENT_ID,required"`
+	ClientSecret string `env:"FUSIONAUTH_CLIENT_SECRET,required"`
+	ApiKey       string `env:"FUSIONAUTH_API_KEY,required"`
 }
 
 type VaultConfig struct {
@@ -25,7 +25,9 @@ type VaultConfig struct {
 }
 
 type GrchiveConfig struct {
-	Domain string `env:"GRCHIVE_DOMAIN,required"`
+	Domain            string `env:"GRCHIVE_DOMAIN,required"`
+	SessionAuthKey    string `env:"GRCHIVE_SESSION_AUTH_KEY,required"`
+	SessionEncryptKey string `env:"GRCHIVE_SESSION_ENCRYPT_KEY,required"`
 }
 
 type Config struct {

@@ -58,7 +58,8 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 gazelle_dependencies()
 
-load("//deps/golang:deps.bzl", "load_golang_deps")
+load("//deps/golang:deps.bzl", "load_golang_deps", "load_manual_deps")
+load_manual_deps()
 
 # gazelle:repository_macro deps/golang/deps.bzl%load_golang_deps
 load_golang_deps()

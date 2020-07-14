@@ -1,5 +1,12 @@
 load("@bazel_gazelle//:deps.bzl", "go_repository")
 
+def load_manual_deps():
+    go_repository(
+        name = "com_github_fusionauth_go_client",
+        importpath = "github.com/FusionAuth/go-client",
+        tag = "1.17.5",
+    )
+
 def load_golang_deps():
     go_repository(
         name = "com_github_davecgh_go_spew",
@@ -100,8 +107,8 @@ def load_golang_deps():
     go_repository(
         name = "com_github_stretchr_testify",
         importpath = "github.com/stretchr/testify",
-        sum = "h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=",
-        version = "v1.4.0",
+        sum = "h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=",
+        version = "v1.5.1",
     )
     go_repository(
         name = "com_github_ugorji_go",
@@ -142,8 +149,8 @@ def load_golang_deps():
     go_repository(
         name = "org_golang_x_tools",
         importpath = "golang.org/x/tools",
-        sum = "h1:4cFkmztxtMslUX2SctSl+blCyXfpzhGOy9LhKAqSMA4=",
-        version = "v0.0.0-20190828213141-aed303cbaa74",
+        sum = "h1:NXNmtp0ToD36cui5IqWy95LC4Y6vT/4y3RnPxlQPinU=",
+        version = "v0.0.0-20200417140056-c07e33ef3290",
     )
     go_repository(
         name = "com_github_burntsushi_toml",
@@ -166,8 +173,8 @@ def load_golang_deps():
     go_repository(
         name = "com_github_pkg_errors",
         importpath = "github.com/pkg/errors",
-        sum = "h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=",
-        version = "v0.8.1",
+        sum = "h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=",
+        version = "v0.9.1",
     )
     go_repository(
         name = "com_github_rs_xid",
@@ -184,26 +191,26 @@ def load_golang_deps():
     go_repository(
         name = "org_golang_x_crypto",
         importpath = "golang.org/x/crypto",
-        sum = "h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=",
-        version = "v0.0.0-20190308221718-c2843e01d9a2",
+        sum = "h1:ObdrDkeb4kJdCP557AjRjq69pTHfNouLtWZG7j9rPN8=",
+        version = "v0.0.0-20191011191535-87dc89f01550",
     )
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:R/3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI=",
-        version = "v0.0.0-20190620200207-3b0461eec859",
+        sum = "h1:0mm1VjtFUOIlE1SbDlwjYaDxZVDP2S5ou6y0gSgXHu8=",
+        version = "v0.0.0-20200226121028-0de0cce0169b",
     )
     go_repository(
         name = "org_golang_x_sync",
         importpath = "golang.org/x/sync",
-        sum = "h1:8gQV6CLnAEikrhgkHFbMAEhagSSnXWGV915qUMm9mrU=",
-        version = "v0.0.0-20190423024810-112230192c58",
+        sum = "h1:vcxGaoTs7kV8m5Np9uUNQin4BrLOthgV7252N8V+FwY=",
+        version = "v0.0.0-20190911185100-cd5d95a43a6e",
     )
     go_repository(
         name = "org_golang_x_xerrors",
         importpath = "golang.org/x/xerrors",
-        sum = "h1:9zdDQZ7Thm29KFXgAX/+yaf3eVbP7djjWp/dXAppNCc=",
-        version = "v0.0.0-20190717185122-a985d3407aa7",
+        sum = "h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=",
+        version = "v0.0.0-20191204190536-9bdfabe68543",
     )
     go_repository(
         name = "com_github_gin_contrib_logger",
@@ -228,4 +235,52 @@ def load_golang_deps():
         importpath = "gopkg.in/go-playground/validator.v8",
         sum = "h1:lFB4DoMU6B626w8ny76MV7VX6W2VHct2GVOI3xgiMrQ=",
         version = "v8.18.2",
+    )
+    go_repository(
+        name = "com_github_gorilla_securecookie",
+        importpath = "github.com/gorilla/securecookie",
+        sum = "h1:miw7JPhV+b/lAHSXz4qd/nN9jRiAFV5FwjeKyCS8BvQ=",
+        version = "v1.1.1",
+    )
+    go_repository(
+        name = "com_github_gorilla_sessions",
+        importpath = "github.com/gorilla/sessions",
+        sum = "h1:S7P+1Hm5V/AT9cjEcUD5uDaQSX0OE577aCXgoaKpYbQ=",
+        version = "v1.2.0",
+    )
+    go_repository(
+        name = "com_github_google_uuid",
+        importpath = "github.com/google/uuid",
+        sum = "h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=",
+        version = "v1.1.1",
+    )
+    go_repository(
+        name = "com_github_lestrrat_go_iter",
+        importpath = "github.com/lestrrat-go/iter",
+        sum = "h1:FvnrqecqX4zT0wOIbYK1gNgTm0677INEWiFY8UEYggY=",
+        version = "v0.0.0-20200422075355-fc1769541911",
+    )
+    go_repository(
+        name = "com_github_lestrrat_go_jwx",
+        importpath = "github.com/lestrrat-go/jwx",
+        sum = "h1:8HkTBT/jXzfqSggaZIhi3LmWRB0wFT3WyOj24yWoXDA=",
+        version = "v1.0.3",
+    )
+    go_repository(
+        name = "com_github_lestrrat_go_pdebug",
+        importpath = "github.com/lestrrat-go/pdebug",
+        sum = "h1:aEZT3f1GGg5RIlHMAy4/4fe4ciOi3SCwYoaURphcB4k=",
+        version = "v0.0.0-20200204225717-4d6bd78da58d",
+    )
+    go_repository(
+        name = "com_github_yuin_goldmark",
+        importpath = "github.com/yuin/goldmark",
+        sum = "h1:nqDD4MMMQA0lmWq03Z2/myGPYLQoXtmi0rGVs95ntbo=",
+        version = "v1.1.27",
+    )
+    go_repository(
+        name = "org_golang_x_mod",
+        importpath = "golang.org/x/mod",
+        sum = "h1:KU7oHjnv3XNWfa5COkzUifxZmxp1TyI7ImMXqFxLwvQ=",
+        version = "v0.2.0",
     )
