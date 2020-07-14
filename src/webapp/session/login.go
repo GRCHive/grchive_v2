@@ -21,6 +21,8 @@ const sessionIdName = "session-id"
 
 var sessionDuration = time.Minute * time.Duration(30)
 
+var ForceOauthLogoutErr = errors.New("Force OAuth Logout")
+
 type LoginSession struct {
 	s       *sessions.Session
 	w       http.ResponseWriter
@@ -71,7 +73,11 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 	// First, check if the session itself is expired. If that's the case, force the user to re-login - this is
 	// not a valid session!
 	if tm.After(sess.SessionExpiration) {
-		return l.Logout(sess, fa)
+		err = l.Logout(sess, fa)
+		if err != nil {
+			return err
+		}
+		return ForceOauthLogoutErr
 	}
 
 	// Next check if the access token is expired - in that case, use the refresh token
@@ -215,7 +221,11 @@ func (s *SessionStore) ValidateLogin(fa *fusionauth.FusionAuthClient) gin.Handle
 		sess := s.GetLoginSession(c)
 		err := sess.ValidateLogin(fa)
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+			if err == ForceOauthLogoutErr {
+				c.Redirect(http.StatusTemporaryRedirect, fa.GetOAuthLogoutUrl())
+			} else {
+				c.AbortWithError(http.StatusInternalServerError, err)
+			}
 		} else {
 			c.Next()
 		}
