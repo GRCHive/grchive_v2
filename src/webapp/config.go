@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog"
 	"gitlab.com/grchive/grchive-v2/shared/envconfig"
@@ -30,11 +31,32 @@ type GrchiveConfig struct {
 	SessionEncryptKey string `env:"GRCHIVE_SESSION_ENCRYPT_KEY,required"`
 }
 
+type DatabaseConfig struct {
+	Host     string `env:"POSTGRES_HOST,required"`
+	Port     int32  `env:"POSTGRES_PORT,required"`
+	Username string `env:"POSTGRES_WEBAPP_USER,required"`
+	Password string `env:"POSTGRES_WEBAPP_PASSWORD,required"`
+	Database string `env:"POSTGRES_WEBAPP_DATABASE,required"`
+	Options  string `env:"POSTGRES_WEBAPP_OPTIONS,required"`
+}
+
+func (c DatabaseConfig) JdbcUrl() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s%s",
+		c.Username,
+		c.Password,
+		c.Host,
+		c.Port,
+		c.Database,
+		c.Options,
+	)
+}
+
 type Config struct {
 	EnableReleaseMode bool             `toml:"enable_release_mode"`
 	FusionAuth        FusionAuthConfig `toml:"fusion_auth"`
 	Vault             VaultConfig
 	Grchive           GrchiveConfig
+	Database          DatabaseConfig
 }
 
 func (w *WebappApplication) LoadConfig(fname string) {
@@ -72,5 +94,8 @@ func (c *Config) loadConfigFromEnv(log zerolog.Logger) {
 	}
 	if err := envconfig.Load(&c.Grchive); err != nil {
 		log.Fatal().Err(err).Msg("Failed to read Grchive env config.")
+	}
+	if err := envconfig.Load(&c.Database); err != nil {
+		log.Fatal().Err(err).Msg("Failed to read Database env config.")
 	}
 }

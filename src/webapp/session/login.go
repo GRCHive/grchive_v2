@@ -5,7 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/jmoiron/sqlx"
 	"github.com/lestrrat-go/jwx/jwt"
+	gsess "gitlab.com/grchive/grchive-v2/shared/backend/sessions"
+	"gitlab.com/grchive/grchive-v2/shared/backend/users"
+	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
 	"net/http"
 	"time"
@@ -13,53 +17,89 @@ import (
 
 const loginSessionName = "login-session"
 const loginStateName = "login-state"
-const accessTokenName = "accesstoken"
-const refreshTokenName = "refreshtoken"
-const userIdName = "userid"
-const expiresName = "expires"
-const timeStorageFormat = time.RFC3339
+const sessionIdName = "session-id"
 
-var noAccessTokenErr = errors.New("No access token found.")
+var sessionDuration = time.Minute * time.Duration(30)
 
 type LoginSession struct {
-	s *sessions.Session
-	w http.ResponseWriter
-	r *http.Request
+	s       *sessions.Session
+	w       http.ResponseWriter
+	r       *http.Request
+	backend *gsess.SessionManager
 
-	token        jwt.Token
-	jwtValidated bool
+	session *gsess.Session
 }
 
 func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
-	rawToken, ok := l.s.Values[accessTokenName]
+	sessionId, ok := l.s.Values[sessionIdName]
 	if !ok {
-		return noAccessTokenErr
+		return nil
 	}
 
-	// Don't need to send the token to FusionAuth because we should
-	// be OK since we're storing it in a secure cookie so we should be able
-	// to detect when the session gets modified.
-	var err error
-	l.token, err = jwt.ParseString(rawToken.(string))
+	sess, err := l.backend.GetSessionFromId(sessionId.(string))
 	if err != nil {
 		return err
 	}
 
-	err = jwt.Verify(l.token,
-		jwt.WithAcceptableSkew(time.Minute*time.Duration(1)),
-		jwt.WithIssuer("grchive.com"),
-	)
+	if sess == nil {
+		return nil
+	}
 
-	l.jwtValidated = (err == nil)
+	tm := time.Now()
+	// First, check if the session itself is expired. If that's the case, force the user to re-login - this is
+	// not a valid session!
+	if tm.After(sess.SessionExpiration) {
+		// We need to do two things here to force a relogin.
+		// 1) Logout the user on the FusionAuth side so that they'll be forced to see the login screen and type in their credentials.
+		// 2) Delete our copy of the session in the database. This will trigger the "sess == nil" check on the next go around.
+		resp, err := fa.Logout(true, "")
+		if err != nil {
+			return err
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			return errors.New("Failed to force logout.")
+		}
+
+		return l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+			return l.backend.DeleteSession(tx, sess.Id)
+		})
+	}
+
+	// Next check if the access token is expired - in that case, use the refresh token
+	// to get a new access token. Maintain the same session.
+	if tm.After(sess.JwtExpiration) {
+		token, err := fa.ExchangeRefreshTokenForAccessToken(sess.RefreshToken)
+		if err != nil {
+			return err
+		}
+
+		validatedToken, err := utility.ValidateJWT(token.Token(), fa)
+		if err != nil {
+			return err
+		}
+
+		sess.JwtExpiration = validatedToken.Expiration().UTC()
+		sess.AccessToken = token.Token()
+		sess.RefreshToken = token.RefreshToken
+	}
+
+	// Bump up the expiration time since the user did something.
+	sess.SessionExpiration = time.Now().Add(sessionDuration).UTC()
+	err = l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.backend.UpdateSession(tx, sess)
+	})
+
+	l.session = sess
 	return nil
 }
 
 func (l *LoginSession) IsLoggedIn() bool {
-	return l.jwtValidated
+	return l.session != nil
 }
 
 func (l *LoginSession) PopulateLoginState() error {
-	// This is the state to use for any login operations - NOT THE CSRF
+	// This is the state to pass to FusionAuth use for any login operations - NOT THE CSRF
 	// since we don't want to expose this to the client.
 	l.s.Values[loginStateName] = uuid.New().String()
 
@@ -75,13 +115,26 @@ func (l *LoginSession) GetLoginState() string {
 	return l.s.Values[loginStateName].(string)
 }
 
-func (l *LoginSession) StoreAccessToken(token *fusionauth.AccessToken) error {
-	l.s.Values[accessTokenName] = token.Token()
-	l.s.Values[refreshTokenName] = token.RefreshToken
-	l.s.Values[expiresName] = time.Now().UTC().Add(time.Second * time.Duration(token.ExpiresIn)).Format(timeStorageFormat)
-	l.s.Values[userIdName] = token.UserId
+func (l *LoginSession) CreateUserSession(user *users.User, parsedToken jwt.Token, token *fusionauth.AccessToken) error {
+	newSession := gsess.Session{
+		Id:                uuid.New().String(),
+		SessionExpiration: time.Now().Add(sessionDuration).UTC(),
+		JwtExpiration:     parsedToken.Expiration().UTC(),
+		AccessToken:       token.Token(),
+		RefreshToken:      token.RefreshToken,
+		UserId:            user.Id,
+	}
 
-	err := l.s.Save(l.r, l.w)
+	err := l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.backend.CreateSession(tx, &newSession)
+	})
+
+	if err != nil {
+		return err
+	}
+
+	l.s.Values[sessionIdName] = newSession.Id
+	err = l.s.Save(l.r, l.w)
 	if err != nil {
 		return err
 	}
@@ -103,9 +156,10 @@ func (s *SessionStore) GetLoginSession(c *gin.Context) *LoginSession {
 	// That's fine - just create a new one and cause a little inconvenience.
 	sess, _ := s.store.Get(c.Request, loginSessionName)
 	ret := &LoginSession{
-		s: sess,
-		w: c.Writer,
-		r: c.Request,
+		s:       sess,
+		w:       c.Writer,
+		r:       c.Request,
+		backend: s.backend,
 	}
 
 	c.Set(contextKey, ret)
@@ -148,7 +202,7 @@ func (s *SessionStore) ValidateLogin(fa *fusionauth.FusionAuthClient) gin.Handle
 	return func(c *gin.Context) {
 		sess := s.GetLoginSession(c)
 		err := sess.ValidateLogin(fa)
-		if err != nil && err != noAccessTokenErr {
+		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		} else {
 			c.Next()

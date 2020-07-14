@@ -3,8 +3,12 @@ package main
 import (
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gitlab.com/grchive/grchive-v2/shared/backend/sessions"
+	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/redirect_response"
 	"gitlab.com/grchive/grchive-v2/shared/vault"
@@ -12,6 +16,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/zipfs"
 	"gitlab.com/grchive/grchive-v2/webapp/session"
 	"os"
+	"time"
 )
 
 type WebappApplication struct {
@@ -28,6 +33,12 @@ type WebappApplication struct {
 	fusionauth  *fusionauth.FusionAuthClient
 
 	sessionStore *session.SessionStore
+
+	backend struct {
+		db         *sqlx.DB
+		userMgr    *users.UserManager
+		sessionMgr *sessions.SessionManager
+	}
 }
 
 func (w *WebappApplication) SetupLogging() {
@@ -41,7 +52,11 @@ func (w *WebappApplication) SetupLogging() {
 }
 
 func (w *WebappApplication) Run() {
-	w.sessionStore = session.CreateSessionStore(w.cfg.Grchive.SessionAuthKey, w.cfg.Grchive.SessionEncryptKey)
+	w.sessionStore = session.CreateSessionStore(
+		w.cfg.Grchive.SessionAuthKey,
+		w.cfg.Grchive.SessionEncryptKey,
+		w.backend.sessionMgr,
+	)
 
 	r := gin.New()
 	r.Use(logger.SetLogger(logger.Config{
@@ -84,6 +99,14 @@ func (w *WebappApplication) InitializeBackend() {
 		ApiKey:         w.cfg.FusionAuth.ApiKey,
 		RedirectDomain: w.cfg.Grchive.Domain,
 	})
+
+	w.backend.db = sqlx.MustConnect("postgres", w.cfg.Database.JdbcUrl())
+	w.backend.db.SetMaxOpenConns(10)
+	w.backend.db.SetMaxIdleConns(5)
+	w.backend.db.SetConnMaxLifetime(5 * time.Minute)
+
+	w.backend.userMgr = users.CreateUserManager(w.backend.db)
+	w.backend.sessionMgr = sessions.CreateSessionManager(w.backend.db)
 }
 
 func (w *WebappApplication) Close() {

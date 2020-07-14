@@ -2,6 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend/users"
+	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
 	"net/http"
 )
 
@@ -38,7 +41,45 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 		return
 	}
 
-	err = session.StoreAccessToken(token)
+	validatedToken, err := utility.ValidateJWT(token.Token(), w.fusionauth)
+	if err != nil {
+		onError(err, "Failed to validate token.")
+		return
+	}
+
+	// Now we want to transform this JWT token into a login session.
+	// We don't really have a need to use the JWT as we can get the same
+	// benefits of having a secure session with less data by using a session ID.
+	// First check if we need to track the user in our database as this could be the first time
+	// the user is logging in with us (e.g. via SAML).
+	user, err := w.backend.userMgr.GetUserFromFusionAuthId(validatedToken.Subject())
+	if err != nil {
+		onError(err, "Failed to obtain user from FusionAuth ID.")
+		return
+	}
+
+	if user == nil {
+		user = &users.User{
+			FullName:         validatedToken.PrivateClaims()["fullName"].(string),
+			Email:            validatedToken.PrivateClaims()["email"].(string),
+			FusionAuthUserId: validatedToken.Subject(),
+		}
+
+		err = w.backend.userMgr.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+			return w.backend.userMgr.CreateUser(tx, user)
+		})
+
+		if err != nil {
+			onError(err, "Failed to create user.")
+			return
+		}
+	}
+
+	err = session.CreateUserSession(
+		user,
+		validatedToken,
+		token,
+	)
 	if err != nil {
 		onError(err, "Failed to store access token.")
 		return

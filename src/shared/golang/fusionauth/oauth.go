@@ -47,3 +47,27 @@ func (c FusionAuthClient) ExchangeOAuthCodeForAccessToken(code string) (*AccessT
 
 	return &AccessToken{token}, nil
 }
+
+func (c FusionAuthClient) ExchangeRefreshTokenForAccessToken(refreshToken string) (*AccessToken, error) {
+	token, oauthError, err := c.FusionAuthClient.ExchangeRefreshTokenForAccessToken(
+		refreshToken,
+		c.cfg.ClientId,
+		c.cfg.ClientSecret,
+		"",
+		"",
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if oauthError != nil {
+		return nil, errors.New(fmt.Sprintf("[FA OAuth Error] %s - %s [%s]",
+			oauthError.Error,
+			oauthError.ErrorDescription,
+			oauthError.ErrorReason,
+		))
+	}
+
+	return &AccessToken{token}, nil
+}

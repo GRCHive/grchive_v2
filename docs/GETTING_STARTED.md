@@ -107,3 +107,12 @@ This document will walk you through setting up build environment and the necessa
 
     Copy the key and modify `FUSIONAUTH_API_KEY` in `$GRCHIVE/config/dev_env` to the key value.
     TODO: Determine minimal set of endpoint permissions.
+1. Create a FusionAuth lambda to add the Full name to the JWT (Settings > Lambdas).
+
+    ```
+    function populate(jwt, user, registration) {
+        jwt.fullName = user.fullName;
+    }
+    ```
+
+    Under the GRCHive application you made earlier (Applications > GRCHive), go to the JWT tab and set the lambda as the `Access Token populate lambda`.
