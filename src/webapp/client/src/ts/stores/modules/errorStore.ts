@@ -2,17 +2,17 @@ import { Module } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
 import { GrchiveError, GrchiveApiError } from '@client/ts/types/errors'
 
-interface StoreState {
+export interface ErrorStoreState {
     relevantErrors : GrchiveError[]
 }
 
-export const ErrorStoreModule : Module<StoreState, RootState> = {
+export const ErrorStoreModule : Module<ErrorStoreState, RootState> = {
     namespaced: true,
     state: () => ({
         relevantErrors: []
     }),
     mutations: {
-        addApiError(state : StoreState, err : any) {
+        addApiError(state : ErrorStoreState, err : any) {
             state.relevantErrors.unshift(new GrchiveApiError(err))
         }
     }

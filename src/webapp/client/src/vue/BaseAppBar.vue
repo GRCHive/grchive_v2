@@ -4,6 +4,7 @@
         dense
         clipped-left
         clipped-right
+        :extension-height="extensionHeight"
     >
         <v-app-bar-nav-icon @click.stop="clickNav"></v-app-bar-nav-icon>
         <v-toolbar-title color="primary" class="pl-1">
@@ -60,6 +61,10 @@
             </v-menu>
 
         </v-toolbar-items>
+
+        <template v-slot:extension>
+            <verify-email-banner></verify-email-banner>
+        </template>
     </v-app-bar>
 </template>
 
@@ -68,14 +73,24 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
+import VerifyEmailBanner from '@client/vue/verification/VerifyEmailBanner.vue'
 
 @Component({
     components: {
+        VerifyEmailBanner
     }
 })
 export default class BaseAppBar extends Vue {
     get fullName() : string {
         return this.$store.state.user.rawUser.FullName
+    }
+
+    get extensionHeight() : number {
+        if (this.$store.getters['appLayout/showEmailVerificationBanner']) {
+            return 44
+        } else {
+            return 0
+        }
     }
 
     clickNav() {
@@ -84,3 +99,16 @@ export default class BaseAppBar extends Vue {
 }
 
 </script>
+
+<style scoped>
+
+.v-menu__content {
+    border-radius: 0px !important;
+}
+
+>>>.v-toolbar__extension {
+    padding: 0;
+    margin: 0;
+}
+
+</style>

@@ -10,4 +10,8 @@ export class UserApiClient {
     getCurrentUser() : Promise<RawUser> {
         return this.handler.get('/users/current', {})
     }
+
+    resendEmailVerification() : Promise<void> {
+        return this.handler.post('/users/current/verify', {})
+    }
 }

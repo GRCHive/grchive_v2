@@ -23,6 +23,7 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 		userR := apiR.Group("/users")
 		{
 			userR.GET("/current", w.apiv1GetCurrentUser)
+			userR.POST("/current/verify", w.apiv1ResendEmailVerification)
 		}
 	}
 }

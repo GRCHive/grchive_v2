@@ -1,10 +1,13 @@
 import { StoreOptions } from 'vuex'
 
-import { UserStoreModule } from '@client/ts/stores/modules/userStore'
-import { ErrorStoreModule } from '@client/ts/stores/modules/errorStore'
-import { AppLayoutStoreModule } from '@client/ts/stores/modules/appLayoutStore'
+import { UserStoreModule, UserStoreState } from '@client/ts/stores/modules/userStore'
+import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
+import { AppLayoutStoreModule, AppLayoutStoreState } from '@client/ts/stores/modules/appLayoutStore'
 
 export interface RootState {
+    user: UserStoreState
+    errors: ErrorStoreState
+    appLayout: AppLayoutStoreState
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {

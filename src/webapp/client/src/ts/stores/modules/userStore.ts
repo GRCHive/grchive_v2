@@ -4,17 +4,17 @@ import { RootState } from '@client/ts/stores/store'
 
 import { GrchiveApi } from '@client/ts/api/client'
 
-interface StoreState {
+export interface UserStoreState {
     rawUser : RawUser | null
 }
 
-export const UserStoreModule : Module<StoreState, RootState> = {
+export const UserStoreModule : Module<UserStoreState, RootState> = {
     namespaced: true,
     state: () => ({
         rawUser : null,
     }),
     mutations: {
-        setRawUser(state : StoreState, rawUser : RawUser) {
+        setRawUser(state : UserStoreState, rawUser : RawUser) {
             state.rawUser = rawUser
         }
     },

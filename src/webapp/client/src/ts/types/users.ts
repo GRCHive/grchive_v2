@@ -3,4 +3,5 @@ export interface RawUser {
 	FullName         : string
 	Email            : string
 	FusionAuthUserId : string
+    EmailVerified    : boolean
 }
