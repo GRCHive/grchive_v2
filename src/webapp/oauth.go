@@ -17,6 +17,28 @@ func (w *WebappApplication) renderLogin(c *gin.Context) {
 	)
 }
 
+func (w *WebappApplication) renderLogout(c *gin.Context) {
+	session := w.sessionStore.GetLoginSession(c)
+	if !session.IsLoggedIn() {
+		c.Redirect(
+			http.StatusTemporaryRedirect,
+			"/",
+		)
+		return
+	}
+
+	err := session.LogoutCurrentSession(w.fusionauth)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Redirect(
+		http.StatusTemporaryRedirect,
+		w.fusionauth.GetOAuthLogoutUrl(),
+	)
+}
+
 func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 	// This function is called when FusionAuth redirects a successful login back to us in the
 	// OAuth authentication code flow. Verify the state and use the code to get a token for the user

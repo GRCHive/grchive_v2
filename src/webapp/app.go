@@ -59,6 +59,9 @@ func (w *WebappApplication) Run() {
 	)
 
 	r := gin.New()
+	r.RedirectTrailingSlash = true
+	r.RedirectFixedPath = true
+
 	r.Use(logger.SetLogger(logger.Config{
 		Logger: &w.log,
 	}))
@@ -70,13 +73,16 @@ func (w *WebappApplication) Run() {
 	r.StaticFS("/static/client/", w.clientZipFs)
 
 	r.Use(w.sessionStore.ValidateLogin(w.fusionauth))
-	loginR := r.Group("/", w.sessionStore.RedirectIfLoggedIn("/"))
+	loginR := r.Group("/", w.sessionStore.RedirectIfLoggedIn("/app/"))
+	loginR.GET("/", w.sessionStore.RedirectIfLoggedOut("/login"))
 	loginR.GET("/login", w.sessionStore.PopulateLoginState, w.renderLogin)
 	loginR.GET("/oauth2callback", w.handleOauthCallback)
+	r.GET("/logout", w.renderLogout)
 
-	appR := r.Group("/", w.sessionStore.RedirectIfLoggedOut("/login"))
-	appR.GET("/", w.renderApp)
+	appR := r.Group("/app", w.sessionStore.RedirectIfLoggedOut("/login"))
+	appR.GET("/*path", w.renderApp)
 
+	w.registerApiv1(r)
 	r.Run()
 }
 
@@ -97,6 +103,7 @@ func (w *WebappApplication) InitializeBackend() {
 		ClientId:       w.cfg.FusionAuth.ClientId,
 		ClientSecret:   w.cfg.FusionAuth.ClientSecret,
 		ApiKey:         w.cfg.FusionAuth.ApiKey,
+		TenantId:       w.cfg.FusionAuth.TenantId,
 		RedirectDomain: w.cfg.Grchive.Domain,
 	})
 

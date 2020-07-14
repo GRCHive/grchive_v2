@@ -14,6 +14,7 @@ type Config struct {
 	ClientId       string
 	ClientSecret   string
 	ApiKey         string
+	TenantId       string
 	RedirectDomain string
 }
 

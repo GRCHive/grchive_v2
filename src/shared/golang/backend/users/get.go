@@ -23,3 +23,24 @@ func (m *UserManager) GetUserFromFusionAuthId(id string) (*User, error) {
 	err = rows.StructScan(&user)
 	return &user, err
 }
+
+func (m *UserManager) GetUserFromId(id int64) (*User, error) {
+	rows, err := m.db.Queryx(`
+		SELECT *
+		FROM users
+		WHERE id = $1
+	`, id)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, nil
+	}
+
+	user := User{}
+	err = rows.StructScan(&user)
+	return &user, err
+}

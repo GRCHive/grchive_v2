@@ -30,6 +30,28 @@ type LoginSession struct {
 	session *gsess.Session
 }
 
+func (l *LoginSession) Logout(sess *gsess.Session, fa *fusionauth.FusionAuthClient) error {
+	// We need to do two things here to force a relogin.
+	// 1) Logout the user on the FusionAuth side so that they'll be forced to see the login screen and type in their credentials.
+	// 2) Delete our copy of the session in the database. This will trigger the "sess == nil" check on the next go around.
+	resp, err := fa.Logout(true, sess.RefreshToken)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Failed to force logout.")
+	}
+
+	return l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		return l.backend.DeleteSession(tx, sess.Id)
+	})
+}
+
+func (l *LoginSession) LogoutCurrentSession(fa *fusionauth.FusionAuthClient) error {
+	return l.Logout(l.session, fa)
+}
+
 func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 	sessionId, ok := l.s.Values[sessionIdName]
 	if !ok {
@@ -49,21 +71,7 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 	// First, check if the session itself is expired. If that's the case, force the user to re-login - this is
 	// not a valid session!
 	if tm.After(sess.SessionExpiration) {
-		// We need to do two things here to force a relogin.
-		// 1) Logout the user on the FusionAuth side so that they'll be forced to see the login screen and type in their credentials.
-		// 2) Delete our copy of the session in the database. This will trigger the "sess == nil" check on the next go around.
-		resp, err := fa.Logout(true, "")
-		if err != nil {
-			return err
-		}
-
-		if resp.StatusCode != http.StatusOK {
-			return errors.New("Failed to force logout.")
-		}
-
-		return l.backend.WrapDatabaseTx(func(tx *sqlx.Tx) error {
-			return l.backend.DeleteSession(tx, sess.Id)
-		})
+		return l.Logout(sess, fa)
 	}
 
 	// Next check if the access token is expired - in that case, use the refresh token
@@ -92,6 +100,10 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 
 	l.session = sess
 	return nil
+}
+
+func (l *LoginSession) GetServerSession() *gsess.Session {
+	return l.session
 }
 
 func (l *LoginSession) IsLoggedIn() bool {

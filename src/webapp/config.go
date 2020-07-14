@@ -13,6 +13,7 @@ type FusionAuthConfig struct {
 	Port         int32  `env:"FUSIONAUTH_PORT,required"`
 	ExternalHost string `env:"FUSIONAUTH_EXTERNAL_HOST,required"`
 	ClientId     string `env:"FUSIONAUTH_CLIENT_ID,required"`
+	TenantId     string `env:"FUSIONAUTH_TENANT_ID,required"`
 	ClientSecret string `env:"FUSIONAUTH_CLIENT_SECRET,required"`
 	ApiKey       string `env:"FUSIONAUTH_API_KEY,required"`
 }

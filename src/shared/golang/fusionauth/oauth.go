@@ -7,6 +7,7 @@ import (
 )
 
 const loginEndpoint = "/oauth2/authorize"
+const logoutEndpoint = "/oauth2/logout"
 
 func (c FusionAuthClient) GetOAuthRedirectEndpoint() string {
 	return c.cfg.RedirectDomain + "/oauth2callback"
@@ -70,4 +71,13 @@ func (c FusionAuthClient) ExchangeRefreshTokenForAccessToken(refreshToken string
 	}
 
 	return &AccessToken{token}, nil
+}
+
+func (c FusionAuthClient) GetOAuthLogoutUrl() string {
+	return fmt.Sprintf("%s%s?client_id=%s&tenantId=%s",
+		c.cfg.ExternalHost,
+		logoutEndpoint,
+		c.cfg.ClientId,
+		c.cfg.TenantId,
+	)
 }

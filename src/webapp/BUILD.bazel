@@ -10,7 +10,7 @@ filegroup(
 
 go_binary(
     name = "webapp",
-    srcs = glob(["*.go"]),
+    srcs = glob(["*.go", "rest/**/*.go"]),
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
         "@com_github_gin_gonic_gin//:go_default_library",
