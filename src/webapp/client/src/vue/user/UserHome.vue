@@ -43,9 +43,10 @@
                 </v-list-item>
                 <v-divider class="mb-4"></v-divider>
 
-                <v-treeview
+                <org-tree-viewer
+                    :orgs="orgs"
                 >
-                </v-treeview>
+                </org-tree-viewer>
             </loading-container>
         </template>
     </user-template>
@@ -62,12 +63,14 @@ import { GrchiveApi } from '@client/ts/main'
 import UserTemplate from '@client/vue/UserTemplate.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import OrgSaveEditDialog from '@client/vue/types/orgs/OrgSaveEditDialog.vue'
+import OrgTreeViewer from '@client/vue/types/orgs/OrgTreeViewer.vue'
 
 @Component({
     components: {
         UserTemplate,
         OrgSaveEditDialog,
-        LoadingContainer
+        LoadingContainer,
+        OrgTreeViewer,
     }
 })
 export default class UserHome extends Vue {
@@ -84,19 +87,6 @@ export default class UserHome extends Vue {
 
     get currentUser() : RawUser | null {
         return this.$store.state.user.rawUser
-    }
-
-    get userOrganizationItems() : any[] {
-        if (!this.orgs) {
-            return []
-        }
-        // id: unique key
-        // name: Text to display
-        // children: children in tree.
-        return this.orgs.map((ele : RawOrganization) => ({
-            id: ele.Id,
-            name: ele.Name,
-        }))
     }
 
     refreshData() {
