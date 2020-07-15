@@ -2,7 +2,6 @@ package sessions
 
 import (
 	"github.com/jmoiron/sqlx"
-	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
 	"time"
 )
 
@@ -14,10 +13,6 @@ func CreateSessionManager(db *sqlx.DB) *SessionManager {
 	return &SessionManager{
 		db: db,
 	}
-}
-
-func (m *SessionManager) WrapDatabaseTx(fns ...utility.TxHandler) error {
-	return utility.WrapDatabaseTx(m.db, fns...)
 }
 
 type Session struct {

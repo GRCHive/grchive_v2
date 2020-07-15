@@ -1,8 +1,7 @@
 import { Module } from 'vuex'
 import { RawUser } from '@client/ts/types/users'
 import { RootState } from '@client/ts/stores/store'
-
-import { GrchiveApi } from '@client/ts/api/client'
+import { GrchiveApi } from '@client/ts/main'
 
 export interface UserStoreState {
     rawUser : RawUser | null
@@ -20,10 +19,8 @@ export const UserStoreModule : Module<UserStoreState, RootState> = {
     },
     actions: {
         initializeUserStore(context) {
-            GrchiveApi.user.getCurrentUser().then((resp : RawUser) => {
+            GrchiveApi.user.getCurrentUser().then((resp : RawUser | null) => {
                 context.commit('setRawUser', resp)
-            }).catch((err : any) => {
-                context.commit('errors/addApiError', err, { root: true })
             })
         }
     },

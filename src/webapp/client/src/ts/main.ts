@@ -21,6 +21,10 @@ import '@client/sass/main.scss'
 const UserHome = () => import( /* webpackChunkName: "UserHome" */ '@client/vue/user/UserHome.vue')
 const UserProfile = () => import( /* webpackChunkName: "UserProfile" */ '@client/vue/user/UserProfile.vue')
 
+const store = new Vuex.Store(RootStoreOptions)
+import { ApiClient } from '@client/ts/api/client'
+export const GrchiveApi = new ApiClient(store)
+
 const router = new VueRouter({
     mode: 'history',
     base: '/app/',
@@ -33,7 +37,7 @@ const router = new VueRouter({
 
 new Vue({
     router,
-    store: new Vuex.Store(RootStoreOptions),
+    store,
     el: '#app',
     components: {
         VApp,
@@ -44,3 +48,5 @@ new Vue({
     },
     vuetify: new Vuetify({})
 }).$mount('#app')
+
+

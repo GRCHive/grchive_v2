@@ -9,8 +9,11 @@ go_library(
     ]),
     importpath = "gitlab.com/grchive/grchive-v2/shared/backend",
     deps = [
+        "@com_github_jmoiron_sqlx//:go_default_library",
+        "//src/shared/golang/backend/orgs:lib",
         "//src/shared/golang/backend/sessions:lib",
         "//src/shared/golang/backend/users:lib",
+        "//src/shared/golang/backend/utility:lib",
     ],
 )
 

@@ -8,8 +8,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
-	"gitlab.com/grchive/grchive-v2/shared/backend/sessions"
-	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/redirect_response"
 	"gitlab.com/grchive/grchive-v2/shared/vault"
@@ -115,10 +113,7 @@ func (w *WebappApplication) InitializeBackend() {
 	w.backend.db.SetMaxIdleConns(5)
 	w.backend.db.SetConnMaxLifetime(5 * time.Minute)
 
-	w.backend.itf = &backend.BackendInterface{
-		Users:    users.CreateUserManager(w.backend.db),
-		Sessions: sessions.CreateSessionManager(w.backend.db),
-	}
+	w.backend.itf = backend.CreateBackendInterface(w.backend.db)
 }
 
 func (w *WebappApplication) Close() {

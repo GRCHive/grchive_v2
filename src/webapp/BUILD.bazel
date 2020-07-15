@@ -20,6 +20,7 @@ go_binary(
         "@com_github_rs_zerolog//:go_default_library",
         "@com_github_rs_zerolog//log:go_default_library",
         "//src/shared/golang/backend:lib",
+        "//src/shared/golang/backend/orgs:lib",
         "//src/shared/golang/backend/users:lib",
         "//src/shared/golang/backend/sessions:lib",
         "//src/shared/golang/backend/utility:lib",

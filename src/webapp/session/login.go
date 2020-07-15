@@ -51,7 +51,7 @@ func (l *LoginSession) Logout(sess *gsess.Session, fa *fusionauth.FusionAuthClie
 		return errors.New("Failed to force logout.")
 	}
 
-	return l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+	return l.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
 		return l.itf.Sessions.DeleteSession(tx, sess.Id)
 	})
 }
@@ -106,7 +106,7 @@ func (l *LoginSession) ValidateLogin(fa *fusionauth.FusionAuthClient) error {
 
 	// Bump up the expiration time since the user did something.
 	sess.SessionExpiration = time.Now().Add(sessionDuration).UTC()
-	err = l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+	err = l.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
 		return l.itf.Sessions.UpdateSession(tx, sess)
 	})
 
@@ -150,7 +150,7 @@ func (l *LoginSession) CreateUserSession(user *users.User, parsedToken jwt.Token
 		UserId:            user.Id,
 	}
 
-	err := l.itf.Sessions.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+	err := l.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
 		return l.itf.Sessions.CreateSession(tx, &newSession)
 	})
 
@@ -257,7 +257,7 @@ func (s *SessionStore) SyncEmailVerification(fa *fusionauth.FusionAuthClient) gi
 			resp, faErrs, err := fa.RetrieveUser(sess.sessionUser.FusionAuthUserId)
 			// Silently fail if we can't get the user -- assume that that's OK.
 			if err == nil && faErrs == nil && resp.User.SecureIdentity.Verified {
-				s.itf.Users.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+				s.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
 					return s.itf.Users.MarkUserVerified(tx, sess.sessionUser.Id)
 				})
 			}

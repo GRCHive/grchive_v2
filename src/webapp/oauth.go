@@ -87,7 +87,7 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 			FusionAuthUserId: validatedToken.Subject(),
 		}
 
-		err = w.backend.itf.Users.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		err = w.backend.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
 			return w.backend.itf.Users.CreateUser(tx, user)
 		})
 

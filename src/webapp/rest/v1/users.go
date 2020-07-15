@@ -14,6 +14,16 @@ func (w *WebappApplication) apiv1GetCurrentUser(c *gin.Context) {
 	c.JSON(http.StatusOK, session.GetSessionUser())
 }
 
+func (w *WebappApplication) apiv1GetCurrentUserOrgs(c *gin.Context) {
+	currentUser := w.sessionStore.GetLoginSession(c).GetSessionUser()
+	orgs, err := w.backend.itf.GetUserOrgs(currentUser.Id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, orgs)
+}
+
 func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	user := users.User{}
 	err := c.BindJSON(&user)
@@ -30,7 +40,7 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	user.Email = currentUser.Email
 	user.FusionAuthUserId = currentUser.FusionAuthUserId
 
-	err = w.backend.itf.Users.WrapDatabaseTx(func(*sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(func(*sqlx.Tx) error {
 		// Probably good idea to keep information about the user in sync
 		// with FusionAuth.
 		resp, _, err := w.fusionauth.UpdateUser(currentUser.FusionAuthUserId, fusionauth.UserRequest{

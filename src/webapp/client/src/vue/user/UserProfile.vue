@@ -36,6 +36,7 @@
                     :edit-pending="editPending"
                     @save-edit="saveEdit"
                     @cancel-edit="cancelEdit"
+                    :disabled="!formValid"
                 >
                 </edit-state-buttons>
             </v-form>
@@ -66,7 +67,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { RawUser } from '@client/ts/types/users'
-import { GrchiveApi } from '@client/ts/api/client'
+import { GrchiveApi } from '@client/ts/main'
 import EditStateButtons from '@client/vue/shared/EditStateButtons.vue'
 import UserTemplate from '@client/vue/UserTemplate.vue'
 import * as rules from '@client/ts/frontend/formRules'
@@ -94,9 +95,7 @@ export default class UserProfile extends Vue {
 
     sendVerification() {
         this.verificationSent = true
-        GrchiveApi.user.resendEmailVerification().catch((err : any) => {
-            this.$store.commit('errors/addApiError', err)
-        })
+        GrchiveApi.user.resendEmailVerification()
     }
 
     get currentUser() : RawUser | null {
@@ -116,8 +115,6 @@ export default class UserProfile extends Vue {
         this.editPending = true
         GrchiveApi.user.updateUser(this.workingUser!).then(() => {
             this.$store.commit('user/setRawUser', this.workingUser!)
-        }).catch((err : any) => {
-            this.$store.commit('errors/addApiError', err)
         }).finally(() => {
             this.editPending = false
         })

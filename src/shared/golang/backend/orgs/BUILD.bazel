@@ -7,8 +7,9 @@ go_library(
     srcs = glob([
         "*.go",
     ]),
-    importpath = "gitlab.com/grchive/grchive-v2/shared/backend/sessions",
+    importpath = "gitlab.com/grchive/grchive-v2/shared/backend/orgs",
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
     ],
 )
+

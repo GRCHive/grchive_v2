@@ -34,7 +34,7 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { GrchiveApi } from '@client/ts/api/client'
+import { GrchiveApi } from '@client/ts/main'
 
 @Component
 export default class VerifyEmailBanner extends Vue {
@@ -50,9 +50,7 @@ export default class VerifyEmailBanner extends Vue {
 
     sendVerification() {
         this.sentEmail = true
-        GrchiveApi.user.resendEmailVerification().catch((err : any) => {
-            this.$store.commit('errors/addApiError', err)
-        })
+        GrchiveApi.user.resendEmailVerification()
     }
 }
 
