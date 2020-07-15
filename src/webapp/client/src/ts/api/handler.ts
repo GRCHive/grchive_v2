@@ -10,4 +10,8 @@ export class ApiHttpHandler {
     post<T>(endpoint : string, options: any) : Promise<T> {
         return ky.post(`${apiPrefix}${endpoint}`, options).json()
     }
+
+    put<T>(endpoint : string, options: any) : Promise<T> {
+        return ky.put(`${apiPrefix}${endpoint}`, options).json()
+    }
 }

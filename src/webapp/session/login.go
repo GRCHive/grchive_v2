@@ -180,6 +180,14 @@ func (s *SessionStore) GetLoginSession(c *gin.Context) *LoginSession {
 	// We can ignore the error as the error would just tell us if the session couldn't be decoded.
 	// That's fine - just create a new one and cause a little inconvenience.
 	sess, _ := s.store.Get(c.Request, loginSessionName)
+	if sess != nil {
+		sess.Options = &sessions.Options{
+			MaxAge:   0,
+			HttpOnly: true,
+			Secure:   s.SecureCookies,
+		}
+	}
+
 	ret := &LoginSession{
 		s:   sess,
 		w:   c.Writer,

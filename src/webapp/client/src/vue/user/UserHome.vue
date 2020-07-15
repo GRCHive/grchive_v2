@@ -1,5 +1,8 @@
 <template>
-    <user-template>
+    <user-template
+        page-name="Organizations"
+        :relevant-user="currentUser"
+    >
         <template v-slot:content>
             <h1>Hello World</h1>
         </template>
@@ -22,18 +25,6 @@ import { RawUser } from '@client/ts/types/users'
 export default class UserHome extends Vue {
     get currentUser() : RawUser | null {
         return this.$store.state.user.rawUser
-    }
-
-    @Watch('currentUser')
-    setTitle() {
-        if (!this.currentUser) {
-            return
-        }
-        document.title = `Welcome Back, ${this.currentUser.FullName}!`
-    }
-
-    mounted() {
-        this.setTitle()
     }
 }
 

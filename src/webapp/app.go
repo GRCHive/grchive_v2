@@ -57,6 +57,7 @@ func (w *WebappApplication) Run() {
 		w.cfg.Grchive.SessionEncryptKey,
 		w.backend.itf,
 	)
+	w.sessionStore.SecureCookies = w.cfg.EnableReleaseMode
 
 	r := gin.New()
 	r.RedirectTrailingSlash = true

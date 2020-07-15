@@ -19,6 +19,7 @@ import { RootStoreOptions } from '@client/ts/stores/store'
 import '@client/sass/main.scss'
 
 const UserHome = () => import( /* webpackChunkName: "UserHome" */ '@client/vue/user/UserHome.vue')
+const UserProfile = () => import( /* webpackChunkName: "UserProfile" */ '@client/vue/user/UserProfile.vue')
 
 const router = new VueRouter({
     mode: 'history',
@@ -26,7 +27,7 @@ const router = new VueRouter({
     routes: [
         { name: 'appHome', path: '/', redirect: '/user' },
         { name: 'userHome', path: '/user', component: UserHome },
-        { name: 'userProfile', path: '/user/profile', component: UserHome },
+        { name: 'userProfile', path: '/user/profile', component: UserProfile },
     ],
 })
 

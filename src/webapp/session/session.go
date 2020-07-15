@@ -6,6 +6,8 @@ import (
 )
 
 type SessionStore struct {
+	SecureCookies bool
+
 	store *sessions.CookieStore
 	itf   *backend.BackendInterface
 }

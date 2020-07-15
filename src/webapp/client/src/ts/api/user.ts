@@ -11,6 +11,10 @@ export class UserApiClient {
         return this.handler.get('/users/current', {})
     }
 
+    updateUser(user : RawUser) : Promise<void> {
+        return this.handler.put('/users/current', {json : user})
+    }
+
     resendEmailVerification() : Promise<void> {
         return this.handler.post('/users/current/verify', {})
     }

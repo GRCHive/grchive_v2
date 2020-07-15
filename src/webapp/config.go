@@ -53,8 +53,8 @@ func (c DatabaseConfig) JdbcUrl() string {
 }
 
 type Config struct {
-	EnableReleaseMode bool             `toml:"enable_release_mode"`
-	FusionAuth        FusionAuthConfig `toml:"fusion_auth"`
+	EnableReleaseMode bool `toml:"enable_release_mode"`
+	FusionAuth        FusionAuthConfig
 	Vault             VaultConfig
 	Grchive           GrchiveConfig
 	Database          DatabaseConfig

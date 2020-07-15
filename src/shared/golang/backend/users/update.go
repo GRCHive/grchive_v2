@@ -12,3 +12,12 @@ func (m *UserManager) MarkUserVerified(tx *sqlx.Tx, userId int64) error {
 	`, userId)
 	return err
 }
+
+func (m *UserManager) UpdateUser(tx *sqlx.Tx, user *User) error {
+	_, err := tx.NamedExec(`
+		UPDATE users
+		SET full_name = :full_name
+		WHERE id = :id
+	`, user)
+	return err
+}
