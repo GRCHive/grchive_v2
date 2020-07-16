@@ -15,13 +15,14 @@ func (w *WebappApplication) apiv1CreateNewOrg(c *gin.Context) {
 		return
 	}
 
-	currentUser := w.sessionStore.GetLoginSession(c).GetSessionUser()
+	sess := w.sessionStore.GetLoginSession(c)
+	currentUser := sess.GetSessionUser()
 	// This endpoint shouldn't allow creating a sub-org as this won't have
 	// the proper ACL checks in place.
 	org.ParentOrgId = nil
 	org.OwnerUserId = currentUser.Id
 
-	err = w.backend.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
 		return w.backend.itf.Orgs.CreateOrg(tx, &org)
 	})
 

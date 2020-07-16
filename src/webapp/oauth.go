@@ -48,7 +48,7 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 		if err != nil {
 			w.log.Error().Err(err).Msg(msg)
 		}
-		c.Redirect(http.StatusTemporaryRedirect, "/login")
+		c.AbortWithError(http.StatusUnauthorized, err)
 	}
 
 	session := w.sessionStore.GetLoginSession(c)
@@ -87,7 +87,7 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 			FusionAuthUserId: validatedToken.Subject(),
 		}
 
-		err = w.backend.itf.WrapDatabaseTx(func(tx *sqlx.Tx) error {
+		err = w.backend.itf.WrapDatabaseTx(nil, func(tx *sqlx.Tx) error {
 			return w.backend.itf.Users.CreateUser(tx, user)
 		})
 

@@ -2,6 +2,7 @@ package backend
 
 import (
 	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend/audit"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/sessions"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
@@ -24,6 +25,6 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 	}
 }
 
-func (m *BackendInterface) WrapDatabaseTx(fns ...utility.TxHandler) error {
-	return utility.WrapDatabaseTx(m.db, fns...)
+func (m *BackendInterface) WrapDatabaseTx(auditId *audit.AuditTrailId, fns ...utility.TxHandler) error {
+	return audit.WrapDatabaseAuditTx(m.db, auditId, fns...)
 }

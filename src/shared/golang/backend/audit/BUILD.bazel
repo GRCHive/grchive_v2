@@ -7,15 +7,9 @@ go_library(
     srcs = glob([
         "*.go",
     ]),
-    importpath = "gitlab.com/grchive/grchive-v2/shared/backend",
+    importpath = "gitlab.com/grchive/grchive-v2/shared/backend/audit",
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
-        "//src/shared/golang/backend/audit:lib",
-        "//src/shared/golang/backend/orgs:lib",
-        "//src/shared/golang/backend/sessions:lib",
-        "//src/shared/golang/backend/users:lib",
         "//src/shared/golang/backend/utility:lib",
     ],
 )
-
-

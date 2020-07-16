@@ -35,12 +35,14 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	// Force set current user ID on the bound user just in case
 	// the input is malicious and tries to update information about
 	// another user.
-	currentUser := w.sessionStore.GetLoginSession(c).GetSessionUser()
+	sess := w.sessionStore.GetLoginSession(c)
+	currentUser := sess.GetSessionUser()
+
 	user.Id = currentUser.Id
 	user.Email = currentUser.Email
 	user.FusionAuthUserId = currentUser.FusionAuthUserId
 
-	err = w.backend.itf.WrapDatabaseTx(func(*sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(*sqlx.Tx) error {
 		// Probably good idea to keep information about the user in sync
 		// with FusionAuth.
 		resp, _, err := w.fusionauth.UpdateUser(currentUser.FusionAuthUserId, fusionauth.UserRequest{
