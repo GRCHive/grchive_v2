@@ -16,6 +16,7 @@ go_library(
         "//src/shared/golang/backend/users:lib",
         "//src/shared/golang/backend/utility:lib",
         "//src/shared/golang/fusionauth:lib",
+        "//src/shared/golang/gin_middleware/gin_backend_utility:lib",
     ],
     importpath = "gitlab.com/grchive/grchive-v2/webapp/session",
 )

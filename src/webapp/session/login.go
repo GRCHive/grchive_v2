@@ -13,6 +13,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
 	"time"
 )
@@ -211,7 +212,10 @@ func (s *SessionStore) PopulateLoginState(c *gin.Context) {
 	sess := s.GetLoginSession(c)
 	err := sess.PopulateLoginState()
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Obtaining login state.",
+		})
 	} else {
 		c.Next()
 	}
@@ -247,7 +251,10 @@ func (s *SessionStore) ValidateLogin(fa *fusionauth.FusionAuthClient) gin.Handle
 			if err == ForceOauthLogoutErr {
 				c.Redirect(http.StatusTemporaryRedirect, fa.GetOAuthLogoutUrl())
 			} else {
-				c.AbortWithError(http.StatusInternalServerError, err)
+				c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+					Err:     err,
+					Context: "Validating loging.",
+				})
 			}
 		} else {
 			c.Next()

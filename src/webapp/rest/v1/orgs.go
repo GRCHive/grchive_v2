@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
 )
 
@@ -11,7 +13,10 @@ func (w *WebappApplication) apiv1CreateNewOrg(c *gin.Context) {
 	org := orgs.Organization{}
 	err := c.BindJSON(&org)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Obtain org in request.",
+		})
 		return
 	}
 
@@ -27,9 +32,24 @@ func (w *WebappApplication) apiv1CreateNewOrg(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Create org.",
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, org)
+}
+
+func (w *WebappApplication) apiv1GetOrg(c *gin.Context) {
+	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Obtain org in context",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, org.(*orgs.Organization))
 }

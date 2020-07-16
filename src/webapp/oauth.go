@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
 )
 
@@ -29,7 +30,10 @@ func (w *WebappApplication) renderLogout(c *gin.Context) {
 
 	err := session.LogoutCurrentSession(w.fusionauth)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Logout user.",
+		})
 		return
 	}
 
@@ -48,7 +52,10 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 		if err != nil {
 			w.log.Error().Err(err).Msg(msg)
 		}
-		c.AbortWithError(http.StatusUnauthorized, err)
+		c.AbortWithError(http.StatusUnauthorized, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: msg,
+		})
 	}
 
 	session := w.sessionStore.GetLoginSession(c)

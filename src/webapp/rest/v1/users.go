@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
 )
 
@@ -18,7 +19,10 @@ func (w *WebappApplication) apiv1GetCurrentUserOrgs(c *gin.Context) {
 	currentUser := w.sessionStore.GetLoginSession(c).GetSessionUser()
 	orgs, err := w.backend.itf.GetUserOrgs(currentUser.Id)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Get user orgs.",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, orgs)
@@ -28,7 +32,10 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	user := users.User{}
 	err := c.BindJSON(&user)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Read user from JSON body.",
+		})
 		return
 	}
 
@@ -68,7 +75,10 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Update user.",
+		})
 		return
 	}
 
@@ -79,7 +89,10 @@ func (w *WebappApplication) apiv1ResendEmailVerification(c *gin.Context) {
 	user := w.sessionStore.GetLoginSession(c).GetSessionUser()
 	_, emailErr, err := w.fusionauth.ResendEmailVerification(user.Email)
 	if emailErr != nil || err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Resend email verification.",
+		})
 	} else {
 		c.Status(http.StatusNoContent)
 	}

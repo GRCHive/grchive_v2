@@ -10,4 +10,8 @@ export class OrgApiClient {
     createOrg(org : RawOrganization) : Promise<RawOrganization | null> {
         return this.handler.post('/orgs', {json : org})
     }
+
+    getOrg(orgId : number) : Promise<RawOrganization | null> {
+        return this.handler.get(`/orgs/${orgId}`, {})
+    }
 }

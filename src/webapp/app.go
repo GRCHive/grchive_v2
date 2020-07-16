@@ -9,6 +9,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_acl"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/redirect_response"
 	"gitlab.com/grchive/grchive-v2/shared/vault"
 	"gitlab.com/grchive/grchive-v2/shared/vault/auth"
@@ -37,6 +39,9 @@ type WebappApplication struct {
 		db  *sqlx.DB
 		itf *backend.BackendInterface
 	}
+
+	middleware *gin_backend_utility.MiddlewareClient
+	acl        *gin_acl.ACLClient
 }
 
 func (w *WebappApplication) SetupLogging() {
@@ -114,6 +119,12 @@ func (w *WebappApplication) InitializeBackend() {
 	w.backend.db.SetConnMaxLifetime(5 * time.Minute)
 
 	w.backend.itf = backend.CreateBackendInterface(w.backend.db)
+	w.middleware = &gin_backend_utility.MiddlewareClient{
+		Itf: w.backend.itf,
+	}
+	w.acl = &gin_acl.ACLClient{
+		Middleware: w.middleware,
+	}
 }
 
 func (w *WebappApplication) Close() {
