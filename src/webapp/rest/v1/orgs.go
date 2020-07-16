@@ -53,3 +53,61 @@ func (w *WebappApplication) apiv1GetOrg(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, org.(*orgs.Organization))
 }
+
+func (w *WebappApplication) apiv1UpdateOrg(c *gin.Context) {
+	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateOrg - Obtain org in context",
+		})
+		return
+	}
+
+	editOrg := orgs.Organization{}
+	err = c.BindJSON(&editOrg)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateOrg - Obtain org in request.",
+		})
+		return
+	}
+
+	// Copy what can be edited into the session org since we know for sure that
+	// the user has access to that.
+	// TODO: CU #9phgnd
+	// Determine how to securely perform changes to ParentOrgId and OwnerUserId with proper ACL checks.
+	torg := org.(*orgs.Organization)
+	torg.Name = editOrg.Name
+	torg.Description = editOrg.Description
+
+	sess := w.sessionStore.GetLoginSession(c)
+	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Orgs.UpdateOrg(tx, torg)
+	})
+
+	c.JSON(http.StatusOK, torg)
+}
+
+func (w *WebappApplication) apiv1GetSuborgs(c *gin.Context) {
+	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetSuborg - Obtain org in context",
+		})
+		return
+	}
+
+	suborgs, err := w.backend.itf.Orgs.GetSuborgsFromId(org.(*orgs.Organization).Id)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetSuborg - Get suborgs",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, suborgs)
+}

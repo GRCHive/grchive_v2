@@ -1,9 +1,11 @@
 <template>
     <base-template>
         <template v-slot:appbar>
+            <org-app-bar></org-app-bar>
         </template>
 
         <template v-slot:navbar>
+            <org-nav-bar></org-nav-bar>
         </template>
 
         <template v-slot:content>
@@ -27,11 +29,15 @@ import { Watch, Prop } from 'vue-property-decorator'
 import { RawOrganization } from '@client/ts/types/orgs'
 import BaseTemplate from '@client/vue/BaseTemplate.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
+import OrgAppBar from '@client/vue/orgs/OrgAppBar.vue'
+import OrgNavBar from '@client/vue/orgs/OrgNavBar.vue'
 
 @Component({
     components: {
         BaseTemplate,
         LoadingContainer,
+        OrgAppBar,
+        OrgNavBar,
     }
 })
 export default class OrgTemplate extends Vue {

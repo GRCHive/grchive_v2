@@ -11,7 +11,15 @@ export class OrgApiClient {
         return this.handler.post('/orgs', {json : org})
     }
 
+    updateOrg(org : RawOrganization) : Promise<RawOrganization | null> {
+        return this.handler.put(`/orgs/${org.Id}`, {json : org})
+    }
+
     getOrg(orgId : number) : Promise<RawOrganization | null> {
         return this.handler.get(`/orgs/${orgId}`, {})
+    }
+
+    getSuborgs(orgId: number) : Promise<RawOrganization[] | null> {
+        return this.handler.get(`/orgs/${orgId}/suborgs`, {})
     }
 }

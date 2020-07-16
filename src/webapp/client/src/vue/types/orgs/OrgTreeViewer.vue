@@ -40,6 +40,9 @@ export default class OrgTreeViewer extends Vue {
     @Prop({ required: true })
     orgs! : RawOrganization[]
 
+    @Prop({ default: -1 })
+    currentOrgId!: number
+
     get orgTree() : OrgTree {
         return new OrgTree(this.orgs)
     }
@@ -64,6 +67,11 @@ export default class OrgTreeViewer extends Vue {
         if (!inp.length) {
             return
         }
+
+        if (inp[0] == this.currentOrgId) {
+            return
+        }
+
         this.$router.push({
             name: 'orgHome',
             params: { orgId: `${inp[0]}` },
