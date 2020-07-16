@@ -24,7 +24,7 @@ func WrapDatabaseAuditTx(db *sqlx.DB, id *AuditTrailId, fns ...utility.TxHandler
 					return err
 				}
 
-				ipAddrStmt, err = tx.Preparex(fmt.Sprintf("SET LOCAL grchive.ip_address TO %s", id.IpAddress))
+				ipAddrStmt, err = tx.Preparex(fmt.Sprintf("SET LOCAL grchive.ip_address TO '%s'", id.IpAddress))
 				if err != nil {
 					return err
 				}

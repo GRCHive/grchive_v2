@@ -6,3 +6,8 @@ CREATE TABLE users (
 );
 
 CREATE INDEX ON users(full_name);
+
+DO $$
+BEGIN
+    PERFORM audit.create_audit_trail_triggers_for_table('users', NULL, 'id');
+END $$;

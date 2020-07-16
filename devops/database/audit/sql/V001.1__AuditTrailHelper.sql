@@ -54,14 +54,14 @@ $$
         INTO jdiff;
 
         SELECT COALESCE(
-            table_old_val->org_id_col,
-            table_new_val->org_id_col
+            jsonb_strip_nulls(table_old_val)->org_id_col,
+            jsonb_strip_nulls(table_new_val)->org_id_col
         )
         INTO input_org_id;
 
         SELECT COALESCE(
-            table_old_val->pk1_col::VARCHAR,
-            table_new_val->pk1_col::VARCHAR
+            jsonb_strip_nulls(table_old_val)->pk1_col::VARCHAR,
+            jsonb_strip_nulls(table_new_val)->pk1_col::VARCHAR
         )
         INTO table_pk1;
 
@@ -111,7 +111,7 @@ $BODY$
                         '%3$s',
                         'DELETE',
                         to_jsonb(OLD),
-                        NULL
+                        '{}'::jsonb
                     );
                     RETURN OLD;
                 END;
@@ -164,7 +164,7 @@ $BODY$
                         '%1$s',
                         '%3$s',
                         'INSERT',
-                        NULL,
+                        '{}'::jsonb,
                         to_jsonb(NEW)
                     );
                     RETURN NEW;

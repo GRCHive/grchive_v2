@@ -10,3 +10,8 @@ CREATE TABLE organizations (
 CREATE INDEX ON organizations(parent_org_id);
 CREATE INDEX ON organizations(owner_user_id);
 CREATE INDEX ON organizations(name);
+
+DO $$
+BEGIN
+    PERFORM audit.create_audit_trail_triggers_for_table('organizations', 'parent_org_id', 'id');
+END $$;

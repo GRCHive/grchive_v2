@@ -1,4 +1,5 @@
 CREATE TABLE user_orgs (
+    id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     org_id BIGINT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     UNIQUE(user_id, org_id)
