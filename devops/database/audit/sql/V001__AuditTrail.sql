@@ -1,6 +1,7 @@
 CREATE TABLE audit.audit_trail (
     id BIGSERIAL PRIMARY KEY,
-    org_id BIGINT,
+    org_id BIGINT NOT NULL,
+    engagement_id BIGINT NOT NULL,
     table_name VARCHAR(64) NOT NULL,
     table_pk1 VARCHAR NOT NULL,
     action VARCHAR(64) NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE audit.audit_trail (
     table_new_value JSONB
 );
 
-CREATE INDEX ON audit.audit_trail(org_id);
+CREATE INDEX ON audit.audit_trail(org_id, engagement_id);
 CREATE INDEX ON audit.audit_trail(table_name, table_pk1);
 CREATE INDEX ON audit.audit_trail(user_identifier);
 CREATE INDEX ON audit.audit_trail(ip_address);

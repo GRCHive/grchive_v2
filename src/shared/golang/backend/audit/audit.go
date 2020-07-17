@@ -7,52 +7,56 @@ import (
 )
 
 type AuditTrailId struct {
-	UserId    int64
-	IpAddress string
+	OrgId        *int64
+	EngagementId *int64
+	UserId       *int64
+	IpAddress    *string
 }
 
-func WrapDatabaseAuditTx(db *sqlx.DB, id *AuditTrailId, fns ...utility.TxHandler) error {
-	return utility.WrapDatabaseTx(db, append([]utility.TxHandler{
-		func(tx *sqlx.Tx) error {
-			var err error
-			var userIdStmt *sqlx.Stmt
-			var ipAddrStmt *sqlx.Stmt
+func WrapDatabaseAuditTx(db *sqlx.DB, id AuditTrailId, fns ...utility.TxHandler) error {
+	// Do the SET LOCAL commands as the VERY last thing so that we can dynamically
+	// get OrgId/EngagementId even for creating the org or engagement. The pointers
+	// in that case will be set to the struct's value and the pointer passed here. So by the time
+	// we get to the commands in this file, the pointer will have the correct ID value and we
+	// can store the ID value into the audit log. The audit log triggers are deferred so will only
+	// fire at the very end of the transaction.
+	return utility.WrapDatabaseTx(db, append(fns, func(tx *sqlx.Tx) error {
+		orgId := int64(-1)
+		if id.OrgId != nil {
+			orgId = *id.OrgId
+		}
+		_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.current_org_id TO %d", orgId))
+		return err
+	}, func(tx *sqlx.Tx) error {
+		engId := int64(-1)
+		if id.EngagementId != nil {
+			engId = *id.EngagementId
+		}
+		_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.current_engagement_id TO %d", engId))
+		return err
+	}, func(tx *sqlx.Tx) error {
+		userId := int64(-1)
+		if id.UserId != nil {
+			userId = *id.UserId
+		}
+		_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.current_user_id TO %d", userId))
+		return err
+	}, func(tx *sqlx.Tx) error {
+		if id.IpAddress != nil {
+			_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.ip_address TO '%s'", *id.IpAddress))
+			return err
+		} else {
+			_, err := tx.Exec("SELECT set_config('grchive.ip_address', text(inet_client_addr()), true)")
+			return err
+		}
+	})...)
+}
 
-			if id != nil {
-				userIdStmt, err = tx.Preparex(fmt.Sprintf("SET LOCAL grchive.current_user_id TO %d", id.UserId))
-				if err != nil {
-					return err
-				}
-
-				ipAddrStmt, err = tx.Preparex(fmt.Sprintf("SET LOCAL grchive.ip_address TO '%s'", id.IpAddress))
-				if err != nil {
-					return err
-				}
-			} else {
-				userIdStmt, err = tx.Preparex("SET LOCAL grchive.current_user_id TO -1")
-				if err != nil {
-					return err
-				}
-
-				ipAddrStmt, err = tx.Preparex(`
-					SELECT set_config('grchive.ip_address', text(inet_client_addr()), true);
-				`)
-				if err != nil {
-					return err
-				}
-			}
-
-			_, err = userIdStmt.Exec()
-			if err != nil {
-				return err
-			}
-
-			_, err = ipAddrStmt.Exec()
-			if err != nil {
-				return err
-			}
-
-			return nil
-		},
-	}, fns...)...)
+func CreateNilSystemAuditId() AuditTrailId {
+	return AuditTrailId{
+		OrgId:        nil,
+		EngagementId: nil,
+		UserId:       nil,
+		IpAddress:    nil,
+	}
 }

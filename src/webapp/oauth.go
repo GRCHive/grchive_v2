@@ -94,7 +94,7 @@ func (w *WebappApplication) handleOauthCallback(c *gin.Context) {
 			FusionAuthUserId: validatedToken.Subject(),
 		}
 
-		err = w.backend.itf.WrapDatabaseTx(nil, func(tx *sqlx.Tx) error {
+		err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithUserOverride(user, c), func(tx *sqlx.Tx) error {
 			return w.backend.itf.Users.CreateUser(tx, user)
 		})
 

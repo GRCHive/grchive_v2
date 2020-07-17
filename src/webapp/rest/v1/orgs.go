@@ -27,7 +27,7 @@ func (w *WebappApplication) apiv1CreateNewOrg(c *gin.Context) {
 	org.ParentOrgId = nil
 	org.OwnerUserId = currentUser.Id
 
-	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithOrgOverride(&org, c), func(tx *sqlx.Tx) error {
 		return w.backend.itf.Orgs.CreateOrg(tx, &org)
 	})
 
@@ -67,7 +67,7 @@ func (w *WebappApplication) apiv1CreateSuborg(c *gin.Context) {
 	org.ParentOrgId = &currentOrg.(*orgs.Organization).Id
 	org.OwnerUserId = currentUser.Id
 
-	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithOrgOverride(&org, c), func(tx *sqlx.Tx) error {
 		return w.backend.itf.Orgs.CreateOrg(tx, &org)
 	})
 
@@ -122,8 +122,7 @@ func (w *WebappApplication) apiv1UpdateOrg(c *gin.Context) {
 	torg.Name = editOrg.Name
 	torg.Description = editOrg.Description
 
-	sess := w.sessionStore.GetLoginSession(c)
-	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
 		return w.backend.itf.Orgs.UpdateOrg(tx, torg)
 	})
 

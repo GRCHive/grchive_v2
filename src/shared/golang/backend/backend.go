@@ -28,6 +28,6 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 	}
 }
 
-func (m *BackendInterface) WrapDatabaseTx(auditId *audit.AuditTrailId, fns ...utility.TxHandler) error {
+func (m *BackendInterface) WrapDatabaseTx(auditId audit.AuditTrailId, fns ...utility.TxHandler) error {
 	return audit.WrapDatabaseAuditTx(m.db, auditId, fns...)
 }

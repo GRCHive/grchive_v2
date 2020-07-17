@@ -36,7 +36,6 @@ $$
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION audit.generic_log_audit_trail(
-    org_id_col TEXT,
     table_name VARCHAR(64),
     pk1_col TEXT,
     table_action VARCHAR(64),
@@ -47,17 +46,10 @@ CREATE OR REPLACE FUNCTION audit.generic_log_audit_trail(
 $$
     DECLARE
         jdiff JSONB; 
-        input_org_id BIGINT;
         table_pk1 VARCHAR;
     BEGIN
         SELECT audit.jsonb_diff(table_old_val, table_new_val)
         INTO jdiff;
-
-        SELECT COALESCE(
-            jsonb_strip_nulls(table_old_val)->org_id_col,
-            jsonb_strip_nulls(table_new_val)->org_id_col
-        )
-        INTO input_org_id;
 
         SELECT COALESCE(
             jsonb_strip_nulls(table_old_val)->pk1_col::VARCHAR,
@@ -67,6 +59,7 @@ $$
 
         INSERT INTO audit.audit_trail (
             org_id,
+            engagement_id,
             table_name,
             table_pk1,
             action,
@@ -78,7 +71,8 @@ $$
             table_new_value
         )
         SELECT
-            input_org_id,
+            current_setting('grchive.current_org_id')::BIGINT,
+            current_setting('grchive.current_engagement_id')::BIGINT,
             table_name,
             table_pk1,
             table_action,
@@ -94,7 +88,6 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION audit.create_audit_trail_triggers_for_table(
     table_name VARCHAR(64),
-    org_id_col TEXT,
     pk1_col TEXT
 )
     RETURNS void AS
@@ -106,9 +99,8 @@ $BODY$
             $$
                 BEGIN
                     PERFORM audit.generic_log_audit_trail(
-                        '%2$s',
                         '%1$s',
-                        '%3$s',
+                        '%2$s',
                         'DELETE',
                         to_jsonb(OLD),
                         '{}'::jsonb
@@ -117,13 +109,12 @@ $BODY$
                 END;
             $$ LANGUAGE plpgsql;
             DROP TRIGGER IF EXISTS trigger_audit_trail_delete ON %1$s;
-            CREATE TRIGGER trigger_audit_trail_delete
-                BEFORE DELETE ON %1$s
+            CREATE CONSTRAINT TRIGGER trigger_audit_trail_delete
+                AFTER DELETE ON %1$s INITIALLY DEFERRED
                 FOR EACH ROW
                 EXECUTE FUNCTION public.audit_delete_%1$s();
         $DEL$
             , table_name
-            , org_id_col
             , pk1_col
         );
 
@@ -133,9 +124,8 @@ $BODY$
             $$
                 BEGIN
                     PERFORM audit.generic_log_audit_trail(
-                        '%2$s',
                         '%1$s',
-                        '%3$s',
+                        '%2$s',
                         'UPDATE',
                         to_jsonb(OLD),
                         to_jsonb(NEW)
@@ -144,13 +134,12 @@ $BODY$
                 END;
             $$ LANGUAGE plpgsql;
             DROP TRIGGER IF EXISTS trigger_audit_trail_update ON %1$s;
-            CREATE TRIGGER trigger_audit_trail_update
-                AFTER UPDATE ON %1$s
+            CREATE CONSTRAINT TRIGGER trigger_audit_trail_update
+                AFTER UPDATE ON %1$s INITIALLY DEFERRED
                 FOR EACH ROW
                 EXECUTE FUNCTION public.audit_update_%1$s();
         $UP$
             , table_name
-            , org_id_col
             , pk1_col
         );
 
@@ -160,9 +149,8 @@ $BODY$
             $$
                 BEGIN
                     PERFORM audit.generic_log_audit_trail(
-                        '%2$s',
                         '%1$s',
-                        '%3$s',
+                        '%2$s',
                         'INSERT',
                         '{}'::jsonb,
                         to_jsonb(NEW)
@@ -171,13 +159,12 @@ $BODY$
                 END;
             $$ LANGUAGE plpgsql;
             DROP TRIGGER IF EXISTS trigger_audit_trail_insert ON %1$s;
-            CREATE TRIGGER trigger_audit_trail_insert
-                AFTER INSERT ON %1$s
+            CREATE CONSTRAINT TRIGGER trigger_audit_trail_insert
+                AFTER INSERT ON %1$s INITIALLY DEFERRED
                 FOR EACH ROW
                 EXECUTE FUNCTION public.audit_insert_%1$s();
         $INS$
             , table_name
-            , org_id_col
             , pk1_col
         );
     END;

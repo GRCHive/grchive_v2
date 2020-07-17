@@ -50,7 +50,7 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 	user.Email = currentUser.Email
 	user.FusionAuthUserId = currentUser.FusionAuthUserId
 
-	err = w.backend.itf.WrapDatabaseTx(sess.GetAuditTrailId(c), func(*sqlx.Tx) error {
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(*sqlx.Tx) error {
 		// Probably good idea to keep information about the user in sync
 		// with FusionAuth.
 		resp, _, err := w.fusionauth.UpdateUser(currentUser.FusionAuthUserId, fusionauth.UserRequest{
