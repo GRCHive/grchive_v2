@@ -3,7 +3,7 @@
         page-name="Organizations"
         :relevant-user="currentUser"
     >
-        <template v-slot:content>
+        <template v-slot:content v-if="!!workingUser">
             <v-list-item class="px-0">
                 <v-list-item-content>
                     <v-list-item-title class="text-h4">
@@ -84,6 +84,7 @@ export default class UserProfile extends Vue {
     readonly rules : any = rules
     canEdit: boolean = false
     editPending : boolean = false
+    formValid : boolean = false
 
     // Email verification. Only allow user to send the verification email once
     // every time they come to this page.
@@ -121,6 +122,10 @@ export default class UserProfile extends Vue {
     }
 
     cancelEdit() {
+        this.syncWorkingCopy()
+    }
+
+    mounted() {
         this.syncWorkingCopy()
     }
 }

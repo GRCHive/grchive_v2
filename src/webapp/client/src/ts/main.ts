@@ -21,6 +21,8 @@ import '@client/sass/main.scss'
 const UserHome = () => import( /* webpackChunkName: "UserHome" */ '@client/vue/user/UserHome.vue')
 const UserProfile = () => import( /* webpackChunkName: "UserProfile" */ '@client/vue/user/UserProfile.vue')
 const OrgProfile = () => import( /* webpackChunkName: "OrgProfile" */ '@client/vue/orgs/OrgProfile.vue')
+const OrgOverview = () => import( /* webpackChunkName: "OrgOverview" */ '@client/vue/orgs/profile/OrgOverview.vue')
+const OrgTree = () => import( /* webpackChunkName: "OrgTree" */ '@client/vue/orgs/profile/OrgTree.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
@@ -31,9 +33,28 @@ const router = new VueRouter({
     base: '/app/',
     routes: [
         { name: 'appHome', path: '/', redirect: '/user' },
-        { name: 'userHome', path: '/user', component: UserHome },
+        { name: 'userHome', path: '/user', redirect : '/user/orgs' },
+        { name: 'userOrgs', path: '/user/orgs', component: UserHome },
         { name: 'userProfile', path: '/user/profile', component: UserProfile },
-        { name: 'orgHome', path: '/orgs/:orgId', component: OrgProfile },
+        {
+            path: '/orgs/:orgId/profile',
+            component: OrgProfile,
+            children: [
+                {
+                    name: 'orgHome',
+                    path: '',
+                    redirect: 'overview',
+                },
+                {
+                    path: 'overview',
+                    component: OrgOverview,
+                },
+                {
+                    path: 'tree',
+                    component: OrgTree,
+                },
+            ],
+        },
     ],
 })
 

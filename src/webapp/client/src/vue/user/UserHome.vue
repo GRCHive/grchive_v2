@@ -7,46 +7,49 @@
             <loading-container
                 :loading="!orgs"
             >
+                <template v-slot:default="{show}">
+                    <div v-if="show">
+                        <v-list-item class="px-0">
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h4">
+                                    My Organizations
+                                </v-list-item-title>
+                            </v-list-item-content>
 
-                <v-list-item class="px-0">
-                    <v-list-item-content>
-                        <v-list-item-title class="text-h4">
-                            My Organizations
-                        </v-list-item-title>
-                    </v-list-item-content>
+                            <v-spacer></v-spacer>
 
-                    <v-spacer></v-spacer>
-
-                    <v-list-item-action>
-                        <v-dialog
-                            v-model="showHideNewOrg"
-                            max-width="40%"
-                            persistent
-                        >
-                            <template v-slot:activator="{on}">
-                                <v-btn
-                                    color="primary"
-                                    v-on="on"
+                            <v-list-item-action>
+                                <v-dialog
+                                    v-model="showHideNewOrg"
+                                    max-width="40%"
+                                    persistent
                                 >
-                                    New
-                                </v-btn>
-                            </template>
+                                    <template v-slot:activator="{on}">
+                                        <v-btn
+                                            color="primary"
+                                            v-on="on"
+                                        >
+                                            New
+                                        </v-btn>
+                                    </template>
 
-                            <org-save-edit-dialog
-                                @cancel-edit="showHideNewOrg = false"
-                                @save-edit="saveNewOrg"
-                            >
-                            </org-save-edit-dialog>
-                        </v-dialog>
-                    </v-list-item-action>
+                                    <org-save-edit-dialog
+                                        @cancel-edit="showHideNewOrg = false"
+                                        @save-edit="saveNewOrg"
+                                    >
+                                    </org-save-edit-dialog>
+                                </v-dialog>
+                            </v-list-item-action>
 
-                </v-list-item>
-                <v-divider class="mb-4"></v-divider>
+                        </v-list-item>
+                        <v-divider class="mb-4"></v-divider>
 
-                <org-tree-viewer
-                    :orgs="orgs"
-                >
-                </org-tree-viewer>
+                        <org-tree-viewer
+                            :orgs="orgs"
+                        >
+                        </org-tree-viewer>
+                    </div>
+                </template>
             </loading-container>
         </template>
     </user-template>

@@ -12,10 +12,12 @@
             <loading-container
                 :loading="!currentOrg"
             >
-                <div class="mx-4">
-                    <slot name="content">
-                    </slot>
-                </div>
+                <template v-slot:default="{show}">
+                    <div class="mx-4" v-if="show">
+                        <slot name="content">
+                        </slot>
+                    </div>
+                </template>
             </loading-container>
         </template>
     </base-template>

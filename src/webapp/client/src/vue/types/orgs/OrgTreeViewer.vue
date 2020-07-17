@@ -76,7 +76,7 @@ import OrgSaveEditDialog from '@client/vue/types/orgs/OrgSaveEditDialog.vue'
 })
 export default class OrgTreeViewer extends Vue {
     @Prop({ required: true })
-    orgs! : RawOrganization[]
+    orgs! : RawOrganization[] | null
 
     @Prop()
     rootOrg! : RawOrganization | null
@@ -85,7 +85,11 @@ export default class OrgTreeViewer extends Vue {
 
     @Watch('orgs')
     syncOrgs() {
-        this.workingOrgs = this.orgs.slice()
+        if (!this.orgs) {
+            this.workingOrgs = []
+        } else {
+            this.workingOrgs = this.orgs.slice()
+        }
     }
 
     @Watch('workingOrgs')

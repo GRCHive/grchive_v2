@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot v-if="!loading"></slot>
+        <slot v-if="!loading" v-bind:show="!loading"></slot>
         <v-row justify="center" v-else>
             <v-progress-circular size=64 indeterminate>
             </v-progress-circular>

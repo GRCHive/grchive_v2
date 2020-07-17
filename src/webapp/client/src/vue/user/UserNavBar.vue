@@ -24,7 +24,7 @@ export default class UserNavBar extends Vue {
             {
                 title: 'Organizations',
                 icon: 'mdi-account-group',
-                path: 'userHome',
+                path: 'userOrgs',
             },
             {
                 title: 'Notifications',

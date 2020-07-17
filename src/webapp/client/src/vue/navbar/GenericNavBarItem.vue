@@ -1,7 +1,6 @@
 <template>
     <v-list-item
         :to="{name: `${item.path}` }"
-        exact
         link
         :color="item.disabled ? `secondary` : `primary`"
         :disabled="item.disabled"
