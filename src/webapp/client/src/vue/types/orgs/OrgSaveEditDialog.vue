@@ -40,6 +40,9 @@ export default class OrgSaveEditDialog extends Vue {
     @Prop({ type: Boolean, default : false})
     editMode!: boolean
 
+    @Prop({ default: -1 })
+    parentOrgId! : number
+
     workingCopy : RawOrganization | null = null
     saveInProgress: boolean = false
 
@@ -83,9 +86,15 @@ export default class OrgSaveEditDialog extends Vue {
                 this.saveInProgress = false
             })
         } else {
-            GrchiveApi.orgs.createOrg(this.workingCopy!).then(this.onSuccess).finally(() => {
-                this.saveInProgress = false
-            })
+            if (this.parentOrgId == -1) {
+                GrchiveApi.orgs.createOrg(this.workingCopy!).then(this.onSuccess).finally(() => {
+                    this.saveInProgress = false
+                })
+            } else {
+                GrchiveApi.orgs.createSuborg(this.parentOrgId, this.workingCopy!).then(this.onSuccess).finally(() => {
+                    this.saveInProgress = false
+                })
+            }
         }
     }
 }

@@ -56,6 +56,7 @@ export default class OrgTemplate extends Vue {
         return this.$store.state.org.rawOrg
     }
 
+    @Watch('$route')
     refreshOrg() {
         const orgId : number = Number(this.$route.params.orgId)
         this.$store.dispatch('org/initializeOrgStore', orgId)

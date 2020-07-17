@@ -14,11 +14,11 @@
         "downlevelIteration": true,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
-        "types": ["vuetify"],
         "baseUrl": ".",
         "paths": {
             "@client/*": ["src/*"]
-        }
+        },
+        "types": ["vuetify"]
 	},
     "include": [
         "./**/*.ts",

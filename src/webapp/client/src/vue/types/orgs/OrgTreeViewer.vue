@@ -5,6 +5,7 @@
         :items="orgItems"
         transition
         @update:active="goToOrg"
+        ref="treeview"
     >
         <template v-slot:prepend="{ item, open }">
             <v-icon
@@ -27,12 +28,26 @@
         </template>
 
         <template v-slot:append="{ item }">
+            <v-dialog
+                persistent
+                max-width="40%"
+                v-model="showHideNew"
+            >
+                <org-save-edit-dialog
+                    @cancel-edit="showHideNew = false"
+                    @save-edit="onSaveSuborg"
+                    :parent-org-id="item.id"
+                >
+                </org-save-edit-dialog>
+            </v-dialog>
+
             <restrict-role-permission-button
                 v-if="allowAddSuborgs"
                 icon
                 color="primary"
                 :permissions="permissionsForCreate"
-                :org-id="currentOrgId"
+                :org-id="item.id"
+                @click="showHideNew = true"
             >
                 <v-icon>
                     mdi-plus
@@ -46,19 +61,40 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { VTreeview } from 'vuetify/lib'
+import { Watch, Prop } from 'vue-property-decorator'
 import { Permission } from '@client/ts/types/roles'
 import { RawOrganization, OrgTree } from '@client/ts/types/orgs'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
+import OrgSaveEditDialog from '@client/vue/types/orgs/OrgSaveEditDialog.vue'
 
 @Component({
     components: {
         RestrictRolePermissionButton,
+        OrgSaveEditDialog,
     }
 })
 export default class OrgTreeViewer extends Vue {
     @Prop({ required: true })
     orgs! : RawOrganization[]
+
+    @Prop()
+    rootOrg! : RawOrganization | null
+
+    workingOrgs : RawOrganization[] = []
+
+    @Watch('orgs')
+    syncOrgs() {
+        this.workingOrgs = this.orgs.slice()
+    }
+
+    @Watch('workingOrgs')
+    openAll() {
+        Vue.nextTick(() => {
+            //@ts-ignore
+            this.$refs.treeview.updateAll(true)
+        })
+    }
 
     @Prop({ default: -1 })
     currentOrgId!: number
@@ -66,12 +102,14 @@ export default class OrgTreeViewer extends Vue {
     @Prop({ type: Boolean, default: false })
     allowAddSuborgs! : boolean
 
+    showHideNew: boolean = false
+
     get permissionsForCreate() : Permission[] {
         return [Permission.POrgProfileCreate]
     }
 
     get orgTree() : OrgTree {
-        return new OrgTree(this.orgs)
+        return new OrgTree(this.workingOrgs, this.rootOrg)
     }
 
     get orgItems() : any[] {
@@ -79,15 +117,19 @@ export default class OrgTreeViewer extends Vue {
         // name: Text to display
         // children: children in tree.
         let createTree = (ele : OrgTree) : any => {
-            return {
-                id: ele.nodeOrg!.Id,
-                name: ele.nodeOrg!.Name,
-                children: ele.childNodes.map(createTree),
-                value: ele,
+            if (!ele.nodeOrg) {
+                return ele.childNodes.map(createTree)
+            } else {
+                return {
+                    id: ele.nodeOrg!.Id,
+                    name: ele.nodeOrg!.Name,
+                    children: ele.childNodes.map(createTree),
+                    value: ele.nodeOrg,
+                }
             }
         }
 
-        return this.orgTree.childNodes.map(createTree)
+        return [createTree(this.orgTree)].flat()
     }
 
     goToOrg(inp : Array<number>) {
@@ -103,6 +145,15 @@ export default class OrgTreeViewer extends Vue {
             name: 'orgHome',
             params: { orgId: `${inp[0]}` },
         })
+    }
+
+    onSaveSuborg(org : RawOrganization) {
+        this.workingOrgs.unshift(org)
+        this.showHideNew = false
+    }
+
+    mounted() {
+        this.syncOrgs()
     }
 }
 

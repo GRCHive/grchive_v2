@@ -65,9 +65,18 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 					w.acl.ACLUserHasPermissions(roles.POrgProfileUpdate),
 					w.apiv1UpdateOrg)
 
+				singleOrgR.POST("/",
+					w.acl.ACLUserHasPermissions(roles.POrgProfileCreate),
+					w.apiv1CreateSuborg)
+
 				singleOrgR.GET("/suborgs",
 					w.acl.ACLUserHasPermissions(roles.POrgProfileView),
 					w.apiv1GetSuborgs)
+
+				singleOrgR.GET("/parents",
+					w.acl.ACLUserHasPermissions(roles.POrgProfileView),
+					w.apiv1GetParentOrgs)
+
 			}
 		}
 	}

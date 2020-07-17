@@ -27,7 +27,7 @@ export class OrgTree {
     nodeOrg : RawOrganization | null = null
     childNodes : OrgTree[] = []
 
-    constructor(orgs : RawOrganization[], node? : RawOrganization) {
+    constructor(orgs : RawOrganization[], node : RawOrganization | null) {
         this.nodeOrg = (!!node && node) || null
         this.orgList = orgs
         this.buildTree()
