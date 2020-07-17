@@ -14,7 +14,9 @@ export default class RestrictRolePermissionBase extends Vue {
     @Prop({required: true})
     orgId!: number
 
-    hasPermissions: boolean | null = null
+    get hasPermissions() : boolean | null {
+        return this.$store.getters['permission/currentUserHasPermissions'](this.orgId, this.permissions)
+    }
 
     get tooltipStr() : string {
         return `You do not have the required permissions to access this feature. Please request the ${this.permissions.join(', ')} permission(s) from your administrator.`
@@ -26,8 +28,9 @@ export default class RestrictRolePermissionBase extends Vue {
 
     @Watch('permissions')
     refreshPermission() {
-        GrchiveApi.user.checkCurrentUserPermissions(this.orgId, this.permissions).then((resp : boolean | null) => {
-            this.hasPermissions = resp
+        this.$store.dispatch('permission/initializeHasPermissions', {
+            orgId: this.orgId,
+            permissions: this.permissions,
         })
     }
 

@@ -37,6 +37,10 @@ const router = new VueRouter({
         { name: 'userOrgs', path: '/user/orgs', component: UserHome },
         { name: 'userProfile', path: '/user/profile', component: UserProfile },
         {
+            path: '/orgs/:orgId',
+            redirect:'/orgs/:orgId/profile'
+        },
+        {
             path: '/orgs/:orgId/profile',
             component: OrgProfile,
             children: [
