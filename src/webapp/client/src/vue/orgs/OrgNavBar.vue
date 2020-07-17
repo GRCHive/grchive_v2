@@ -29,7 +29,7 @@ export default class OrgNavBar extends Vue {
             {
                 title: 'Engagements',
                 icon: 'mdi-briefcase',
-                disabled: true,
+                path: 'orgEngagements',
             },
             {
                 title: 'Roles',

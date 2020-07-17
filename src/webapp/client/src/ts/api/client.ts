@@ -2,12 +2,14 @@ import { Store } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
 import { UserApiClient } from '@client/ts/api/user'
 import { OrgApiClient } from '@client/ts/api/orgs'
+import { EngagementApiClient } from '@client/ts/api/engagements'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class ApiClient {
     handler : ApiHttpHandler
     user : UserApiClient
     orgs : OrgApiClient
+    engagements: EngagementApiClient
 
     store : Store<RootState>
 
@@ -16,5 +18,6 @@ export class ApiClient {
         this.handler = new ApiHttpHandler(this.store)
         this.user = new UserApiClient(this.handler)
         this.orgs = new OrgApiClient(this.handler)
+        this.engagements = new EngagementApiClient(this.handler)
     }
 }

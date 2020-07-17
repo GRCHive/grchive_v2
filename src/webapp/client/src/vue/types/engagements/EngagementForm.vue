@@ -5,7 +5,7 @@
             filled
             v-model="value.Name"
             :readonly="readonly"
-            :rules="[ rules.required, rules.createMaxLength(256) ]"
+            :rules="[ rules.required ]"
         >
         </v-text-field>
 
@@ -25,7 +25,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
-import { RawOrganization } from '@client/ts/types/orgs'
+import { RawEngagement } from '@client/ts/types/engagements'
 import * as rules from '@client/ts/frontend/formRules'
 
 @Component
@@ -33,7 +33,7 @@ export default class OrgForm extends Vue {
     readonly rules : any = rules
 
     @Prop({ required: true })
-    value! : RawOrganization
+    value! : RawEngagement
 
     @Prop({ type: Boolean, default: false })
     readonly! : boolean

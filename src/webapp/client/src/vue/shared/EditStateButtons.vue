@@ -48,13 +48,13 @@ export default class EditStateButtons extends Vue {
     @Prop({ required: true })
     value!: boolean
 
-    @Prop({ default: false })
+    @Prop({ type: Boolean, default: false })
     editPending! : boolean
 
-    @Prop({ default: false })
+    @Prop({ type: Boolean, default: false })
     disabled! : boolean
 
-    @Prop({ default: false })
+    @Prop({ type: Boolean, default: false })
     editMode! : boolean
 
     changeCanEdit(v : boolean) {

@@ -12,6 +12,7 @@ go_library(
         "@com_github_gin_gonic_gin//:go_default_library",
         "//src/shared/golang/backend:lib",
         "//src/shared/golang/backend/audit:lib",
+        "//src/shared/golang/backend/engagements:lib",
         "//src/shared/golang/backend/orgs:lib",
         "//src/shared/golang/backend/roles:lib",
         "//src/shared/golang/backend/users:lib",

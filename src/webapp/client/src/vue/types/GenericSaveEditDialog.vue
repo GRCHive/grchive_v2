@@ -43,7 +43,7 @@ export default class GenericSaveEditDialog extends Vue {
     @Prop({ required : true })
     opPending!: boolean
 
-    @Prop({ default: false })
+    @Prop({ type: Boolean, default: false })
     editMode!: boolean
 
     canEdit : boolean = false

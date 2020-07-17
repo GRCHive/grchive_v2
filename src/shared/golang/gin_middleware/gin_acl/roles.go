@@ -43,3 +43,13 @@ func (acl *ACLClient) ACLUserHasPermissions(permissions ...roles.Permission) gin
 		}, permissions...)
 	}
 }
+
+func (acl *ACLClient) ACLBranchOnPermissions(onSuccess gin.HandlerFunc, onFail gin.HandlerFunc, permissions ...roles.Permission) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		acl.ACLCheckPermissionHandler(c, func() {
+			onSuccess(c)
+		}, func(err error) {
+			onFail(c)
+		}, permissions...)
+	}
+}

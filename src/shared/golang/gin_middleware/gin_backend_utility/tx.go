@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/audit"
+	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 )
@@ -42,6 +43,14 @@ func (m *MiddlewareClient) GetAuditTrailIdWithOrgOverride(o *orgs.Organization, 
 	ret := m.GetAuditTrailId(c)
 	if o != nil {
 		ret.OrgId = &o.Id
+	}
+	return ret
+}
+
+func (m *MiddlewareClient) GetAuditTrailIdWithEngagementOverride(e *engagements.Engagement, c *gin.Context) audit.AuditTrailId {
+	ret := m.GetAuditTrailId(c)
+	if e != nil {
+		ret.EngagementId = &e.Id
 	}
 	return ret
 }

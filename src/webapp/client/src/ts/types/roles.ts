@@ -6,6 +6,7 @@ export enum Permission {
 	POrgRolesUpdate              = "org.roles.update",
 	POrgRolesDelete              = "org.roles.delete",
 	POrgRolesCreate              = "org.roles.create",
+	POrgEngagementList           = "org.engagements.list",
 	POrgEngagementCreate         = "org.engagements.create",
 	POrgEngagementView           = "org.engagements.view",
 	POrgEngagementDelete         = "org.engagements.delete",

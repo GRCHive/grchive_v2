@@ -11,6 +11,7 @@ go_library(
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
         "//src/shared/golang/backend/audit:lib",
+        "//src/shared/golang/backend/engagements:lib",
         "//src/shared/golang/backend/orgs:lib",
         "//src/shared/golang/backend/roles:lib",
         "//src/shared/golang/backend/sessions:lib",
