@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
@@ -96,4 +97,24 @@ func (w *WebappApplication) apiv1ResendEmailVerification(c *gin.Context) {
 	} else {
 		c.Status(http.StatusNoContent)
 	}
+}
+
+func (w *WebappApplication) apiv1CheckCurrentUserPermissions(c *gin.Context) {
+	hasPermission := func() {
+		c.JSON(http.StatusOK, true)
+	}
+
+	noPermission := func() {
+		c.JSON(http.StatusOK, false)
+	}
+
+	permissions, ok := c.GetQueryArray("permissions")
+	if !ok {
+		noPermission()
+		return
+	}
+
+	w.acl.ACLCheckPermissionHandler(c, hasPermission, func(err error) {
+		noPermission()
+	}, roles.PermissionArrayFromStrings(permissions...)...)
 }

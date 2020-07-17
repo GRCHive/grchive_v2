@@ -35,6 +35,7 @@
                         <org-tree-viewer
                             :orgs="suborgs"
                             :current-org-id="currentOrgId"
+                            allow-add-suborgs
                         >
                         </org-tree-viewer>
                     </loading-container>

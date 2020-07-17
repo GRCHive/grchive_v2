@@ -34,3 +34,11 @@ type Role struct {
 	Description string `db:"description"`
 	IsAdminRole bool   `db:"is_admin_role"`
 }
+
+func PermissionArrayFromStrings(strs ...string) []Permission {
+	ret := make([]Permission, len(strs))
+	for idx, s := range strs {
+		ret[idx] = Permission(s)
+	}
+	return ret
+}

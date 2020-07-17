@@ -1,6 +1,8 @@
 import { RawUser } from '@client/ts/types/users'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { ApiHttpHandler } from '@client/ts/api/handler'
+import { Permission } from '@client/ts/types/roles'
+import * as qs from 'query-string'
 
 export class UserApiClient {
     handler : ApiHttpHandler
@@ -12,15 +14,23 @@ export class UserApiClient {
         return this.handler.get('/users/current', {})
     }
 
-    getUserOrgs() : Promise<RawOrganization[] | null> {
+    getCurrentUserOrgs() : Promise<RawOrganization[] | null> {
         return this.handler.get('/users/current/orgs', {})
     }
 
-    updateUser(user : RawUser) : Promise<void | null> {
+    updateCurrentUser(user : RawUser) : Promise<void | null> {
         return this.handler.put('/users/current', {json : user})
     }
 
     resendEmailVerification() : Promise<void | null> {
         return this.handler.post('/users/current/verify', {})
+    }
+
+    checkCurrentUserPermissions(orgId : number, permissions : Permission[]) : Promise<boolean | null> {
+        return this.handler.get(`/users/current/orgs/${orgId}/permissions`, {
+            searchParams: qs.stringify({
+                permissions
+            })
+        })
     }
 }

@@ -19,7 +19,7 @@ func (m *RoleManager) GetUserRolesForOrg(userId int64, orgId int64) ([]*Role, er
 	return role, err
 }
 
-func (m *RoleManager) UserHasPermissions(userId int64, permissions ...Permission) error {
+func (m *RoleManager) UserHasPermissions(userId int64, orgId int64, permissions ...Permission) error {
 	query, args, err := sqlx.In(`
 		SELECT COUNT(*)
 		FROM permissions AS p
@@ -27,8 +27,10 @@ func (m *RoleManager) UserHasPermissions(userId int64, permissions ...Permission
 			ON rp.permission_id = p.id
 		INNER JOIN user_roles AS ur
 			ON ur.role_id = rp.role_id
-		WHERE ur.user_id = ? AND p.human_name IN  (?)
-	`, userId, permissions)
+		WHERE ur.user_id = ?
+			AND ur.org_id = ?
+			AND p.human_name IN  (?)
+	`, userId, orgId, permissions)
 
 	if err != nil {
 		return err

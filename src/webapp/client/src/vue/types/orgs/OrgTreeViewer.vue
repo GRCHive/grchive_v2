@@ -25,6 +25,20 @@
                 {{ open ? "mdi-account" : "mdi-account-outline" }}
             </v-icon>
         </template>
+
+        <template v-slot:append="{ item }">
+            <restrict-role-permission-button
+                v-if="allowAddSuborgs"
+                icon
+                color="primary"
+                :permissions="permissionsForCreate"
+                :org-id="currentOrgId"
+            >
+                <v-icon>
+                    mdi-plus
+                </v-icon>
+            </restrict-role-permission-button>
+        </template>
     </v-treeview>
 </template>
 
@@ -33,15 +47,28 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
+import { Permission } from '@client/ts/types/roles'
 import { RawOrganization, OrgTree } from '@client/ts/types/orgs'
+import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 
-@Component
+@Component({
+    components: {
+        RestrictRolePermissionButton,
+    }
+})
 export default class OrgTreeViewer extends Vue {
     @Prop({ required: true })
     orgs! : RawOrganization[]
 
     @Prop({ default: -1 })
     currentOrgId!: number
+
+    @Prop({ type: Boolean, default: false })
+    allowAddSuborgs! : boolean
+
+    get permissionsForCreate() : Permission[] {
+        return [Permission.POrgProfileCreate]
+    }
 
     get orgTree() : OrgTree {
         return new OrgTree(this.orgs)

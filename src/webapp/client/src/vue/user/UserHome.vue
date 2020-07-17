@@ -90,7 +90,7 @@ export default class UserHome extends Vue {
     }
 
     refreshData() {
-        GrchiveApi.user.getUserOrgs().then((resp : RawOrganization[] | null) => {
+        GrchiveApi.user.getCurrentUserOrgs().then((resp : RawOrganization[] | null) => {
             this.orgs = resp
         })
     }

@@ -113,7 +113,7 @@ export default class UserProfile extends Vue {
         }
 
         this.editPending = true
-        GrchiveApi.user.updateUser(this.workingUser!).then(() => {
+        GrchiveApi.user.updateCurrentUser(this.workingUser!).then(() => {
             this.$store.commit('user/setRawUser', this.workingUser!)
         }).finally(() => {
             this.editPending = false
