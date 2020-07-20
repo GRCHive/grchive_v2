@@ -5,4 +5,5 @@ export interface NavLink {
     disabled? : boolean
     children?: NavLink[]
     path? : string
+    params? : any
 }

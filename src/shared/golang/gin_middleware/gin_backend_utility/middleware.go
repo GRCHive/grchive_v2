@@ -41,7 +41,7 @@ func (m *MiddlewareClient) LoadResourceIntoContext(resource backend.ResourceIden
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, &WebappError{
 				Err:     err,
-				Context: "LoadResourceIntoContext - Get Resource",
+				Context: "LoadResourceIntoContext - Get Resource: " + queryStr,
 			})
 			return
 		}

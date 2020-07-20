@@ -5,6 +5,7 @@ import { PermissionStoreModule, PermissionStoreState } from '@client/ts/stores/m
 import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
 import { AppLayoutStoreModule, AppLayoutStoreState } from '@client/ts/stores/modules/appLayoutStore'
 import { OrgStoreModule, OrgStoreState } from '@client/ts/stores/modules/orgStore'
+import { EngagementStoreModule, EngagementStoreState } from '@client/ts/stores/modules/engagementStore'
 
 export interface RootState {
     user: UserStoreState
@@ -12,6 +13,7 @@ export interface RootState {
     appLayout: AppLayoutStoreState
     org: OrgStoreState
     permission: PermissionStoreState
+    engagements: EngagementStoreState
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -22,6 +24,7 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         appLayout: AppLayoutStoreModule,
         org : OrgStoreModule,
         permission: PermissionStoreModule,
+        engagements: EngagementStoreModule,
     },
     actions: {
         initialize(context) {

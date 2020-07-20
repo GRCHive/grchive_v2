@@ -20,8 +20,9 @@
         </v-textarea>
 
         <date-range-picker
-            :start-date="value.StartTime"
-            :end-date="value.EndTime"
+            :start-date="startTimeStr"
+            :end-date="endTimeStr"
+            :readonly="readonly"
             @update:startDate="updateStartTime"
             @update:endDate="updateEndTime"
             enable-time
@@ -29,6 +30,7 @@
         </date-range-picker>
 
         <multi-role-finder
+            v-if="!disableRoleEdit"
             label="Assigned Roles"
             v-model="value.Roles"
             :rules="[rules.required]"
@@ -65,6 +67,9 @@ export default class EngagementForm extends Vue {
 
     @Prop({ type: Boolean, default: false })
     readonly! : boolean
+
+    @Prop({ type: Boolean, default: false })
+    disableRoleEdit! : boolean
 
     get startTimeStr() : string {
         if (!this.value.StartTime) {

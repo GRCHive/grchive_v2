@@ -11,6 +11,7 @@
                 v-if="!!workingCopy"
                 v-model="workingCopy"
                 :readonly="!canEdit"
+                :disable-role-edit="editMode"
             >
             </engagement-form>
         </template>
@@ -22,7 +23,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
-import { RawEngagement, createEmptyEngagement } from '@client/ts/types/engagements'
+import { RawEngagement, createEmptyEngagement, cleanRawEngagementFromJSON } from '@client/ts/types/engagements'
 import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import EngagementForm from '@client/vue/types/engagements/EngagementForm.vue'
@@ -55,6 +56,7 @@ export default class EngagementSaveEditDialog extends Vue {
         }
 
         if (!!this.workingCopy) {
+            cleanRawEngagementFromJSON(this.workingCopy)
             this.workingCopy.OrgId = this.parentOrgId
         }
     }
@@ -89,7 +91,9 @@ export default class EngagementSaveEditDialog extends Vue {
                 this.saveInProgress = false
             })
         } else {
-
+            GrchiveApi.engagements.updateEngagement(this.workingCopy).then(this.onSuccess).finally(() => {
+                this.saveInProgress = false
+            })
         }
     }
 }

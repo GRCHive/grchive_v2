@@ -1,8 +1,10 @@
 package gin_acl
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
+	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
@@ -22,10 +24,29 @@ func (acl *ACLClient) ACLCheckPermissionHandler(c *gin.Context, onSuccess func()
 		return
 	}
 
-	err = acl.Middleware.Itf.Roles.UserHasPermissions(user.Id, org.(*orgs.Organization).Id, permissions...)
+	engagement, err := acl.Middleware.GetResourceFromContext(c, backend.RIEngagement)
 	if err != nil {
-		onError(err)
-		return
+		err = acl.Middleware.Itf.Roles.UserHasPermissions(user.Id, org.(*orgs.Organization).Id, permissions...)
+		if err != nil {
+			onError(err)
+			return
+		}
+	} else {
+		roles := engagement.(*engagements.Engagement).Roles
+		if roles == nil || len(*roles) == 0 {
+			onError(errors.New("No valid roles for this engagement."))
+			return
+		}
+
+		err = acl.Middleware.Itf.Roles.UserHasPermissionsInRoles(
+			user.Id,
+			*roles,
+			permissions...,
+		)
+		if err != nil {
+			onError(err)
+			return
+		}
 	}
 
 	onSuccess()

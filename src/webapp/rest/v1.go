@@ -89,6 +89,18 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 					engagementsR.POST("/",
 						w.acl.ACLUserHasPermissions(roles.POrgEngagementCreate),
 						w.apiv1CreateEngagement)
+
+					singleEngR := engagementsR.Group("/:engId",
+						w.middleware.LoadResourceIntoContext(backend.RIEngagement, "engId"),
+					)
+
+					singleEngR.GET("/",
+						w.acl.ACLUserHasPermissions(roles.POrgEngagementView),
+						w.apiv1GetEngagement)
+
+					singleEngR.PUT("/",
+						w.acl.ACLUserHasPermissions(roles.POrgEngagementUpdate),
+						w.apiv1UpdateEngagement)
 				}
 
 				rolesR := singleOrgR.Group("/roles")

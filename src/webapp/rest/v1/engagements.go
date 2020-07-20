@@ -108,3 +108,57 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 
 	c.JSON(http.StatusOK, engagement)
 }
+
+func (w *WebappApplication) apiv1UpdateEngagement(c *gin.Context) {
+	currentEngagement, err := w.middleware.GetResourceFromContext(c, backend.RIEngagement)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateEngagement - Obtain engagement in context",
+		})
+		return
+	}
+
+	editEngagement := engagements.Engagement{}
+	err = c.BindJSON(&editEngagement)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateEngagement - Obtain org in request.",
+		})
+		return
+	}
+
+	typedCurrentEng := currentEngagement.(*engagements.Engagement)
+	typedCurrentEng.Name = editEngagement.Name
+	typedCurrentEng.Description = editEngagement.Description
+	typedCurrentEng.StartTime = editEngagement.StartTime
+	typedCurrentEng.EndTime = editEngagement.EndTime
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Engagements.UpdateEngagement(tx, typedCurrentEng)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateEngagement - Update engagement",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, typedCurrentEng)
+}
+
+func (w *WebappApplication) apiv1GetEngagement(c *gin.Context) {
+	eng, err := w.middleware.GetResourceFromContext(c, backend.RIEngagement)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetEngagement - Obtain engagement in context",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, eng.(*engagements.Engagement))
+}

@@ -43,11 +43,14 @@
                 :loading="!allEngagements"
             >
                 <template v-slot:default="{show}">
-                    <engagement-grid
-                        v-if="show"
-                        :engagements="allEngagements"
-                    >
-                    </engagement-grid>
+                    <full-height-base>
+                        <engagement-grid
+                            v-if="show"
+                            :engagements="allEngagements"
+                            style="height: 100%;"
+                        >
+                        </engagement-grid>
+                    </full-height-base>
                 </template>
             </loading-container>
         </template>
@@ -69,6 +72,7 @@ import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 import EngagementSaveEditDialog from '@client/vue/types/engagements/EngagementSaveEditDialog.vue'
 import EngagementGrid from '@client/vue/types/engagements/EngagementGrid.vue'
+import FullHeightBase from '@client/vue/shared/FullHeightBase.vue'
 
 @Component({
     components: {
@@ -77,6 +81,7 @@ import EngagementGrid from '@client/vue/types/engagements/EngagementGrid.vue'
         RestrictRolePermissionButton,
         EngagementSaveEditDialog,
         EngagementGrid,
+        FullHeightBase
     }
 })
 export default class OrgEngagementList extends Vue {
@@ -84,7 +89,7 @@ export default class OrgEngagementList extends Vue {
         return this.$store.state.org.rawOrg
     }
 
-    allEngagements : RawEngagement[] | null = []
+    allEngagements : RawEngagement[] | null = null
     showHideNew : boolean = false
 
     get permissionsForCreate() : Permission[] {

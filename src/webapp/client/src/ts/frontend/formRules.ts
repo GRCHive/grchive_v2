@@ -12,7 +12,13 @@ export function nonZero(v : any) : boolean | string {
 }
 
 export function required(v : any) : boolean | string {
-    return (!!v && v != Object()) || (Array.isArray(v) && v.length == 0) || (v === 0) || "Input required.";
+    const tst : boolean = ((v !== null) && (
+            (Array.isArray(v) && v.length > 0) || 
+            (!Array.isArray(v) && 
+                (v !== 0) &&
+                (v.trim() !== ""))
+        ))
+    return tst || "Input required.";
 }
 
 export function email(v : string) : boolean | string {

@@ -6,6 +6,7 @@
             :value="startDate"
             @input="updateStart"
             :enable-time="enableTime"
+            :readonly="readonly"
         >
         </date-time-picker>
 
@@ -15,6 +16,7 @@
             :value="endDate"
             @input="updateEnd"
             :enable-time="enableTime"
+            :readonly="readonly"
         >
         </date-time-picker>
     </div>
@@ -41,6 +43,9 @@ export default class DateRangePicker extends Vue {
 
     @Prop({ type: Boolean, default: false})
     enableTime!: boolean
+
+    @Prop({ type: Boolean, default: false})
+    readonly!: boolean
 
     updateStart(v : string) {
         this.$emit('update:startDate', v)

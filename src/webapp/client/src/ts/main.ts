@@ -27,6 +27,7 @@ const OrgProfile = () => import( /* webpackChunkName: "OrgProfile" */ '@client/v
 const OrgOverview = () => import( /* webpackChunkName: "OrgOverview" */ '@client/vue/orgs/profile/OrgOverview.vue')
 const OrgTree = () => import( /* webpackChunkName: "OrgTree" */ '@client/vue/orgs/profile/OrgTree.vue')
 const OrgEngagementList = () => import( /* webpackChunkName: "OrgEngagementList" */ '@client/vue/orgs/engagements/OrgEngagementList.vue')
+const OrgEngagement = () => import( /* webpackChunkName: "OrgEngagement" */ '@client/vue/orgs/engagements/OrgEngagement.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
@@ -64,7 +65,7 @@ const router = new VueRouter({
             ],
         },
         { name: 'orgEngagements', path: '/orgs/:orgId/engagements', component: OrgEngagementList },
-        { name: 'orgSingleEngagement', path: '/orgs/:orgId/engagements/:engId', component: OrgEngagementList },
+        { name: 'orgSingleEngagement', path: '/orgs/:orgId/engagements/:engId', component: OrgEngagement },
     ],
 })
 
