@@ -6,6 +6,7 @@ func (m *RoleManager) ListRolesForOrg(orgId int64) ([]*Role, error) {
 		SELECT r.*
 		FROM roles AS r
 		WHERE org_id = $1
+		ORDER BY r.name ASC
 	`, orgId)
 	return roles, err
 }
@@ -18,6 +19,7 @@ func (m *RoleManager) ListRolesForOrgAndUser(orgId int64, userId int64) ([]*Role
 		INNER JOIN user_roles AS ur
 			ON ur.role_id = r.id
 		WHERE r.org_id = $1 AND ur.user_id = $2
+		ORDER BY r.name ASC
 	`, orgId, userId)
 	return roles, err
 }

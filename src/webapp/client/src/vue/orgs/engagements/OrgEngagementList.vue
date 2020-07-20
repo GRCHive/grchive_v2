@@ -43,6 +43,11 @@
                 :loading="!allEngagements"
             >
                 <template v-slot:default="{show}">
+                    <engagement-grid
+                        v-if="show"
+                        :engagements="allEngagements"
+                    >
+                    </engagement-grid>
                 </template>
             </loading-container>
         </template>
@@ -63,6 +68,7 @@ import OrgTemplate from '@client/vue/orgs/OrgTemplate.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 import EngagementSaveEditDialog from '@client/vue/types/engagements/EngagementSaveEditDialog.vue'
+import EngagementGrid from '@client/vue/types/engagements/EngagementGrid.vue'
 
 @Component({
     components: {
@@ -70,6 +76,7 @@ import EngagementSaveEditDialog from '@client/vue/types/engagements/EngagementSa
         LoadingContainer,
         RestrictRolePermissionButton,
         EngagementSaveEditDialog,
+        EngagementGrid,
     }
 })
 export default class OrgEngagementList extends Vue {
@@ -107,6 +114,5 @@ export default class OrgEngagementList extends Vue {
         this.refreshEngagements()
     }
 }
-
 
 </script>

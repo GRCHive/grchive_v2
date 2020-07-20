@@ -18,6 +18,9 @@ Vue.use(VueRouter)
 import { RootStoreOptions } from '@client/ts/stores/store'
 import '@client/sass/main.scss'
 
+import 'ag-grid-community/dist/styles/ag-grid.css'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+
 const UserHome = () => import( /* webpackChunkName: "UserHome" */ '@client/vue/user/UserHome.vue')
 const UserProfile = () => import( /* webpackChunkName: "UserProfile" */ '@client/vue/user/UserProfile.vue')
 const OrgProfile = () => import( /* webpackChunkName: "OrgProfile" */ '@client/vue/orgs/OrgProfile.vue')
@@ -61,6 +64,7 @@ const router = new VueRouter({
             ],
         },
         { name: 'orgEngagements', path: '/orgs/:orgId/engagements', component: OrgEngagementList },
+        { name: 'orgSingleEngagement', path: '/orgs/:orgId/engagements/:engId', component: OrgEngagementList },
     ],
 })
 

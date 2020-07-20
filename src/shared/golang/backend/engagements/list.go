@@ -13,6 +13,7 @@ func (m *EngagementManager) ListEngagementsForOrgId(orgId int64) ([]*Engagement,
 		LEFT JOIN latest_status AS st
 			ON st.engagement_id = eng.id
 		WHERE eng.org_id = $1
+		ORDER BY eng.id DESC
 	`, orgId)
 	return engagements, err
 }
@@ -34,6 +35,7 @@ func (m *EngagementManager) ListEngagementsForOrgIdAndUserId(orgId int64, userId
 		LEFT JOIN latest_status AS st
 			ON st.engagement_id = eng.id
 		WHERE eng.org_id = $1 AND ur.user_id = $2
+		ORDER BY eng.id DESC
 	`, orgId, userId)
 	return engagements, err
 }
