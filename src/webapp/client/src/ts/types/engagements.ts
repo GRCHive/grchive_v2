@@ -1,3 +1,6 @@
+import formatRFC3339 from 'date-fns/formatRFC3339'
+import { Role } from '@client/ts/types/roles'
+
 export interface RawEngagement {
     Id            : number
     Name          : string
@@ -7,6 +10,7 @@ export interface RawEngagement {
     StartTime     : Date | null
     EndTime       : Date | null
     IsClosed      : boolean
+    Roles         : Role[] | null
 }
 
 export function createEmptyEngagement() : RawEngagement {
@@ -19,6 +23,7 @@ export function createEmptyEngagement() : RawEngagement {
         StartTime: null,
         EndTime: null,
         IsClosed: false,
+        Roles: null,
     }
 }
 
@@ -31,4 +36,22 @@ export function cleanRawEngagementFromJSON(r : RawEngagement) {
     if (!!r.EndTime) {
         r.EndTime = new Date(r.EndTime)
     }
+}
+
+export function engagementToJson(r : RawEngagement) : any {
+    let ret : any = {
+        ...r
+    }
+
+    ret.CreatedTime = formatRFC3339(r.CreatedTime)
+
+    if (!!r.StartTime) {
+        ret.StartTime = formatRFC3339(r.StartTime)
+    }
+
+    if (!!r.EndTime) {
+        ret.EndTime = formatRFC3339(r.EndTime)
+    }
+
+    return ret
 }

@@ -26,6 +26,7 @@
                         v-model="showHideNew"
                         persistent
                         max-width="40%"
+                        :retain-focus="false"
                     >
                         <engagement-save-edit-dialog
                             :parent-org-id="currentOrg.Id"
@@ -68,7 +69,7 @@ import EngagementSaveEditDialog from '@client/vue/types/engagements/EngagementSa
         OrgTemplate,
         LoadingContainer,
         RestrictRolePermissionButton,
-        EngagementSaveEditDialog
+        EngagementSaveEditDialog,
     }
 })
 export default class OrgEngagementList extends Vue {

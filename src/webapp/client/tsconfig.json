@@ -18,7 +18,10 @@
         "paths": {
             "@client/*": ["src/*"]
         },
-        "types": ["vuetify"]
+        "types": [
+            "vuetify",
+            "flatpickr"
+        ]
 	},
     "include": [
         "./**/*.ts",

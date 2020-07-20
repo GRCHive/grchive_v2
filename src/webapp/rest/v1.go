@@ -90,6 +90,16 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 						w.acl.ACLUserHasPermissions(roles.POrgEngagementCreate),
 						w.apiv1CreateEngagement)
 				}
+
+				rolesR := singleOrgR.Group("/roles")
+				{
+					rolesR.GET("/",
+						w.acl.ACLBranchOnPermissions(
+							w.apiv1ListAllOrgRoles,
+							w.apiv1ListAllOrgRolesForCurrentUser,
+							roles.POrgRolesList,
+						))
+				}
 			}
 		}
 	}

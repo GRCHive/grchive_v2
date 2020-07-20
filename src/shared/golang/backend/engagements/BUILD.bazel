@@ -10,6 +10,7 @@ go_library(
     importpath = "gitlab.com/grchive/grchive-v2/shared/backend/engagements",
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
+        "//src/shared/golang/backend/roles:lib",
     ],
 )
 

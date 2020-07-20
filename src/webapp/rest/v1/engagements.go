@@ -84,8 +84,18 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 	}
 	engagement.OrgId = org.(*orgs.Organization).Id
 
+	if engagement.Roles == nil || len(*engagement.Roles) == 0 {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     nil,
+			Context: "apiv1CreateEngagement - Must have at least one role.",
+		})
+		return
+	}
+
 	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithEngagementOverride(&engagement, c), func(tx *sqlx.Tx) error {
 		return w.backend.itf.Engagements.CreateEngagement(tx, &engagement)
+	}, func(tx *sqlx.Tx) error {
+		return w.backend.itf.Engagements.LinkEngagementToRoles(tx, &engagement)
 	})
 
 	if err != nil {

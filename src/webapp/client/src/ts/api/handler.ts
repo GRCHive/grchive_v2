@@ -25,7 +25,6 @@ export class ApiHttpHandler {
     post<T>(endpoint : string, options: any) : Promise<T | null> {
         return ky.post(`${apiPrefix}${endpoint}`, options).json().then(
             (resp : unknown) => {
-                console.log("GOOD")
                 return <T>resp
             },
             (err : any) => {

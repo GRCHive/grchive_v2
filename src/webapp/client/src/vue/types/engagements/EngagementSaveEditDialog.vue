@@ -53,6 +53,10 @@ export default class EngagementSaveEditDialog extends Vue {
         } else {
             this.workingCopy = JSON.parse(JSON.stringify(this.value))
         }
+
+        if (!!this.workingCopy) {
+            this.workingCopy.OrgId = this.parentOrgId
+        }
     }
 
     mounted() {
@@ -79,7 +83,6 @@ export default class EngagementSaveEditDialog extends Vue {
             return
         }
 
-        this.workingCopy.OrgId = this.parentOrgId
         this.saveInProgress = true
         if (!this.editMode) {
             GrchiveApi.engagements.createEngagement(this.workingCopy).then(this.onSuccess).finally(() => {

@@ -1,5 +1,9 @@
 import { ApiHttpHandler } from '@client/ts/api/handler'
-import { RawEngagement, cleanRawEngagementFromJSON } from '@client/ts/types/engagements'
+import {
+    RawEngagement,
+    cleanRawEngagementFromJSON,
+    engagementToJson
+} from '@client/ts/types/engagements'
 
 export class EngagementApiClient {
     handler : ApiHttpHandler
@@ -19,7 +23,7 @@ export class EngagementApiClient {
     }
 
     async createEngagement(eng : RawEngagement) : Promise<RawEngagement | null> {
-        return this.handler.post<RawEngagement>(`/orgs/${eng.OrgId}/engagements`, {json: eng}).then((resp : RawEngagement | null) => {
+        return this.handler.post<RawEngagement>(`/orgs/${eng.OrgId}/engagements`, {json: engagementToJson(eng)}).then((resp : RawEngagement | null) => {
             if (!resp) {
                 return resp
             }

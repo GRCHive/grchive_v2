@@ -15,6 +15,7 @@ const (
 	POrgRolesUpdate                 = "org.roles.update"
 	POrgRolesDelete                 = "org.roles.delete"
 	POrgRolesCreate                 = "org.roles.create"
+	POrgRolesList                   = "org.roles.list"
 	POrgEngagementList              = "org.engagements.list"
 	POrgEngagementCreate            = "org.engagements.create"
 	POrgEngagementView              = "org.engagements.view"

@@ -15,8 +15,27 @@
             v-model="value.Description"
             :readonly="readonly"
             hide-details
+            class="mb-4"
         >
         </v-textarea>
+
+        <date-range-picker
+            :start-date="value.StartTime"
+            :end-date="value.EndTime"
+            @update:startDate="updateStartTime"
+            @update:endDate="updateEndTime"
+            enable-time
+        >
+        </date-range-picker>
+
+        <multi-role-finder
+            label="Assigned Roles"
+            v-model="value.Roles"
+            :rules="[rules.required]"
+            :readonly="readonly"
+            :org-id="value.OrgId"
+        >
+        </multi-role-finder>
     </div>
 </template>
 
@@ -26,10 +45,19 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { RawEngagement } from '@client/ts/types/engagements'
+import DateRangePicker from '@client/vue/shared/form/DateRangePicker.vue'
+import MultiRoleFinder from '@client/vue/types/roles/MultiRoleFinder.vue'
 import * as rules from '@client/ts/frontend/formRules'
+import formatISO from 'date-fns/formatISO'
+import parseISO from 'date-fns/parseISO'
 
-@Component
-export default class OrgForm extends Vue {
+@Component({
+    components: {
+        DateRangePicker,
+        MultiRoleFinder
+    }
+})
+export default class EngagementForm extends Vue {
     readonly rules : any = rules
 
     @Prop({ required: true })
@@ -37,6 +65,30 @@ export default class OrgForm extends Vue {
 
     @Prop({ type: Boolean, default: false })
     readonly! : boolean
+
+    get startTimeStr() : string {
+        if (!this.value.StartTime) {
+            return ''
+        }
+        return formatISO(this.value.StartTime)
+    }
+    
+    get endTimeStr() : string {
+        if (!this.value.EndTime) {
+            return ''
+        }
+        return formatISO(this.value.EndTime)
+    }
+
+    updateStartTime(v : string) {
+        this.value.StartTime = new Date(parseISO(v))
+        this.$emit('input', this.value)
+    }
+
+    updateEndTime(v : string) {
+        this.value.EndTime = new Date(parseISO(v))
+        this.$emit('input', this.value)
+    }
 }
 
 </script>

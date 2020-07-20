@@ -8,7 +8,7 @@ func (m *EngagementManager) ListEngagementsForOrgId(orgId int64) ([]*Engagement,
 			FROM engagement_status
 			ORDER BY engagement_id, id DESC	
 		)
-		SELECT eng.*, st.is_closed
+		SELECT eng.*, COALESCE(st.is_closed, false) AS "is_closed"
 		FROM engagements AS eng
 		LEFT JOIN latest_status AS st
 			ON st.engagement_id = eng.id
@@ -25,7 +25,7 @@ func (m *EngagementManager) ListEngagementsForOrgIdAndUserId(orgId int64, userId
 			FROM engagement_status
 			ORDER BY engagement_id, id DESC	
 		)
-		SELECT eng.*, st.is_closed
+		SELECT eng.*, COALESCE(st.is_closed, false) AS "is_closed"
 		FROM engagements AS eng
 		INNER JOIN engagement_roles AS er
 			ON er.engagement_id = eng.id

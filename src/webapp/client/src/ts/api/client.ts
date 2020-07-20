@@ -3,6 +3,7 @@ import { RootState } from '@client/ts/stores/store'
 import { UserApiClient } from '@client/ts/api/user'
 import { OrgApiClient } from '@client/ts/api/orgs'
 import { EngagementApiClient } from '@client/ts/api/engagements'
+import { RoleApiClient } from '@client/ts/api/roles'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class ApiClient {
@@ -10,6 +11,7 @@ export class ApiClient {
     user : UserApiClient
     orgs : OrgApiClient
     engagements: EngagementApiClient
+    roles : RoleApiClient
 
     store : Store<RootState>
 
@@ -19,5 +21,6 @@ export class ApiClient {
         this.user = new UserApiClient(this.handler)
         this.orgs = new OrgApiClient(this.handler)
         this.engagements = new EngagementApiClient(this.handler)
+        this.roles = new RoleApiClient(this.handler)
     }
 }
