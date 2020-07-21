@@ -17,6 +17,7 @@
                         color="primary"
                         :permissions="permissionsForCreate"
                         :org-id="currentOrg.Id"
+                        :engagement-id="currentEngagement.Id"
                         @click="showHideNew = true"
                     >
                         New

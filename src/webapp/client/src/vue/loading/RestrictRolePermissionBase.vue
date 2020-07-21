@@ -14,8 +14,11 @@ export default class RestrictRolePermissionBase extends Vue {
     @Prop({required: true})
     orgId!: number
 
+    @Prop({ default: -1 })
+    engagementId!: number
+
     get hasPermissions() : boolean | null {
-        return this.$store.getters['permission/currentUserHasPermissions'](this.orgId, this.permissions)
+        return this.$store.getters['permission/currentUserHasPermissions'](this.orgId, this.engagementId, this.permissions)
     }
 
     get tooltipStr() : string {
@@ -27,9 +30,12 @@ export default class RestrictRolePermissionBase extends Vue {
     }
 
     @Watch('permissions')
+    @Watch('orgId')
+    @Watch('engagementId')
     refreshPermission() {
         this.$store.dispatch('permission/initializeHasPermissions', {
             orgId: this.orgId,
+            engagementId: this.engagementId,
             permissions: this.permissions,
         })
     }

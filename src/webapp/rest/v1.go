@@ -37,11 +37,16 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 			currentR.GET("/orgs", w.apiv1GetCurrentUserOrgs)
 			userOrgR := currentR.Group("/orgs/:orgId",
 				w.middleware.LoadResourceIntoContext(backend.RIOrganization, "orgId"),
-				w.middleware.LoadCurrentUserRolesIntoContext,
-				w.acl.ACLUserHasValidRole,
 			)
 			{
 				userOrgR.GET("/permissions", w.apiv1CheckCurrentUserPermissions)
+
+				userOrgEngR := userOrgR.Group("/engagement/:engId",
+					w.middleware.LoadResourceIntoContext(backend.RIEngagement, "engId"),
+				)
+				{
+					userOrgEngR.GET("/permissions", w.apiv1CheckCurrentUserPermissions)
+				}
 			}
 
 			currentR.POST("/verify", w.apiv1ResendEmailVerification)

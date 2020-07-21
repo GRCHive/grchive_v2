@@ -26,11 +26,19 @@ export class UserApiClient {
         return this.handler.post('/users/current/verify', {})
     }
 
-    checkCurrentUserPermissions(orgId : number, permissions : Permission[]) : Promise<boolean | null> {
-        return this.handler.get(`/users/current/orgs/${orgId}/permissions`, {
-            searchParams: qs.stringify({
-                permissions
+    checkCurrentUserPermissions(orgId : number, engagementId : number, permissions : Permission[]) : Promise<boolean | null> {
+        if (engagementId == -1) {
+            return this.handler.get(`/users/current/orgs/${orgId}/permissions`, {
+                searchParams: qs.stringify({
+                    permissions
+                })
             })
-        })
+        } else {
+            return this.handler.get(`/users/current/orgs/${orgId}/engagement/${engagementId}/permissions`, {
+                searchParams: qs.stringify({
+                    permissions
+                })
+            })
+        }
     }
 }

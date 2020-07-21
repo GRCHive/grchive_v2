@@ -5,8 +5,8 @@ import { GrchiveApi } from '@client/ts/main'
 import { Permission } from '@client/ts/types/roles'
 
 export interface PermissionStoreState {
-    orgPermissionMaps: Record<number, Record<Permission, boolean>>
-    inProgressMaps: Record<number, Record<Permission, boolean>>
+    orgPermissionMaps: Record<number, Record<number, Record<Permission, boolean>>>
+    inProgressMaps: Record<number, Record<number, Record<Permission, boolean>>>
 }
 
 export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
@@ -16,82 +16,106 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
         inProgressMaps: Object()
     }),
     mutations: {
-        setHasPermissions(state : PermissionStoreState, { orgId, permissions, val }) {
+        setHasPermissions(state : PermissionStoreState, { orgId, engagementId, permissions, val }) {
             if (!(orgId in state.orgPermissionMaps)) {
                 Vue.set(state.orgPermissionMaps, orgId, new Object())
             }
 
-            let orgMap : Record<Permission, boolean> = state.orgPermissionMaps[orgId]
+            let orgMap = state.orgPermissionMaps[orgId]
+            if (!(engagementId in orgMap)) {
+                Vue.set(orgMap, engagementId, new Object())
+            }
+
+            let engMap = orgMap[engagementId]
             for (let p of permissions) {
-                Vue.set(orgMap, <Permission>p, val)
+                Vue.set(engMap, <Permission>p, val)
             }
         },
-        setPermissionLoading(state : PermissionStoreState, { orgId, permissions }) {
+        setPermissionLoading(state : PermissionStoreState, { orgId, engagementId, permissions }) {
             if (!(orgId in state.orgPermissionMaps)) {
                 Vue.set(state.inProgressMaps, orgId, new Object())
             }
 
-            let orgMap : Record<Permission, boolean> = state.inProgressMaps[orgId]
+            let orgMap = state.inProgressMaps[orgId]
+            if (!(engagementId in orgMap)) {
+                Vue.set(orgMap, engagementId, new Object())
+            }
+
+            let engMap = orgMap[engagementId]
             for (let p of permissions) {
-                Vue.set(orgMap, <Permission>p, true)
+                Vue.set(engMap, <Permission>p, true)
             }
         }
     },
     actions: {
-        initializeHasPermissions(context, { orgId, permissions }) {
-            let toLoad = context.getters['getPermissionsToLoad'](orgId, permissions)
-            context.commit('setPermissionLoading', {orgId, permissions: toLoad})
+        initializeHasPermissions(context, { orgId, engagementId, permissions }) {
+            let toLoad = context.getters['getPermissionsToLoad'](orgId, engagementId, permissions)
+            context.commit('setPermissionLoading', {orgId, engagementId, permissions: toLoad})
 
             if (toLoad.length == 0) {
                 return
             }
 
-            GrchiveApi.user.checkCurrentUserPermissions(orgId, toLoad).then((resp : boolean | null) => {
-                context.commit('setHasPermissions', { orgId, permissions: toLoad, val: resp })
+            GrchiveApi.user.checkCurrentUserPermissions(orgId, engagementId, toLoad).then((resp : boolean | null) => {
+                context.commit('setHasPermissions', { orgId, engagementId, permissions: toLoad, val: resp })
             })
         }
     },
     getters: {
-        hasValue(state : PermissionStoreState) : (orgId : number, p : Permission) => boolean {
-            return (orgId : number, p : Permission) : boolean => {
+        hasValue(state : PermissionStoreState) : (orgId : number, engagementId : number, p : Permission) => boolean {
+            return (orgId : number, engagementId : number, p : Permission) : boolean => {
                 if (!(orgId in state.orgPermissionMaps)) {
                     return false
                 }
 
-                let orgMap : Record<Permission, boolean> = state.orgPermissionMaps[orgId]
-                return p in orgMap
+                let orgMap = state.orgPermissionMaps[orgId]
+                if (!(engagementId in orgMap)) {
+                    return false
+                }
+
+                let engMap = orgMap[engagementId]
+                return p in engMap
             }
         },
 
-        isLoading(state : PermissionStoreState) : (orgId : number, p : Permission) => boolean {
-            return (orgId : number, p : Permission) : boolean => {
+        isLoading(state : PermissionStoreState) : (orgId : number, engagementId: number, p : Permission) => boolean {
+            return (orgId : number, engagementId : number, p : Permission) : boolean => {
                 if (!(orgId in state.inProgressMaps)) {
                     return false
                 }
 
-                let orgMap : Record<Permission, boolean> = state.inProgressMaps[orgId]
-                return p in orgMap
+                let orgMap = state.inProgressMaps[orgId]
+                if (!(engagementId in orgMap)) {
+                    return false
+                }
+                let engMap = orgMap[engagementId]
+                return p in engMap
             }
         },
 
-        getPermissionsToLoad(_ : PermissionStoreState, getters) : (orgId : number, permissions : Permission[]) => Permission[]{
-            return (orgId : number, permissions: Permission[]) : Permission[] => {
-                return permissions.filter((p : Permission) => !getters.hasValue(orgId, p) && !getters.isLoading(orgId, p))
+        getPermissionsToLoad(_ : PermissionStoreState, getters) : (orgId : number, engagementId : number, permissions : Permission[]) => Permission[]{
+            return (orgId : number, engagementId : number, permissions: Permission[]) : Permission[] => {
+                return permissions.filter((p : Permission) => !getters.hasValue(orgId, engagementId, p) && !getters.isLoading(orgId, p))
             }
         },
-        currentUserHasPermissions(state : PermissionStoreState) : (orgId : number, permissions : Permission[]) => boolean | null {
-            return (orgId : number, permissions: Permission[]) : boolean | null => {
+        currentUserHasPermissions(state : PermissionStoreState) : (orgId : number, engagementId : number, permissions : Permission[]) => boolean | null {
+            return (orgId : number, engagementId : number, permissions: Permission[]) : boolean | null => {
                 if (!(orgId in state.orgPermissionMaps)) {
                     return null
                 }
 
-                let orgMap : Record<Permission, boolean> = state.orgPermissionMaps[orgId]
+                let orgMap = state.orgPermissionMaps[orgId]
+                if (!(engagementId in orgMap)) {
+                    return null
+                }
+
+                let engMap = orgMap[engagementId]
                 let hasPermission : boolean = false
                 for (let p of permissions) {
-                    if (!(p in orgMap)) {
+                    if (!(p in engMap)) {
                         return null
                     }
-                    hasPermission = hasPermission || orgMap[p]
+                    hasPermission = hasPermission || engMap[p]
                 }
                 return hasPermission
             }

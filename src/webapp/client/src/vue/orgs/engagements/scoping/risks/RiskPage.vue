@@ -17,6 +17,7 @@
                         color="error"
                         :permissions="permissionsForDelete"
                         :org-id="currentOrg.Id"
+                        :engagement-id="currentEngagement.Id"
                         @click="showHideDelete = true"
                     >
                         Delete
