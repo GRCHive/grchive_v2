@@ -75,8 +75,10 @@ export default class DateTimePicker extends Vue {
                 this.valueStr = standardFormatTime(this.fpInstance.selectedDates[0])
                 realStr = formatISO(this.fpInstance.selectedDates[0])
             }
-        } else {
+        } else if (this.value != '') {
             this.valueStr = standardFormatTime(parseISO(this.value))
+        } else {
+            this.valueStr = ''
         }
 
         if (!quiet) {
