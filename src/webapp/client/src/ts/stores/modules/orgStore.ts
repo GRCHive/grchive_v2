@@ -13,7 +13,7 @@ export const OrgStoreModule : Module<OrgStoreState, RootState> = {
         rawOrg : null,
     }),
     mutations: {
-        setRawOrg(state : OrgStoreState, rawOrg : RawOrganization) {
+        setRawOrg(state : OrgStoreState, rawOrg : RawOrganization | null) {
             state.rawOrg = rawOrg
         }
     },

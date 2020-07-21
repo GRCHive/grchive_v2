@@ -19,7 +19,7 @@ export default class RestrictRolePermissionBase extends Vue {
     }
 
     get tooltipStr() : string {
-        return `You do not have the required permissions to access this feature. Please request the ${this.permissions.join(', ')} permission(s) from your administrator.`
+        return `You do not have the required permissions to access this feature. Please request the ${this.permissions.map(p => `'${p}'`).join(', ')} permission(s) from your administrator.`
     }
 
     get isLoading() : boolean {

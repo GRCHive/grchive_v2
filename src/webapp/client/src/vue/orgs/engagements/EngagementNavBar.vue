@@ -1,23 +1,8 @@
 <template>
     <generic-nav-bar
         :nav-links="navLinks"
+        :back-link="backParams"
     >
-        <v-list-item
-            dense
-            :to="{name: 'orgHome', params: `${backParams}` }"
-            link
-            color="secondary"
-            id="navBarHeader"
-        >
-            <v-list-item-icon>
-                <v-icon>mdi-keyboard-return</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-                <v-list-item-title>
-                    Back to Organization
-                </v-list-item-title>
-            </v-list-item-content>
-        </v-list-item>
     </generic-nav-bar>
 </template>
 
@@ -36,13 +21,19 @@ import GenericNavBar from '@client/vue/navbar/GenericNavBar.vue'
     }
 })
 export default class EngagementNavBar extends Vue {
-    get backParams() : any {
-        if (!this.currentOrg) {
-            return {}
+    get backParams() : NavLink {
+        let ret : NavLink = {
+            title: 'Organization',
+            icon: '',
+            path: 'orgHome'
         }
-        return {
-            orgId: this.currentOrg.Id
+        if (!!this.currentOrg) {
+            ret.params = {
+                orgId: this.currentOrg.Id
+            }
         }
+
+        return ret
     }
 
     get currentOrg() : RawOrganization | null {
@@ -51,6 +42,13 @@ export default class EngagementNavBar extends Vue {
 
     get currentEngagement() : RawEngagement | null {
         return this.$store.state.engagements.rawEngagement
+    }
+
+    get baseParams() : any {
+        return {
+            orgId: this.currentOrg!.Id,
+            engId: this.currentEngagement!.Id,
+        }
     }
 
     get navLinks() : NavLink[] {
@@ -63,10 +61,7 @@ export default class EngagementNavBar extends Vue {
                 title: 'Overview',
                 icon: 'mdi-home',
                 path: 'orgSingleEngagement'
-                params: {
-                    orgId: this.currentOrg!.Id,
-                    engId: this.currentEngagement!.Id,
-                }
+                params: this.baseParams,
             },
             {
                 title: 'Workflow',
@@ -75,7 +70,8 @@ export default class EngagementNavBar extends Vue {
                     {
                         title: 'Scoping',
                         icon: 'mdi-crosshairs',
-                        disabled: true,
+                        path: 'scopingRisks'
+                        params: this.baseParams,
                     },
                     {
                         title: 'PBC',

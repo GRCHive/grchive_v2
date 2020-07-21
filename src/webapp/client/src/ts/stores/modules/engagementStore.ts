@@ -13,7 +13,7 @@ export const EngagementStoreModule : Module<EngagementStoreState, RootState> = {
         rawEngagement: null,
     }),
     mutations: {
-        setRawEngagement(state : EngagementStoreState, rawEngagement : RawEngagement) {
+        setRawEngagement(state : EngagementStoreState, rawEngagement : RawEngagement | null) {
             state.rawEngagement = rawEngagement
         }
     },

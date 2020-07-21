@@ -101,6 +101,35 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 					singleEngR.PUT("/",
 						w.acl.ACLUserHasPermissions(roles.POrgEngagementUpdate),
 						w.apiv1UpdateEngagement)
+
+					risksR := singleEngR.Group("/risks")
+					{
+						risksR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PRisksList),
+							w.apiv1ListRisks)
+
+						risksR.POST("/",
+							w.acl.ACLUserHasPermissions(roles.PRisksCreate),
+							w.apiv1CreateRisk)
+
+						singleRiskR := risksR.Group("/:riskId",
+							w.middleware.LoadResourceIntoContext(backend.RIRisk, "riskId"),
+						)
+
+						{
+							singleRiskR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PRisksView),
+								w.apiv1GetRisk)
+
+							singleRiskR.PUT("/",
+								w.acl.ACLUserHasPermissions(roles.PRisksUpdate),
+								w.apiv1UpdateRisk)
+
+							singleRiskR.DELETE("/",
+								w.acl.ACLUserHasPermissions(roles.PRisksDelete),
+								w.apiv1DeleteRisk)
+						}
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

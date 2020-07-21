@@ -29,6 +29,10 @@ const OrgTree = () => import( /* webpackChunkName: "OrgTree" */ '@client/vue/org
 const OrgEngagementList = () => import( /* webpackChunkName: "OrgEngagementList" */ '@client/vue/orgs/engagements/OrgEngagementList.vue')
 const OrgEngagement = () => import( /* webpackChunkName: "OrgEngagement" */ '@client/vue/orgs/engagements/OrgEngagement.vue')
 
+const ScopingRisks = () => import( /* webpackChunkName: "ScopingRisks" */ '@client/vue/orgs/engagements/scoping/ScopingRisks.vue')
+const RiskPage = () => import( /* webpackChunkName: "RiskPage" */ '@client/vue/orgs/engagements/scoping/risks/RiskPage.vue')
+const RiskOverview = () => import( /* webpackChunkName: "RiskOverview" */ '@client/vue/orgs/engagements/scoping/risks/RiskOverview.vue')
+
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
 export const GrchiveApi = new ApiClient(store)
@@ -37,13 +41,13 @@ const router = new VueRouter({
     mode: 'history',
     base: '/app/',
     routes: [
-        { name: 'appHome', path: '/', redirect: '/user' },
-        { name: 'userHome', path: '/user', redirect : '/user/orgs' },
+        { name: 'appHome', path: '/', redirect: {name : 'userHome'} },
+        { name: 'userHome', path: '/user', redirect : {name: 'userOrgs'} },
         { name: 'userOrgs', path: '/user/orgs', component: UserHome },
         { name: 'userProfile', path: '/user/profile', component: UserProfile },
         {
             path: '/orgs/:orgId',
-            redirect:'/orgs/:orgId/profile'
+            redirect: {name : 'orgHome'},
         },
         {
             path: '/orgs/:orgId/profile',
@@ -52,13 +56,15 @@ const router = new VueRouter({
                 {
                     name: 'orgHome',
                     path: '',
-                    redirect: 'overview',
+                    redirect: {name: 'orgOverview'},
                 },
                 {
+                    name: 'orgOverview',
                     path: 'overview',
                     component: OrgOverview,
                 },
                 {
+                    name: 'orgTree',
                     path: 'tree',
                     component: OrgTree,
                 },
@@ -66,6 +72,24 @@ const router = new VueRouter({
         },
         { name: 'orgEngagements', path: '/orgs/:orgId/engagements', component: OrgEngagementList },
         { name: 'orgSingleEngagement', path: '/orgs/:orgId/engagements/:engId', component: OrgEngagement },
+        { name: 'scopingHome', path: '/orgs/:orgId/engagements/:engId/scoping', redirect: { name : 'scopingRisks' }},
+        { name: 'scopingRisks', path: '/orgs/:orgId/engagements/:engId/scoping/risks', component: ScopingRisks },
+        { 
+            path: '/orgs/:orgId/engagements/:engId/scoping/risks/:riskId',
+            component: RiskPage,
+            children: [
+                {
+                    name: 'riskHome',
+                    path: '',
+                    redirect: { name: 'riskOverview' }
+                },
+                {
+                    name: 'riskOverview',
+                    path: 'overview',
+                    component: RiskOverview,
+                }
+            ]
+        },
     ],
 })
 

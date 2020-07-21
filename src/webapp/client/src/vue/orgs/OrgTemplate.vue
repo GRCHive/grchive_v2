@@ -61,7 +61,10 @@ export default class OrgTemplate extends Vue {
     @Watch('$route')
     refreshOrg() {
         const orgId : number = Number(this.$route.params.orgId)
-        this.$store.dispatch('org/initializeOrgStore', orgId)
+        this.$store.dispatch('initializeCurrentResource', {
+            orgId,
+        })
+        this.refreshTitle()
     }
 
     mounted() {

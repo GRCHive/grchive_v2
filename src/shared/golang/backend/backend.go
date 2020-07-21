@@ -5,6 +5,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/audit"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
+	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
 	"gitlab.com/grchive/grchive-v2/shared/backend/sessions"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
@@ -18,6 +19,7 @@ type BackendInterface struct {
 	Orgs        *orgs.OrgManager
 	Roles       *roles.RoleManager
 	Engagements *engagements.EngagementManager
+	Risks       *risks.RiskManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -28,6 +30,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Orgs:        orgs.CreateOrgManager(db),
 		Roles:       roles.CreateRoleManager(db),
 		Engagements: engagements.CreateEngagementManager(db),
+		Risks:       risks.CreateRiskManager(db),
 	}
 }
 

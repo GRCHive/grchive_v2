@@ -9,6 +9,24 @@
         permanent
     >
         <slot></slot>
+        <v-list-item
+            v-if="!!backLink"
+            dense
+            :to="{name: `${backLink.path}`, params: `${backLink.params}` }"
+            link
+            color="secondary"
+            id="navBarHeader"
+        >
+            <v-list-item-icon>
+                <v-icon>mdi-keyboard-return</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+                <v-list-item-title>
+                    Back to {{ backLink.title }}
+                </v-list-item-title>
+            </v-list-item-content>
+        </v-list-item>
+
         <v-list class="py-0" expand>
             <div
                 v-for="(item, i) in finalNavLinks" 
@@ -62,6 +80,9 @@ export default class GenericNavBar extends Vue {
     @Prop({ required: true })
     navLinks!: NavLink[]
 
+    @Prop({ default: null })
+    backLink!: NavLink | null
+
     get mini() : boolean {
         return this.$store.state.appLayout.miniNav
     }
@@ -103,6 +124,10 @@ export default class GenericNavBar extends Vue {
 
 >>>.v-navigation-drawer__content:hover {
     overflow-y: auto;
+}
+
+#navBarHeader {
+    background-color: #DCDCDC;
 }
 
 </style>

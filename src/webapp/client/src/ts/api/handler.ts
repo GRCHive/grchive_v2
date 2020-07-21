@@ -46,4 +46,16 @@ export class ApiHttpHandler {
             },
         )
     }
+
+    delete<T>(endpoint : string, options: any) : Promise<T | null> {
+        return ky.delete(`${apiPrefix}${endpoint}`, options).json().then(
+            (resp : unknown) => {
+                return <T>resp
+            },
+            (err : any) => {
+                this.store.commit('errors/addApiError', err)
+                return null
+            },
+        )
+    }
 }

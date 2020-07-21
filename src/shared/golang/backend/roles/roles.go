@@ -23,6 +23,11 @@ const (
 	POrgEngagementUpdate            = "org.engagements.update"
 	POrgEngagementClose             = "org.engagements.close"
 	POrgEngagementReopen            = "org.engagements.reopen"
+	PRisksView                      = "org.risks.view"
+	PRisksUpdate                    = "org.risks.update"
+	PRisksDelete                    = "org.risks.delete"
+	PRisksCreate                    = "org.risks.create"
+	PRisksList                      = "org.risks.list"
 )
 
 type RoleManager struct {

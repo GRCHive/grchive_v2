@@ -17,7 +17,7 @@
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-            <v-divider class="mb-4"></v-divider>
+            <v-divider></v-divider>
 
             <v-tabs>
                 <v-tab :to="overviewTo">Overview</v-tab>

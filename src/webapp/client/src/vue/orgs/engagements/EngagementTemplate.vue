@@ -64,6 +64,7 @@ export default class EngagementTemplate extends Vue {
 
     @Watch('currentOrg')
     @Watch('currentEngagement')
+    @Watch('pageName')
     refreshTitle() {
         if (!this.currentOrg || !this.currentEngagement) {
             return
@@ -74,14 +75,12 @@ export default class EngagementTemplate extends Vue {
     @Watch('$route')
     refreshEngagement() {
         const orgId : number = Number(this.$route.params.orgId)
-        if (!this.currentOrg || this.currentOrg.Id !== orgId) {
-            this.$store.dispatch('org/initializeOrgStore', orgId)
-        }
-
         const engId : number = Number(this.$route.params.engId)
-        if (!this.currentEngagement || this.currentEngagement.Id !== engId) {
-            this.$store.dispatch('engagements/initializeEngagementStore', { orgId, engId })
-        }
+        this.$store.dispatch('initializeCurrentResource', {
+            orgId,
+            engagementId: engId,
+        })
+        this.refreshTitle()
     }
 
     mounted() {
