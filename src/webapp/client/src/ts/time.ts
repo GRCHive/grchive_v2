@@ -4,5 +4,5 @@ export function standardFormatTime(dt : Date | null) : string {
     if (!dt) {
         return "None"
     }
-    return format(dt, 'MMM do uuuu, h:mm:ss a')
+    return format(dt, 'MMMM do uuuu, h:mm a')
 }
