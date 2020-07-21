@@ -1,5 +1,6 @@
 <template>
     <v-autocomplete
+        label="Roles"
         :value="value"
         @input="onInput"
         chips
