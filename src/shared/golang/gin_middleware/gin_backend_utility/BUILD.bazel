@@ -14,6 +14,7 @@ go_library(
         "//src/shared/golang/backend/audit:lib",
         "//src/shared/golang/backend/engagements:lib",
         "//src/shared/golang/backend/orgs:lib",
+        "//src/shared/golang/backend/risks:lib",
         "//src/shared/golang/backend/roles:lib",
         "//src/shared/golang/backend/users:lib",
     ],

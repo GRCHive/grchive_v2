@@ -92,6 +92,7 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 
 					singleEngR := engagementsR.Group("/:engId",
 						w.middleware.LoadResourceIntoContext(backend.RIEngagement, "engId"),
+						w.middleware.CheckResourcePartOfOrg(backend.RIEngagement),
 					)
 
 					singleEngR.GET("/",
@@ -114,6 +115,7 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 
 						singleRiskR := risksR.Group("/:riskId",
 							w.middleware.LoadResourceIntoContext(backend.RIRisk, "riskId"),
+							w.middleware.CheckResourcePartOfEngagement(backend.RIRisk),
 						)
 
 						{
