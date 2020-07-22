@@ -39,7 +39,7 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 			mismatch = trsc.OrgId != torg.Id
 		case backend.RIUser:
 			trsc := rsc.(*users.User)
-			mismatch, err = m.Itf.Users.IsUserInOrg(torg.Id, trsc.Id)
+			exists, err := m.Itf.Users.IsUserInOrg(torg.Id, trsc.Id)
 			if err != nil {
 				c.AbortWithError(http.StatusBadRequest, &WebappError{
 					Err:     err,
@@ -47,6 +47,7 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 				})
 				return
 			}
+			mismatch = !exists
 		default:
 			mismatch = true
 		}

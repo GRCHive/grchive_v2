@@ -20,6 +20,10 @@ import { RawControl } from '@client/ts/types/controls'
 import { RowEvent } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue'
 import RatingRenderer from '@client/vue/shared/grid/RatingRenderer.vue'
+import TrueFalseRenderer from '@client/vue/shared/grid/TrueFalseRenderer.vue'
+import ControlTypeRenderer from '@client/vue/shared/grid/ControlTypeRenderer.vue'
+import UserIdRenderer from '@client/vue/shared/grid/UserIdRenderer.vue'
+import ControlFrequencyRenderer from '@client/vue/shared/grid/ControlFrequencyRenderer.vue'
 
 @Component({
     components: {
@@ -39,6 +43,10 @@ export default class ControlGrid extends Vue {
     get frameworkComponents() : any {
         return {
             RatingRenderer,
+            TrueFalseRenderer,
+            ControlTypeRenderer,
+            UserIdRenderer,
+            ControlFrequencyRenderer
         }
     }
 
@@ -57,11 +65,38 @@ export default class ControlGrid extends Vue {
                 filter: true,
             },
             {
-                headerName: 'Likelihood',
+                headerName: 'Type',
+                field: 'ControlType',
+                sortable: true,
+                filter: true,
+                cellRenderer: 'ControlTypeRenderer',
+            },
+            {
+                headerName: 'Control Owner',
+                field: 'OwnerId',
+                sortable: true,
+                filter: true,
+                cellRenderer: 'UserIdRenderer',
+            },
+            {
+                headerName: 'Failure Likelihood',
                 field: 'Likelihood',
                 sortable: true,
                 filter: true,
                 cellRenderer: 'RatingRenderer',
+            },
+            {
+                headerName: 'Frequency',
+                sortable: true,
+                filter: true,
+                cellRenderer: 'ControlFrequencyRenderer',
+            },
+            {
+                headerName: 'Is Manual',
+                field: 'IsManual',
+                sortable: true,
+                filter: true,
+                cellRenderer: 'TrueFalseRenderer',
             },
         ]
     }

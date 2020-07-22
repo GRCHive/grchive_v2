@@ -48,3 +48,24 @@ export function createEmptyControl() : RawControl {
         Description: '',
     }
 }
+
+export function controlTypeToString(ct : ControlType) : string {
+    switch (ct) {
+        case ControlType.CTAccess:
+            return 'Access'
+        case ControlType.CTAuthorization:
+            return 'Authorization'
+        case ControlType.CTConfiguration:
+            return 'Configuration'
+        case ControlType.CTGitc:
+            return 'GITC'
+        case ControlType.CTInterface:
+            return 'Interface'
+        case ControlType.CTManagementReview:
+            return 'Management Review'
+        case ControlType.CTReconciliation:
+            return 'Reconciliation'
+        case ControlType.CTReport:
+            return 'Report/IPE'
+    }
+}
