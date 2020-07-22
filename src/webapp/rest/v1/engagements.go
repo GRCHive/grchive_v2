@@ -63,6 +63,11 @@ func (w *WebappApplication) apiv1ListAllOrgEngagementsForCurrentUser(c *gin.Cont
 	c.JSON(http.StatusOK, engs)
 }
 
+type CreateEngagementInputs struct {
+	NewEngagement  engagements.Engagement  `json:"new"`
+	BaseEngagement *engagements.Engagement `json:"base"`
+}
+
 func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
 	if err != nil {
@@ -73,15 +78,17 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 		return
 	}
 
-	engagement := engagements.Engagement{}
-	err = c.BindJSON(&engagement)
+	inputs := CreateEngagementInputs{}
+	err = c.BindJSON(&inputs)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
-			Context: "apiv1CreateEngagement - Read engagement from JSON body.",
+			Context: "apiv1CreateEngagement - Read engagement data from JSON body.",
 		})
 		return
 	}
+
+	engagement := &inputs.NewEngagement
 	engagement.OrgId = org.(*orgs.Organization).Id
 
 	if engagement.Roles == nil || len(*engagement.Roles) == 0 {
@@ -92,10 +99,15 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 		return
 	}
 
-	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithEngagementOverride(&engagement, c), func(tx *sqlx.Tx) error {
-		return w.backend.itf.Engagements.CreateEngagement(tx, &engagement)
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailIdWithEngagementOverride(engagement, c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Engagements.CreateEngagement(tx, engagement)
 	}, func(tx *sqlx.Tx) error {
-		return w.backend.itf.Engagements.LinkEngagementToRoles(tx, &engagement)
+		return w.backend.itf.Engagements.LinkEngagementToRoles(tx, engagement)
+	}, func(tx *sqlx.Tx) error {
+		if inputs.BaseEngagement != nil {
+			return w.backend.itf.RollForwardEngagement(tx, inputs.BaseEngagement.Id, engagement.Id)
+		}
+		return nil
 	})
 
 	if err != nil {

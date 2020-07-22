@@ -15,6 +15,15 @@
                 :disable-role-edit="editMode"
             >
             </engagement-form>
+
+            <single-engagement-finder
+                v-model="baseEngagement"
+                label="Roll-Forward From"
+                v-if="!editMode"
+                clearable
+                :org-id="parentOrgId"
+            >
+            </single-engagement-finder>
         </template>
     </generic-save-edit-dialog>
 </template>
@@ -28,12 +37,14 @@ import { RawEngagement, createEmptyEngagement, cleanRawEngagementFromJSON } from
 import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import EngagementForm from '@client/vue/types/engagements/EngagementForm.vue'
+import SingleEngagementFinder from '@client/vue/types/engagements/SingleEngagementFinder.vue'
 import { Permission } from '@client/ts/types/roles'
 
 @Component({
     components: {
         GenericSaveEditDialog,
         EngagementForm,
+        SingleEngagementFinder,
     }
 })
 export default class EngagementSaveEditDialog extends Vue {
@@ -47,6 +58,7 @@ export default class EngagementSaveEditDialog extends Vue {
     parentOrgId! : number
 
     workingCopy : RawEngagement | null = null
+    baseEngagement : RawEngagement | null = null
     saveInProgress: boolean = false
 
     get editPermissions() : Permission[] {
@@ -93,7 +105,7 @@ export default class EngagementSaveEditDialog extends Vue {
 
         this.saveInProgress = true
         if (!this.editMode) {
-            GrchiveApi.engagements.createEngagement(this.workingCopy).then(this.onSuccess).finally(() => {
+            GrchiveApi.engagements.createEngagement(this.workingCopy, this.baseEngagement).then(this.onSuccess).finally(() => {
                 this.saveInProgress = false
             })
         } else {

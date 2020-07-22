@@ -93,7 +93,7 @@ export default class OrgEngagementList extends Vue {
     showHideNew : boolean = false
 
     get permissionsForCreate() : Permission[] {
-        return [Permission.POrgEngagementCreate]
+        return [Permission.POrgEngagementCreate, Permission.POrgEngagementList]
     }
 
     saveNewEngagement(e : RawEngagement) {

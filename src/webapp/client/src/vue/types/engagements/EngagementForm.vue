@@ -56,7 +56,7 @@ import parseISO from 'date-fns/parseISO'
 @Component({
     components: {
         DateRangePicker,
-        MultiRoleFinder
+        MultiRoleFinder,
     }
 })
 export default class EngagementForm extends Vue {

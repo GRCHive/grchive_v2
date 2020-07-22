@@ -22,8 +22,11 @@ export class EngagementApiClient {
         })
     }
 
-    async createEngagement(eng : RawEngagement) : Promise<RawEngagement | null> {
-        return this.handler.post<RawEngagement>(`/orgs/${eng.OrgId}/engagements`, {json: engagementToJson(eng)}).then((resp : RawEngagement | null) => {
+    async createEngagement(eng : RawEngagement, baseEngagement : RawEngagement | null) : Promise<RawEngagement | null> {
+        return this.handler.post<RawEngagement>(`/orgs/${eng.OrgId}/engagements`, {json: {
+                new: engagementToJson(eng),
+                base: !!baseEngagement ? engagementToJson(baseEngagement) : null,
+            }}).then((resp : RawEngagement | null) => {
             if (!resp) {
                 return resp
             }

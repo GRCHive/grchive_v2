@@ -19,7 +19,7 @@
 
 import Vue from 'vue'
 import Component, { mixins } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Prop, Watch } from 'vue-property-decorator'
 import { VAutocomplete } from 'vuetify/lib'
 import { RawUser } from '@client/ts/types/users'
 import { GrchiveApi } from '@client/ts/main'
@@ -41,6 +41,7 @@ export default class SingleUserFinder extends mixins(VAutocomplete) {
         })
     }
 
+    @Watch('orgId')
     refreshValidUsers() {
         GrchiveApi.orgs.getUsersInOrg(this.orgId).then((resp : RawUser[] | null) => {
             this.validUsers = resp
