@@ -34,7 +34,6 @@ export default class CommentThreadManager extends Vue {
 
     @Watch('threadId')
     refreshThread() {
-        console.log('refresh thread:', this.threadId)
         GrchiveApi.comments.listComments(this.threadId).then((resp : RawComment[] | null) => {
             this.allComments = resp
         })

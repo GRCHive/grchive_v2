@@ -46,36 +46,44 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         },
         initializeCurrentResource(context, params : CurrentResourceInitialization) {
             if (!!params.orgId) {
-                context.dispatch('org/initializeOrgStore', params.orgId)
+                if (!context.state.org.rawOrg || context.state.org.rawOrg.Id != params.orgId) {
+                    context.dispatch('org/initializeOrgStore', params.orgId)
+                }
             } else {
                 context.commit('org/setRawOrg', null)
             }
 
             if (!!params.engagementId) {
-                context.dispatch('engagements/initializeEngagementStore', {
-                    orgId: params.orgId,
-                    engId: params.engagementId,
-                })
+                if (!context.state.engagements.rawEngagement || context.state.engagements.rawEngagement.Id != params.engagementId) {
+                    context.dispatch('engagements/initializeEngagementStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                    })
+                }
             } else {
                 context.commit('engagements/setRawEngagement', null)
             }
 
             if (!!params.riskId) {
-                context.dispatch('risks/initializeRiskStore', {
-                    orgId: params.orgId,
-                    engId: params.engagementId,
-                    riskId: params.riskId,
-                })
+                if (!context.state.risks.rawRisk || context.state.risks.rawRisk.Id != params.riskId) {
+                    context.dispatch('risks/initializeRiskStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        riskId: params.riskId,
+                    })
+                }
             } else {
                 context.commit('risks/setRawRisk', null)
             }
 
             if (!!params.controlId) {
-                context.dispatch('controls/initializeControlStore', {
-                    orgId: params.orgId,
-                    engId: params.engagementId,
-                    controlId: params.controlId,
-                })
+                if (!context.state.controls.rawControl || context.state.controls.rawControl.Id != params.controlId) {
+                    context.dispatch('controls/initializeControlStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        controlId: params.controlId,
+                    })
+                }
             } else {
                 context.commit('controls/setRawControl', null)
             }
