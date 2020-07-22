@@ -7,6 +7,9 @@
             @mouseup.stop
             @click.stop="onClick"
             :disabled="!hasPermissions"
+            :small="small"
+            :x-small="xSmall"
+            :loading="loading"
         >
             <slot v-bind:show="!!hasPermissions"></slot>
         </v-btn>

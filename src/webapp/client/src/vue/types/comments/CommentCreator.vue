@@ -15,6 +15,7 @@
                 :permissions="submitPermissions"
                 :org-id="currentOrgId"
                 :engagement-id="currentEngagementId"
+                :loading="inProgress"
                 color="success"
                 @click="submitComment"
             >
@@ -28,7 +29,7 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Prop, Watch } from 'vue-property-decorator'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 import { RawComment, CommentThreadId } from '@client/ts/types/comments'
 import { Permission } from '@client/ts/types/roles'
@@ -43,7 +44,11 @@ export default class CommentCreator extends Vue {
     @Prop({ required: true })
     threadId! : CommentThreadId
 
+    @Prop()
+    value! : RawComment
+
     commentStr : string = ''
+    inProgress: boolean = false
 
     get currentOrgId() : number {
         const org = this.$store.state.org.rawOrg
@@ -62,17 +67,45 @@ export default class CommentCreator extends Vue {
     }
 
     get submitPermissions(): Permission[] {
-        return [Permission.PCommentsCreate]
+        if (!!this.value) {
+            return [Permission.PCommentsCreate]
+        } else {
+            return [Permission.PCommentsUpdate]
+        }
+    }
+
+    onSuccess(resp : RawComment | null) {
+        if (!resp) {
+            return
+        }
+        this.$emit('new-comment', resp)
+        this.commentStr = ''
     }
 
     submitComment() {
-        GrchiveApi.comments.createComment(this.threadId, this.commentStr).then((resp : RawComment | null) => {
-            if (!resp) {
-                return
-            }
-            this.$emit('new-comment', resp)
+        this.inProgress = true
+        if (!!this.value) {
+            GrchiveApi.comments.updateComment(this.threadId, this.value.Id, this.commentStr).then(this.onSuccess).finally(() => {
+                this.inProgress = false
+            })
+        } else {
+            GrchiveApi.comments.createComment(this.threadId, this.commentStr).then(this.onSuccess).finally(() => {
+                this.inProgress = false
+            })
+        }
+    }
+
+    @Watch('value')
+    syncFromValue() {
+        if (!!this.value) {
+            this.commentStr = this.value.Content
+        } else {
             this.commentStr = ''
-        })
+        }
+    }
+
+    mounted() {
+        this.syncFromValue()
     }
 }
 

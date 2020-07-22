@@ -5,6 +5,7 @@
                 :comment="item"
                 :thread-id="threadId"
                 :key="`comment-${item.Id}`"
+                @do-delete="deleteComment(item)"
             >
             </single-comment-viewer>
 
@@ -37,6 +38,10 @@ export default class CommentThreadViewer extends Vue {
 
     @Prop({ required: true })
     threadId! : CommentThreadId
+
+    deleteComment(comment : RawComment) {
+        this.$emit('update:comments', this.comments.filter((ele : RawComment) => ele.Id != comment.Id))
+    }
 }
 
 </script>

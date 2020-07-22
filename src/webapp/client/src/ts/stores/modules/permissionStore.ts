@@ -110,12 +110,12 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
                 }
 
                 let engMap = orgMap[engagementId]
-                let hasPermission : boolean = false
+                let hasPermission : boolean = true
                 for (let p of permissions) {
                     if (!(p in engMap)) {
                         return null
                     }
-                    hasPermission = hasPermission || engMap[p]
+                    hasPermission = hasPermission && engMap[p]
                 }
                 return hasPermission
             }

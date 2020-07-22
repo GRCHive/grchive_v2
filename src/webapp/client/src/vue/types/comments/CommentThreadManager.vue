@@ -4,7 +4,7 @@
             <v-row v-if="show">
                 <v-col cols="8">
                     <comment-thread-viewer
-                        :comments="allComments"
+                        :comments.sync="allComments"
                         :thread-id="threadId"
                     >
                     </comment-thread-viewer>

@@ -39,6 +39,20 @@ export class CommentApiClient {
             cleanRawCommentFromJson(resp)
             return resp
         })
-       
+    }
+
+    async updateComment(id : CommentThreadId, commentId : number, content : string) : Promise<RawComment | null> {
+         return this.handler.put<RawComment>(`${threadIdToUrl(id)}/${commentId}`, { json: content }).then((resp : RawComment | null) => {
+            if (!resp) {
+                return null
+            }
+
+            cleanRawCommentFromJson(resp)
+            return resp
+        })
+    }
+
+    deleteComment(id : CommentThreadId, commentId : number) : Promise<void | null> {
+         return this.handler.delete<void>(`${threadIdToUrl(id)}/${commentId}`, {})
     }
 }
