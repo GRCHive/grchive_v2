@@ -10,7 +10,8 @@ func (m *RiskManager) UpdateRisk(tx *sqlx.Tx, risk *Risk) error {
 		SET name = :name,
 			human_id = :human_id,
 			severity = :severity,
-			severity_justification = :severity_justification
+			severity_justification = :severity_justification,
+			description = :description
 		WHERE id = :id
 	`, risk)
 	return err

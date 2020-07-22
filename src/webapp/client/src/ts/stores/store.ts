@@ -7,6 +7,7 @@ import { AppLayoutStoreModule, AppLayoutStoreState } from '@client/ts/stores/mod
 import { OrgStoreModule, OrgStoreState } from '@client/ts/stores/modules/orgStore'
 import { EngagementStoreModule, EngagementStoreState } from '@client/ts/stores/modules/engagementStore'
 import { RiskStoreModule, RiskStoreState } from '@client/ts/stores/modules/riskStore'
+import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules/controlStore'
 
 export interface RootState {
     user: UserStoreState
@@ -16,12 +17,14 @@ export interface RootState {
     permission: PermissionStoreState
     engagements: EngagementStoreState
     risks: RiskStoreState
+    controls: ControlStoreState
 }
 
 export interface CurrentResourceInitialization {
     orgId? : number
     engagementId?: number
     riskId?: number
+    controlId?: number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -34,6 +37,7 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         permission: PermissionStoreModule,
         engagements: EngagementStoreModule,
         risks: RiskStoreModule,
+        controls: ControlStoreModule,
     },
     actions: {
         initialize(context) {
@@ -64,6 +68,16 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                 })
             } else {
                 context.commit('risks/setRawRisk', null)
+            }
+
+            if (!!params.controlId) {
+                context.dispatch('controls/initializeControlStore', {
+                    orgId: params.orgId,
+                    engId: params.engagementId,
+                    controlId: params.controlId,
+                })
+            } else {
+                context.commit('controls/setRawControl', null)
             }
         }
     },

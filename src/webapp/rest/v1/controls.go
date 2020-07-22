@@ -67,3 +67,79 @@ func (w *WebappApplication) apiv1CreateControl(c *gin.Context) {
 
 	c.JSON(http.StatusOK, control)
 }
+
+func (w *WebappApplication) apiv1GetControl(c *gin.Context) {
+	control, err := w.middleware.GetResourceFromContext(c, backend.RIControl)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetControl - Obtain control in context",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, control.(*controls.Control))
+}
+
+func (w *WebappApplication) apiv1UpdateControl(c *gin.Context) {
+	currentControl, err := w.middleware.GetResourceFromContext(c, backend.RIControl)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateControl - Obtain control in context",
+		})
+		return
+	}
+
+	control := controls.Control{}
+	err = c.BindJSON(&control)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateControl - Read control from JSON body.",
+		})
+		return
+	}
+
+	tCurrentControl := currentControl.(*controls.Control)
+	control.Id = tCurrentControl.Id
+	control.EngagementId = tCurrentControl.EngagementId
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Controls.UpdateControl(tx, &control)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateControl - Update control",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, control)
+}
+
+func (w *WebappApplication) apiv1DeleteControl(c *gin.Context) {
+	currentControl, err := w.middleware.GetResourceFromContext(c, backend.RIControl)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1DeleteControl - Obtain control in context",
+		})
+		return
+	}
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Controls.DeleteControl(tx, currentControl.(*controls.Control).Id)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1DeleteControl - Delete control",
+		})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}

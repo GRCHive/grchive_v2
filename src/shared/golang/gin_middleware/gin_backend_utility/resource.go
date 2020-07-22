@@ -3,6 +3,7 @@ package gin_backend_utility
 import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
+	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
@@ -90,6 +91,9 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 		switch resource {
 		case backend.RIRisk:
 			trsc := rsc.(*risks.Risk)
+			mismatch = trsc.EngagementId != tengagement.Id
+		case backend.RIControl:
+			trsc := rsc.(*controls.Control)
 			mismatch = trsc.EngagementId != tengagement.Id
 		default:
 			mismatch = true

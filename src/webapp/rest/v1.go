@@ -165,6 +165,25 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 						controlsR.POST("/",
 							w.acl.ACLUserHasPermissions(roles.PControlsCreate),
 							w.apiv1CreateControl)
+
+						singleControlR := controlsR.Group("/:controlId",
+							w.middleware.LoadResourceIntoContext(backend.RIControl, "controlId"),
+							w.middleware.CheckResourcePartOfEngagement(backend.RIControl),
+						)
+
+						{
+							singleControlR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PControlsView),
+								w.apiv1GetControl)
+
+							singleControlR.PUT("/",
+								w.acl.ACLUserHasPermissions(roles.PControlsUpdate),
+								w.apiv1UpdateControl)
+
+							singleControlR.DELETE("/",
+								w.acl.ACLUserHasPermissions(roles.PControlsDelete),
+								w.apiv1DeleteControl)
+						}
 					}
 				}
 
