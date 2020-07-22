@@ -56,7 +56,7 @@ export default class DateTimePicker extends Vue {
 
     @Watch('value')
     syncValue() {
-        if (!!this.fpInstance) {
+        if (!!this.fpInstance && this.value != '') {
             this.fpInstance.setDate(parseISO(this.value))
         }
         this.updateValue(true)
