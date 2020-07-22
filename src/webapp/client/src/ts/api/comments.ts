@@ -27,4 +27,16 @@ export class CommentApiClient {
             return resp
         })
     }
+
+    async createComment(id : CommentThreadId, content : string) : Promise<RawComment | null> {
+         return this.handler.post<RawComment>(threadIdToUrl(id), { json: content }).then((resp : RawComment | null) => {
+            if (!resp) {
+                return null
+            }
+
+            cleanRawCommentFromJson(resp)
+            return resp
+        })
+       
+    }
 }

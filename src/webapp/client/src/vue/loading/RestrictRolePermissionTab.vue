@@ -1,36 +1,34 @@
 <template>
-    <v-tab
-        :to="finalTo"
-    >
-        <v-row justify="center" v-if="isLoading">
-            <v-progress-circular size=16 indeterminate>
-            </v-progress-circular>
-        </v-row>
-        <div v-else>
+    <div style="position: relative; display: flex;">
+        <v-tab
+            :to="to"
+        >
             <slot></slot>
+        </v-tab>
 
-            <v-overlay
-                absolute
-                :value="!hasPermissions"
-            >
-                <div>
-                    <v-tooltip max-width="400px" bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-icon
-                                color="error"
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                mdi-lock
-                            </v-icon>
-                        </template>
-                        <span>{{ tooltipStr }}</span>
-                    </v-tooltip>
-                </div>
-            </v-overlay>
-        </div>
-    </v-tab>
+        <v-overlay
+            absolute
+            :value="isLoading || !hasPermissions"
+        >
+            <v-row justify="center" v-if="isLoading">
+                <v-progress-circular size=16 indeterminate>
+                </v-progress-circular>
+            </v-row>
 
+            <v-tooltip max-width="400px" bottom v-else>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-icon
+                        color="error"
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        mdi-lock
+                    </v-icon>
+                </template>
+                <span>{{ tooltipStr }}</span>
+            </v-tooltip>
+        </v-overlay>
+    </div>
 </template>
 
 <script lang="ts">
@@ -41,18 +39,6 @@ import { VTab } from 'vuetify/lib'
 
 @Component
 export default class RestrictRolePermissionTab extends mixins(VTab, RestrictRolePermissionBase) {
-
-    // This is sort of a hack because the 'disabled' property on the vuetify tab doesn't seem to work.
-    get finalTo() : any {
-        if (this.isLoading || !this.hasPermissions) {
-            return {
-                path: '#',
-            }
-        } else {
-            //@ts-ignore
-            return this.to
-        }
-    }
 }
 
 </script>

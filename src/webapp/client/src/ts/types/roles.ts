@@ -30,6 +30,7 @@ export enum Permission {
 	PCommentsDelete              = "org.comments.delete",
 	PCommentsCreate              = "org.comments.create",
 	PCommentsList                = "org.comments.list",
+    PNull = "null",
 }
 
 export interface Role {

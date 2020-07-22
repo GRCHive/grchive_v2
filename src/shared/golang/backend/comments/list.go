@@ -6,7 +6,7 @@ func (m *CommentManager) GetCommentsForThread(threadId int64) ([]*Comment, error
 		SELECT *
 		FROM comments
 		WHERE thread_id = $1
-		ORDER BY id DESC
+		ORDER BY id ASC
 	`, threadId)
 	return comments, err
 }

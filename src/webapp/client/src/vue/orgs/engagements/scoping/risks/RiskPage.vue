@@ -147,7 +147,7 @@ export default class RiskPage extends Vue {
     }
 
     get commentPermissions() : Permission[] {
-        return [Permission.PRisksView, Permission.PCommentsList]
+        return [Permission.PRisksView, Permission.PCommentsList, Permission.POrgUsersView]
     }
 
     onDeleteRisk() {
