@@ -5,6 +5,7 @@
         :edit-mode="editMode"
         @save-edit="save"
         @cancel-edit="cancel"
+        :edit-permissions="editPermissions"
     >
         <template v-slot:form="{ canEdit }">
             <org-form
@@ -26,6 +27,7 @@ import { RawOrganization, createEmptyOrg } from '@client/ts/types/orgs'
 import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import OrgForm from '@client/vue/types/orgs/OrgForm.vue'
+import { Permission } from '@client/ts/types/roles'
 
 @Component({
     components: {
@@ -45,6 +47,10 @@ export default class OrgSaveEditDialog extends Vue {
 
     workingCopy : RawOrganization | null = null
     saveInProgress: boolean = false
+
+    get editPermissions() : Permission[] {
+        return [Permission.POrgProfileUpdate]
+    }
 
     @Watch('value')
     syncWorkingCopy() {

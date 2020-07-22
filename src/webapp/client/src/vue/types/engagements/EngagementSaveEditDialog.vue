@@ -3,6 +3,7 @@
         title="Engagement"
         :op-pending="saveInProgress"
         :edit-mode="editMode"
+        :edit-permissions="editPermissions"
         @save-edit="save"
         @cancel-edit="cancel"
     >
@@ -27,6 +28,7 @@ import { RawEngagement, createEmptyEngagement, cleanRawEngagementFromJSON } from
 import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import EngagementForm from '@client/vue/types/engagements/EngagementForm.vue'
+import { Permission } from '@client/ts/types/roles'
 
 @Component({
     components: {
@@ -46,6 +48,10 @@ export default class EngagementSaveEditDialog extends Vue {
 
     workingCopy : RawEngagement | null = null
     saveInProgress: boolean = false
+
+    get editPermissions() : Permission[] {
+        return [Permission.POrgEngagementUpdate]
+    }
 
     @Watch('value')
     syncWorkingCopy() {

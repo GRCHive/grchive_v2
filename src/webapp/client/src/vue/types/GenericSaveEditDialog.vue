@@ -14,6 +14,7 @@
             <edit-state-buttons
                 v-model="canEdit"
                 :edit-pending="opPending"
+                :edit-permissions="editPermissions"
                 :disabled="!formValid"
                 :edit-mode="editMode"
                 @save-edit="save"
@@ -29,6 +30,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
+import { Permission } from '@client/ts/types/roles'
 import EditStateButtons from '@client/vue/shared/EditStateButtons.vue'
 
 @Component({
@@ -45,6 +47,9 @@ export default class GenericSaveEditDialog extends Vue {
 
     @Prop({ type: Boolean, default: false })
     editMode!: boolean
+
+    @Prop({ type: Array, default: []})
+    editPermissions!: Permission[]
 
     canEdit : boolean = false
     formValid: boolean = false

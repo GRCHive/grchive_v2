@@ -3,6 +3,7 @@
         title="Risk"
         :op-pending="saveInProgress"
         :edit-mode="editMode"
+        :edit-permissions="editPermissions"
         @save-edit="save"
         @cancel-edit="cancel"
     >
@@ -25,6 +26,7 @@ import { Watch, Prop } from 'vue-property-decorator'
 import { RawRisk, createEmptyRisk } from '@client/ts/types/risks' import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import RiskForm from '@client/vue/types/risks/RiskForm.vue'
+import { Permission } from '@client/ts/types/roles'
 
 @Component({
     components: {
@@ -47,6 +49,10 @@ export default class RiskSaveEditDialog extends Vue {
 
     workingCopy : RawRisk | null = null
     saveInProgress: boolean = false
+
+    get editPermissions() : Permission[] {
+        return [Permission.PRisksUpdate]
+    }
 
     @Watch('value')
     syncWorkingCopy() {

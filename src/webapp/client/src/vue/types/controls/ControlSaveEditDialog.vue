@@ -3,6 +3,7 @@
         title="Control"
         :op-pending="saveInProgress"
         :edit-mode="editMode"
+        :edit-permissions="editPermissions"
         @save-edit="save"
         @cancel-edit="cancel"
     >
@@ -27,6 +28,7 @@ import { RawControl, createEmptyControl } from '@client/ts/types/controls'
 import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import ControlForm from '@client/vue/types/controls/ControlForm.vue'
+import { Permission } from '@client/ts/types/roles'
 
 @Component({
     components: {
@@ -49,6 +51,10 @@ export default class ControlSaveEditDialog extends Vue {
 
     workingCopy : RawControl | null = null
     saveInProgress: boolean = false
+
+    get editPermissions() : Permission[] {
+        return [Permission.PControlsUpdate]
+    }
 
     @Watch('value')
     syncWorkingCopy() {
