@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/comments"
+	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
@@ -56,6 +57,9 @@ func (w *WebappApplication) getCommentThreadIdFromContext(resource backend.Resou
 	case backend.RIRisk:
 		trsc := rsc.(*risks.Risk)
 		threadId, err = w.backend.itf.Comments.GetThreadIdForRisk(trsc.Id, teng.Id, torg.Id)
+	case backend.RIControl:
+		trsc := rsc.(*controls.Control)
+		threadId, err = w.backend.itf.Comments.GetThreadIdForControl(trsc.Id, teng.Id, torg.Id)
 	default:
 		err = errors.New("Unsupported resource for comments.")
 	}

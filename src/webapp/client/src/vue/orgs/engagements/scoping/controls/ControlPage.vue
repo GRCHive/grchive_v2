@@ -45,10 +45,26 @@
             </v-list-item>
             <v-divider></v-divider>
 
-            <v-tabs>
-                <v-tab :to="overviewTo">Overview</v-tab>
-            </v-tabs>
-            <router-view></router-view>
+            <loading-container
+                :loading="isLoading"
+            >
+                <template v-slot:default="{show}">
+                    <div v-if="show">
+                        <v-tabs>
+                            <v-tab :to="overviewTo">Overview</v-tab>
+                            <restrict-role-permission-tab
+                                :permissions="commentPermissions"
+                                :to="commentsTo"
+                                :org-id="currentOrg.Id"
+                                :engagement-id="currentEngagement.Id"
+                            >
+                                Comments
+                            </restrict-role-permission-tab>
+                        </v-tabs>
+                        <router-view></router-view>
+                    </div>
+                </template>
+            </loading-container>
         </template>
     </scoping-template>
 </template>
@@ -59,23 +75,31 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import ScopingTemplate from '@client/vue/orgs/engagements/scoping/ScopingTemplate.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
+import RestrictRolePermissionTab from '@client/vue/loading/RestrictRolePermissionTab.vue'
 import { Permission } from '@client/ts/types/roles'
 import { RawControl } from '@client/ts/types/controls'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { GrchiveApi } from '@client/ts/main'
 import { RawEngagement } from '@client/ts/types/engagements'
 import ConfirmationDialog from '@client/vue/shared/ConfirmationDialog.vue'
+import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 
 @Component({
     components: {
         ScopingTemplate,
         RestrictRolePermissionButton,
+        RestrictRolePermissionTab,
         ConfirmationDialog,
+        LoadingContainer
     }
 })
 export default class ControlPage extends Vue {
     showHideDelete : boolean = false
     deleteInProgress: boolean = false
+
+    get isLoading() : boolean {
+        return !this.currentOrg || !this.currentEngagement || !this.currentControl
+    }
 
     get currentOrg() : RawOrganization | null {
         return this.$store.state.org.rawOrg
@@ -112,6 +136,17 @@ export default class ControlPage extends Vue {
             name: 'controlOverview',
             params: this.$route.params,
         }
+    }
+
+    get commentsTo() : any {
+        return {
+            name: 'controlComments',
+            params: this.$route.params,
+        }
+    }
+
+    get commentPermissions() : Permission[] {
+        return [Permission.PControlsView, Permission.PCommentsList, Permission.POrgUsersView]
     }
 
     onDeleteControl() {

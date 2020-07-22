@@ -37,6 +37,7 @@ const RiskComments = () => import( /* webpackChunkName: "RiskComments" */ '@clie
 const ScopingControls = () => import( /* webpackChunkName: "ScopingControls" */ '@client/vue/orgs/engagements/scoping/ScopingControls.vue')
 const ControlPage = () => import( /* webpackChunkName: "ControlPage" */ '@client/vue/orgs/engagements/scoping/controls/ControlPage.vue')
 const ControlOverview = () => import( /* webpackChunkName: "ControlOverview" */ '@client/vue/orgs/engagements/scoping/controls/ControlOverview.vue')
+const ControlComments = () => import( /* webpackChunkName: "ControlComments" */ '@client/vue/orgs/engagements/scoping/controls/ControlComments.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
@@ -114,6 +115,11 @@ const router = new VueRouter({
                     name: 'controlOverview',
                     path: 'overview',
                     component: ControlOverview,
+                },
+                {
+                    name: 'controlComments',
+                    path: 'comments',
+                    component: ControlComments,
                 }
             ]
         },

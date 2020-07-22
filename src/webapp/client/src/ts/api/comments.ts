@@ -7,6 +7,8 @@ function threadIdToUrl(id : CommentThreadId) : string {
     let apiUrl : string =''
     if (!!id.riskId) {
         apiUrl = `${baseUrl}/risks/${id.riskId}`
+    } else if (!!id.controlId) {
+        apiUrl = `${baseUrl}/controls/${id.controlId}`
     }
     return `${apiUrl}/comments`
 }

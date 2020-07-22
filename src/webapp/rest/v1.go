@@ -189,6 +189,12 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							singleControlR.DELETE("/",
 								w.acl.ACLUserHasPermissions(roles.PControlsDelete),
 								w.apiv1DeleteControl)
+
+							w.addCommentEndpoints(
+								backend.RIControl,
+								singleControlR,
+								w.acl.ACLUserHasPermissions(roles.PControlsView),
+							)
 						}
 					}
 				}
