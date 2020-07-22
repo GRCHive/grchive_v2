@@ -3,6 +3,7 @@ package backend
 import (
 	"github.com/jmoiron/sqlx"
 	"gitlab.com/grchive/grchive-v2/shared/backend/audit"
+	"gitlab.com/grchive/grchive-v2/shared/backend/comments"
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
@@ -22,6 +23,7 @@ type BackendInterface struct {
 	Engagements *engagements.EngagementManager
 	Risks       *risks.RiskManager
 	Controls    *controls.ControlManager
+	Comments    *comments.CommentManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -34,6 +36,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Engagements: engagements.CreateEngagementManager(db),
 		Risks:       risks.CreateRiskManager(db),
 		Controls:    controls.CreateControlManager(db),
+		Comments:    comments.CreateCommentManager(db),
 	}
 }
 

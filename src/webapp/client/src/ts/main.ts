@@ -32,6 +32,7 @@ const OrgEngagement = () => import( /* webpackChunkName: "OrgEngagement" */ '@cl
 const ScopingRisks = () => import( /* webpackChunkName: "ScopingRisks" */ '@client/vue/orgs/engagements/scoping/ScopingRisks.vue')
 const RiskPage = () => import( /* webpackChunkName: "RiskPage" */ '@client/vue/orgs/engagements/scoping/risks/RiskPage.vue')
 const RiskOverview = () => import( /* webpackChunkName: "RiskOverview" */ '@client/vue/orgs/engagements/scoping/risks/RiskOverview.vue')
+const RiskComments = () => import( /* webpackChunkName: "RiskComments" */ '@client/vue/orgs/engagements/scoping/risks/RiskComments.vue')
 
 const ScopingControls = () => import( /* webpackChunkName: "ScopingControls" */ '@client/vue/orgs/engagements/scoping/ScopingControls.vue')
 const ControlPage = () => import( /* webpackChunkName: "ControlPage" */ '@client/vue/orgs/engagements/scoping/controls/ControlPage.vue')
@@ -91,7 +92,12 @@ const router = new VueRouter({
                     name: 'riskOverview',
                     path: 'overview',
                     component: RiskOverview,
-                }
+                },
+                {
+                    name: 'riskComments',
+                    path: 'comments',
+                    component: RiskComments,
+                },
             ]
         },
         { name: 'scopingControls', path: '/orgs/:orgId/engagements/:engId/scoping/controls', component: ScopingControls },

@@ -1,6 +1,7 @@
 <template>
     <scoping-template
         :page-name="controlId"
+        disable-default-init
     >
         <template v-slot:content>
             <v-list-item class="px-0">

@@ -153,6 +153,12 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							singleRiskR.DELETE("/",
 								w.acl.ACLUserHasPermissions(roles.PRisksDelete),
 								w.apiv1DeleteRisk)
+
+							w.addCommentEndpoints(
+								backend.RIRisk,
+								singleRiskR,
+								w.acl.ACLUserHasPermissions(roles.PRisksView),
+							)
 						}
 					}
 

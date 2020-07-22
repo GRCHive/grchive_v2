@@ -35,6 +35,10 @@ const (
 	PControlsDelete                 = "org.controls.delete"
 	PControlsCreate                 = "org.controls.create"
 	PControlsList                   = "org.controls.list"
+	PCommentsUpdate                 = "org.comments.update"
+	PCommentsDelete                 = "org.comments.delete"
+	PCommentsCreate                 = "org.comments.create"
+	PCommentsList                   = "org.comments.list"
 )
 
 type RoleManager struct {

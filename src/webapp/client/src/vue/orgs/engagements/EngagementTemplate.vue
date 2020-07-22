@@ -50,6 +50,9 @@ export default class EngagementTemplate extends Vue {
     @Prop({ required: true })
     pageName! : string
 
+    @Prop({ type: Boolean, default: false })
+    disableDefaultInit!: boolean
+
     get loading() : boolean {
         return !this.currentOrg ||!this.currentEngagement
     }
@@ -74,6 +77,10 @@ export default class EngagementTemplate extends Vue {
 
     @Watch('$route')
     refreshEngagement() {
+        if (this.disableDefaultInit) {
+            return
+        }
+
         const orgId : number = Number(this.$route.params.orgId)
         const engId : number = Number(this.$route.params.engId)
         this.$store.dispatch('initializeCurrentResource', {

@@ -1,6 +1,7 @@
 <template>
     <scoping-template
         :page-name="riskId"
+        disable-default-init
     >
         <template v-slot:content>
             <v-list-item class="px-0">
@@ -44,10 +45,26 @@
             </v-list-item>
             <v-divider></v-divider>
 
-            <v-tabs>
-                <v-tab :to="overviewTo">Overview</v-tab>
-            </v-tabs>
-            <router-view></router-view>
+            <loading-container
+                :loading="isLoading"
+            >
+                <template v-slot:default="{show}">
+                    <div v-if="show">
+                        <v-tabs>
+                            <v-tab :to="overviewTo">Overview</v-tab>
+                            <restrict-role-permission-tab
+                                :permissions="commentPermissions"
+                                :to="commentsTo"
+                                :org-id="currentOrg.Id"
+                                :engagement-id="currentEngagement.Id"
+                            >
+                                Comments
+                            </restrict-role-permission-tab>
+                        </v-tabs>
+                        <router-view></router-view>
+                    </div>
+                </template>
+            </loading-container>
         </template>
     </scoping-template>
 </template>
@@ -56,25 +73,34 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import ScopingTemplate from '@client/vue/orgs/engagements/scoping/ScopingTemplate.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
+import RestrictRolePermissionTab from '@client/vue/loading/RestrictRolePermissionTab.vue'
 import { Permission } from '@client/ts/types/roles'
 import { RawRisk } from '@client/ts/types/risks'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { GrchiveApi } from '@client/ts/main'
 import { RawEngagement } from '@client/ts/types/engagements'
 import ConfirmationDialog from '@client/vue/shared/ConfirmationDialog.vue'
+import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 
 @Component({
     components: {
         ScopingTemplate,
         RestrictRolePermissionButton,
+        RestrictRolePermissionTab,
         ConfirmationDialog,
+        LoadingContainer
     }
 })
 export default class RiskPage extends Vue {
     showHideDelete : boolean = false
     deleteInProgress: boolean = false
+
+    get isLoading() : boolean {
+        return !this.currentOrg || !this.currentEngagement || !this.currentRisk
+    }
 
     get currentOrg() : RawOrganization | null {
         return this.$store.state.org.rawOrg
@@ -113,6 +139,17 @@ export default class RiskPage extends Vue {
         }
     }
 
+    get commentsTo() : any {
+        return {
+            name: 'riskComments',
+            params: this.$route.params,
+        }
+    }
+
+    get commentPermissions() : Permission[] {
+        return [Permission.PRisksView, Permission.PCommentsList]
+    }
+
     onDeleteRisk() {
         this.deleteInProgress = true
         GrchiveApi.risks.deleteRisk(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentRisk!.Id).then((resp : void | null) => {
@@ -127,6 +164,7 @@ export default class RiskPage extends Vue {
         })
     }
 
+    @Watch('$route')
     refreshData() {
         const orgId : number = Number(this.$route.params.orgId)
         const engId : number = Number(this.$route.params.engId)
