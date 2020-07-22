@@ -1,4 +1,5 @@
 import { RawOrganization } from '@client/ts/types/orgs'
+import { RawUser } from '@client/ts/types/users'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class OrgApiClient {
@@ -25,6 +26,14 @@ export class OrgApiClient {
 
     getSuborgs(orgId: number) : Promise<RawOrganization[] | null> {
         return this.handler.get(`/orgs/${orgId}/suborgs`, {})
+    }
+
+    getUsersInOrg(orgId : number) : Promise<RawUser[] | null> {
+        return this.handler.get(`/orgs/${orgId}/users`, {})
+    }
+
+    getOrgUser(orgId : number, userId : number) : Promise<RawUser | null> {
+        return this.handler.get(`/orgs/${orgId}/users/${userId}`, {})
     }
 
     // Returns a list that starts with the org that was passed in

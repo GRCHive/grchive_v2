@@ -6,6 +6,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
+	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"net/http"
 )
 
@@ -36,6 +37,18 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 		case backend.RIEngagement:
 			trsc := rsc.(*engagements.Engagement)
 			mismatch = trsc.OrgId != torg.Id
+		case backend.RIUser:
+			trsc := rsc.(*users.User)
+			mismatch, err = m.Itf.Users.IsUserInOrg(torg.Id, trsc.Id)
+			if err != nil {
+				c.AbortWithError(http.StatusBadRequest, &WebappError{
+					Err:     err,
+					Context: "CheckResourcePartOfOrg - Failed to check user in org",
+				})
+				return
+			}
+		default:
+			mismatch = true
 		}
 
 		if mismatch {
@@ -77,6 +90,8 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 		case backend.RIRisk:
 			trsc := rsc.(*risks.Risk)
 			mismatch = trsc.EngagementId != tengagement.Id
+		default:
+			mismatch = true
 		}
 
 		if mismatch {

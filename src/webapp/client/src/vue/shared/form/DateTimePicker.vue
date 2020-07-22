@@ -92,8 +92,8 @@ export default class DateTimePicker extends Vue {
             Vue.nextTick(() => {
                 this.fpInstance = flatpickr(this.$refs.dateTime, {
                     dateFormat: this.enableTime ? 
-                        'F J, Y, h:i K' :
-                        'F J, Y',
+                        'F J Y, h:i K' :
+                        'F J Y',
                     wrap: true,
                     enableTime: this.enableTime,
                 })

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend"
+	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/fusionauth"
@@ -117,4 +119,38 @@ func (w *WebappApplication) apiv1CheckCurrentUserPermissions(c *gin.Context) {
 	w.acl.ACLCheckPermissionHandler(c, hasPermission, func(err error) {
 		noPermission()
 	}, roles.PermissionArrayFromStrings(permissions...)...)
+}
+
+func (w *WebappApplication) apiv1ListOrgUsers(c *gin.Context) {
+	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1ListOrgUsers - Obtain org in context",
+		})
+		return
+	}
+
+	orgId := org.(*orgs.Organization).Id
+	users, err := w.backend.itf.Users.GetOrgUsers(orgId)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1ListOrgUsers - Obtain org users",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
+func (w *WebappApplication) apiv1GetOrgUser(c *gin.Context) {
+	user, err := w.middleware.GetResourceFromContext(c, backend.RIUser)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1ListOrgUsers - Obtain org in context",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, user.(*users.User))
 }

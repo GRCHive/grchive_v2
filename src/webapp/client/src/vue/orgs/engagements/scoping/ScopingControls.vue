@@ -1,12 +1,12 @@
 <template>
     <scoping-template
-        page-name="Risks"
+        page-name="Controls"
     >
         <template v-slot:content>
             <v-list-item class="px-0">
                 <v-list-item-content>
                     <v-list-item-title class="text-h4">
-                        Risks
+                        Controls
                     </v-list-item-title>
                 </v-list-item-content>
 
@@ -27,30 +27,31 @@
                         v-model="showHideNew"
                         persistent
                         max-width="40%"
+                        :retain-focus="false"
                     >
-                        <risk-save-edit-dialog
+                        <control-save-edit-dialog
                             :parent-org-id="currentOrg.Id"
                             :parent-engagement-id="currentEngagement.Id"
-                            @cancel-edit="showHideNew=false"
-                            @save-edit="onSaveRisk"
+                            @cancel-edit="showHideNew = false"
+                            @save-edit="onSaveControl"
                         >
-                        </risk-save-edit-dialog>
+                        </control-save-edit-dialog>
                     </v-dialog>
                 </v-list-item-action>
             </v-list-item>
             <v-divider class="mb-4"></v-divider>
 
             <loading-container
-                :loading="!allRisks"
+                :loading="!allControls"
             >
                 <template v-slot:default="{show}">
                     <full-height-base>
-                        <risk-grid
+                        <control-grid
                             v-if="show"
-                            :risks="allRisks"
+                            :controls="allControls"
                             style="height: 100%;"
                         >
-                        </risk-grid>
+                        </control-grid>
                     </full-height-base>
                 </template>
             </loading-container>
@@ -68,24 +69,24 @@ import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermis
 import { Permission } from '@client/ts/types/roles'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
-import { RawRisk } from '@client/ts/types/risks'
+import { RawControl } from '@client/ts/types/controls'
 import { GrchiveApi } from '@client/ts/main'
-import RiskSaveEditDialog from '@client/vue/types/risks/RiskSaveEditDialog.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
-import RiskGrid from '@client/vue/types/risks/RiskGrid.vue'
 import FullHeightBase from '@client/vue/shared/FullHeightBase.vue'
+import ControlSaveEditDialog from '@client/vue/types/controls/ControlSaveEditDialog.vue'
+import ControlGrid from '@client/vue/types/controls/ControlGrid.vue'
 
 @Component({
     components: {
         ScopingTemplate,
         RestrictRolePermissionButton,
-        RiskSaveEditDialog,
         LoadingContainer,
-        RiskGrid,
-        FullHeightBase
+        FullHeightBase,
+        ControlSaveEditDialog,
+        ControlGrid,
     }
 })
-export default class ScopingRisks extends Vue {
+export default class ScopingControls extends Vue {
     get currentOrg() : RawOrganization | null {
         return this.$store.state.org.rawOrg
     }
@@ -95,15 +96,15 @@ export default class ScopingRisks extends Vue {
     }
 
     showHideNew: boolean = false
-    allRisks : RawRisk[] | null = null
+    allControls : RawControl[] | null = null
 
     get permissionsForCreate() : Permission[] {
-        return [Permission.PRisksCreate]
+        return [Permission.PControlsCreate, Permission.POrgUsersList, Permission.POrgUsersView]
     }
 
-    onSaveRisk(risk : RawRisk) {
-        this.allRisks!.unshift(risk)
+    onSaveControl(control : RawControl) {
         this.showHideNew = false
+        this.allControls!.unshift(control)
     }
 
     @Watch('currentOrg')
@@ -113,8 +114,8 @@ export default class ScopingRisks extends Vue {
             return
         }
 
-        GrchiveApi.risks.listRisks(this.currentOrg.Id, this.currentEngagement.Id).then((resp : RawRisk[] | null) => {
-            this.allRisks = resp
+        GrchiveApi.controls.listControls(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawControl[] | null) => {
+            this.allControls = resp
         })
     }
 

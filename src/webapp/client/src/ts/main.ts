@@ -33,6 +33,8 @@ const ScopingRisks = () => import( /* webpackChunkName: "ScopingRisks" */ '@clie
 const RiskPage = () => import( /* webpackChunkName: "RiskPage" */ '@client/vue/orgs/engagements/scoping/risks/RiskPage.vue')
 const RiskOverview = () => import( /* webpackChunkName: "RiskOverview" */ '@client/vue/orgs/engagements/scoping/risks/RiskOverview.vue')
 
+const ScopingControls = () => import( /* webpackChunkName: "ScopingControls" */ '@client/vue/orgs/engagements/scoping/ScopingControls.vue')
+
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
 export const GrchiveApi = new ApiClient(store)
@@ -90,6 +92,7 @@ const router = new VueRouter({
                 }
             ]
         },
+        { name: 'scopingControls', path: '/orgs/:orgId/engagements/:engId/scoping/controls', component: ScopingControls },
     ],
 })
 

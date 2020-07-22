@@ -44,3 +44,28 @@ func (m *UserManager) GetUserFromId(id int64) (*User, error) {
 	err = rows.StructScan(&user)
 	return &user, err
 }
+
+func (m *UserManager) MustGetUserFromId(id int64) (*User, error) {
+	user := User{}
+	err := m.db.Get(&user, `
+		SELECT *
+		FROM users
+		WHERE id = $1
+	`, id)
+	return &user, err
+}
+
+func (m *UserManager) IsUserInOrg(orgId int64, userId int64) (bool, error) {
+	ret := false
+	err := m.db.Get(&ret, `
+		SELECT EXISTS(
+			SELECT 1
+			FROM users AS u
+			INNER JOIN user_orgs AS uo
+				ON uo.user_id = u.id
+			WHERE uo.org_id = $1
+				AND u.id = $2
+		)
+	`, orgId, userId)
+	return ret, err
+}

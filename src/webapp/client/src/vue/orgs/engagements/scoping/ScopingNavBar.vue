@@ -91,7 +91,8 @@ export default class ScopingNavBar extends Vue {
                     {
                         title: 'Controls',
                         icon: 'mdi-shield-lock-outline',
-                        disabled: true,
+                        path: 'scopingControls',
+                        params: this.baseParams,
                     },
                 ],
             },

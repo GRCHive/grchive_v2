@@ -53,7 +53,6 @@ export default class MultiRoleFinder extends mixins(VAutocomplete) {
     }
 
     onInput(v : Role[]) {
-        console.log(v)
         this.$emit('input', v)
     }
 }

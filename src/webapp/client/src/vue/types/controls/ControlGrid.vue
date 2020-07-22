@@ -6,7 +6,7 @@
         :framework-components="frameworkComponents"
         :grid-options="gridOptions"
         @first-data-rendered="onFirstDataRender"
-        @row-clicked="goToRisk"
+        @row-clicked="goToControl"
     >
     </ag-grid-vue>
 </template>
@@ -16,7 +16,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
-import { RawRisk } from '@client/ts/types/risks'
+import { RawControl } from '@client/ts/types/controls'
 import { RowEvent } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue'
 import RatingRenderer from '@client/vue/shared/grid/RatingRenderer.vue'
@@ -26,9 +26,9 @@ import RatingRenderer from '@client/vue/shared/grid/RatingRenderer.vue'
         AgGridVue,
     }
 })
-export default class RiskGrid extends Vue {
+export default class ControlGrid extends Vue {
     @Prop({required: true})    
-    risks!: RawRisk[]
+    controls!: RawControl[]
 
     get gridOptions() : any {
         return {
@@ -57,8 +57,8 @@ export default class RiskGrid extends Vue {
                 filter: true,
             },
             {
-                headerName: 'Severity',
-                field: 'Severity',
+                headerName: 'Likelihood',
+                field: 'Likelihood',
                 sortable: true,
                 filter: true,
                 cellRenderer: 'RatingRenderer',
@@ -67,23 +67,23 @@ export default class RiskGrid extends Vue {
     }
 
     get rowData() : any[] {
-        return this.risks
+        return this.controls
     }
 
     onFirstDataRender(params : any) {
         params.api.sizeColumnsToFit()
     }
 
-    goToRisk(e : RowEvent) {
+    goToControl(e : RowEvent) {
         this.$router.push({
-            name: 'riskHome',
+            name: 'controlHome',
             params: {
                 orgId: this.$route.params.orgId,
                 engId: this.$route.params.engId,
-                riskId: e.data.Id,
+                controlId: e.data.Id,
             },
         })
-        this.$emit('change-risk')
+        this.$emit('change-control')
     }
 }
 

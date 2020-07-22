@@ -82,6 +82,24 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 					w.acl.ACLUserHasPermissions(roles.POrgProfileView),
 					w.apiv1GetParentOrgs)
 
+				orgUsersR := singleOrgR.Group("/users")
+				{
+					orgUsersR.GET("/",
+						w.acl.ACLUserHasPermissions(roles.POrgUsersList),
+						w.apiv1ListOrgUsers)
+
+					singleOrgUserR := orgUsersR.Group("/:userId",
+						w.middleware.LoadResourceIntoContext(backend.RIUser, "userId"),
+						w.middleware.CheckResourcePartOfOrg(backend.RIUser),
+					)
+
+					{
+						singleOrgUserR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.POrgUsersView),
+							w.apiv1GetOrgUser)
+					}
+				}
+
 				engagementsR := singleOrgR.Group("/engagements")
 				{
 					engagementsR.GET("/",
@@ -136,6 +154,17 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 								w.acl.ACLUserHasPermissions(roles.PRisksDelete),
 								w.apiv1DeleteRisk)
 						}
+					}
+
+					controlsR := singleEngR.Group("/controls")
+					{
+						controlsR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PControlsList),
+							w.apiv1ListControls)
+
+						controlsR.POST("/",
+							w.acl.ACLUserHasPermissions(roles.PControlsCreate),
+							w.apiv1CreateControl)
 					}
 				}
 
