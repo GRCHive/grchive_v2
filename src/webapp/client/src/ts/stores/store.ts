@@ -7,6 +7,7 @@ import { AppLayoutStoreModule, AppLayoutStoreState } from '@client/ts/stores/mod
 import { OrgStoreModule, OrgStoreState } from '@client/ts/stores/modules/orgStore'
 import { EngagementStoreModule, EngagementStoreState } from '@client/ts/stores/modules/engagementStore'
 import { RiskStoreModule, RiskStoreState } from '@client/ts/stores/modules/riskStore'
+import { GeneralLedgerStoreModule, GeneralLedgerStoreState } from '@client/ts/stores/modules/glStore'
 import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules/controlStore'
 
 export interface RootState {
@@ -18,6 +19,7 @@ export interface RootState {
     engagements: EngagementStoreState
     risks: RiskStoreState
     controls: ControlStoreState
+    gl : GeneralLedgerStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -25,6 +27,7 @@ export interface CurrentResourceInitialization {
     engagementId?: number
     riskId?: number
     controlId?: number
+    glAccountId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -38,6 +41,7 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         engagements: EngagementStoreModule,
         risks: RiskStoreModule,
         controls: ControlStoreModule,
+        gl: GeneralLedgerStoreModule
     },
     actions: {
         initialize(context) {
@@ -87,6 +91,19 @@ export const RootStoreOptions : StoreOptions<RootState> = {
             } else {
                 context.commit('controls/setRawControl', null)
             }
+
+            if (!!params.glAccountId) {
+                if (!context.state.gl.rawGLAccount || context.state.gl.rawGLAccount.Id != params.glAccountId) {
+                    context.dispatch('gl/initializeGeneralLedgerStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        glAccountId: params.glAccountId,
+                    })
+                }
+            } else {
+                context.commit('gl/setRawGeneralLedger', null)
+            }
+
         }
     },
     getters: {

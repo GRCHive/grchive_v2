@@ -197,6 +197,20 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							)
 						}
 					}
+
+					glR := singleEngR.Group("/gl")
+					{
+						accountsR := glR.Group("/accs")
+						{
+							accountsR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PGLList),
+								w.apiv1ListGLAccounts)
+
+							accountsR.POST("/",
+								w.acl.ACLUserHasPermissions(roles.PGLCreate),
+								w.apiv1CreateGLAccount)
+						}
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

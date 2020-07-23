@@ -7,6 +7,7 @@ import { RoleApiClient } from '@client/ts/api/roles'
 import { RiskApiClient } from '@client/ts/api/risks'
 import { ControlApiClient } from '@client/ts/api/controls'
 import { CommentApiClient } from '@client/ts/api/comments'
+import { GeneralLedgerApiClient } from '@client/ts/api/gl'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class ApiClient {
@@ -18,6 +19,7 @@ export class ApiClient {
     risks : RiskApiClient
     controls : ControlApiClient
     comments : CommentApiClient
+    gl: GeneralLedgerApiClient
 
     store : Store<RootState>
 
@@ -31,5 +33,6 @@ export class ApiClient {
         this.risks = new RiskApiClient(this.handler)
         this.controls = new ControlApiClient(this.handler)
         this.comments = new CommentApiClient(this.handler)
+        this.gl = new GeneralLedgerApiClient(this.handler)
     }
 }

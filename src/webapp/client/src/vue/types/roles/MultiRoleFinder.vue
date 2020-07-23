@@ -39,7 +39,7 @@ export default class MultiRoleFinder extends mixins(VAutocomplete) {
         return this.validRoles.map((ele : Role) => ({
             text : ele.Name,
             value: ele,
-        })
+        }))
     }
 
     refreshValidRoles() {

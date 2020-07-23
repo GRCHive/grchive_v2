@@ -6,6 +6,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/comments"
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
+	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
@@ -24,6 +25,7 @@ type BackendInterface struct {
 	Risks       *risks.RiskManager
 	Controls    *controls.ControlManager
 	Comments    *comments.CommentManager
+	GL          *gl.GLManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -37,6 +39,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Risks:       risks.CreateRiskManager(db),
 		Controls:    controls.CreateControlManager(db),
 		Comments:    comments.CreateCommentManager(db),
+		GL:          gl.CreateGLManager(db),
 	}
 }
 

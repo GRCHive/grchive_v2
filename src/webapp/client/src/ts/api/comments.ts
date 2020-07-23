@@ -9,6 +9,12 @@ function threadIdToUrl(id : CommentThreadId) : string {
         apiUrl = `${baseUrl}/risks/${id.riskId}`
     } else if (!!id.controlId) {
         apiUrl = `${baseUrl}/controls/${id.controlId}`
+    } else if (!!id.glAccountId) {
+        if (id.glAccountId === -1) {
+            apiUrl = `${baseUrl}/gl`
+        } else {
+            apiUrl = `${baseUrl}/gl/accs/${id.glAccountId}`
+        }
     }
     return `${apiUrl}/comments`
 }

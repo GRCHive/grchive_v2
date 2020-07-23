@@ -30,6 +30,11 @@ export enum Permission {
 	PCommentsDelete              = "org.comments.delete",
 	PCommentsCreate              = "org.comments.create",
 	PCommentsList                = "org.comments.list",
+	PGLView                      = "org.gl.view",
+	PGLUpdate                    = "org.gl.update",
+	PGLDelete                    = "org.gl.delete",
+	PGLCreate                    = "org.gl.create",
+	PGLList                      = "org.gl.list",
     PNull = "null",
 }
 

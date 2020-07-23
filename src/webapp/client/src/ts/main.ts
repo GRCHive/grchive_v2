@@ -39,6 +39,10 @@ const ControlPage = () => import( /* webpackChunkName: "ControlPage" */ '@client
 const ControlOverview = () => import( /* webpackChunkName: "ControlOverview" */ '@client/vue/orgs/engagements/scoping/controls/ControlOverview.vue')
 const ControlComments = () => import( /* webpackChunkName: "ControlComments" */ '@client/vue/orgs/engagements/scoping/controls/ControlComments.vue')
 
+const ScopingGeneralLedger = () => import( /* webpackChunkName: "ScopingGeneralLedger" */ '@client/vue/orgs/engagements/scoping/ScopingGeneralLedger.vue')
+const GeneralLedgerAccounts = () => import( /* webpackChunkName: "GeneralLedgerAccounts" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccounts.vue')
+const GeneralLedgerComments = () => import( /* webpackChunkName: "GeneralLedgerComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerComments.vue')
+
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
 export const GrchiveApi = new ApiClient(store)
@@ -123,7 +127,28 @@ const router = new VueRouter({
                 }
             ]
         },
-
+        {
+            name: 'scopingGL',
+            path: '/orgs/:orgId/engagements/:engId/scoping/gl',
+            component: ScopingGeneralLedger,
+            children: [
+                {
+                    name: 'glHome',
+                    path: '',
+                    redirect: { name: 'glAccounts' }
+                },
+                {
+                    name: 'glAccounts',
+                    path: 'accs',
+                    component: GeneralLedgerAccounts
+                },
+                {
+                    name: 'glComments',
+                    path: 'comments',
+                    component: GeneralLedgerComments
+                }
+            ],
+        },
     ],
 })
 

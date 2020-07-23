@@ -104,7 +104,8 @@ export default class ScopingNavBar extends Vue {
             {
                 title: 'General Ledger',
                 icon: 'mdi-bank-outline',
-                disabled: true,
+                path: 'scopingGL',
+                params: this.baseParams,
             },
             {
                 title: 'IT',

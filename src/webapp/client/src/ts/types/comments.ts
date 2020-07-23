@@ -3,6 +3,7 @@ export interface CommentThreadId {
     engagementId : number
     riskId? : number
     controlId? : number
+    glAccountId? : number
 }
 
 export interface RawComment {

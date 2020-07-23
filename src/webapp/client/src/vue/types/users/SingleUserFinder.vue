@@ -38,7 +38,7 @@ export default class SingleUserFinder extends mixins(VAutocomplete) {
         return this.validUsers.map((ele : RawUser) => ({
             text : `${ele.FullName} (${ele.Email})`,
             value: ele,
-        })
+        }))
     }
 
     @Watch('orgId')

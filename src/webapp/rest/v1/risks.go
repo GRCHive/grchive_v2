@@ -47,7 +47,7 @@ func (w *WebappApplication) apiv1CreateRisk(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
-			Context: "apiv1CreateEngagement - Read risk from JSON body.",
+			Context: "apiv1CreateRisk - Read risk from JSON body.",
 		})
 		return
 	}
