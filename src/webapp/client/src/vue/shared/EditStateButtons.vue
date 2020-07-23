@@ -1,6 +1,6 @@
 <template>
     <v-list-item class="px-0">
-        <v-list-item-action v-if="canEdit">
+        <v-list-item-action v-if="value">
             <v-btn
                 color="error"
                 @click="cancel"
@@ -12,7 +12,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-list-item-action v-if="!canEdit">
+        <v-list-item-action v-if="!value">
             <restrict-role-permission-button
                 color="primary"
                 @click="edit"
@@ -25,7 +25,7 @@
             </restrict-role-permission-button>
         </v-list-item-action>
 
-        <v-list-item-action v-if="canEdit">
+        <v-list-item-action v-if="value">
             <v-btn
                 color="success"
                 @click="save"
@@ -52,8 +52,6 @@ import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermis
     }
 })
 export default class EditStateButtons extends Vue {
-    canEdit: boolean = false
-
     @Prop({ required: true })
     value!: boolean
 
@@ -89,8 +87,7 @@ export default class EditStateButtons extends Vue {
         if (!v && !this.editMode) {
             return
         }
-        this.canEdit = v
-        this.$emit('input', this.canEdit)
+        this.$emit('input', v)
     }
 
     edit() {

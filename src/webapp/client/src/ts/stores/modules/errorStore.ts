@@ -1,9 +1,9 @@
 import { Module } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
-import { GrchiveError, GrchiveApiError } from '@client/ts/types/errors'
+import { ErrorWrapper } from '@client/ts/error'
 
 export interface ErrorStoreState {
-    relevantErrors : GrchiveError[]
+    relevantErrors : ErrorWrapper[]
 }
 
 export const ErrorStoreModule : Module<ErrorStoreState, RootState> = {
@@ -12,8 +12,11 @@ export const ErrorStoreModule : Module<ErrorStoreState, RootState> = {
         relevantErrors: []
     }),
     mutations: {
-        addApiError(state : ErrorStoreState, err : any) {
-            state.relevantErrors.unshift(new GrchiveApiError(err))
+        addError(state : ErrorStoreState, err : ErrorWrapper) {
+            state.relevantErrors.push(err)
+        },
+        removeError(state : ErrorStoreState, errId : string) {
+            state.relevantErrors = state.relevantErrors.filter((ele : ErrorWrapper) => ele.displayId != errId)
         }
     }
 }

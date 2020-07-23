@@ -110,7 +110,7 @@ export default class OrgEngagementList extends Vue {
             this.allEngagements = null
             return
         }
-        GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[] | null) => {
+        GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[]) => {
             this.allEngagements = resp
         })
     }

@@ -23,7 +23,8 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
-import { RawRisk, createEmptyRisk } from '@client/ts/types/risks' import { GrchiveApi } from '@client/ts/main'
+import { RawRisk, createEmptyRisk } from '@client/ts/types/risks'
+import { GrchiveApi } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import RiskForm from '@client/vue/types/risks/RiskForm.vue'
 import { Permission } from '@client/ts/types/roles'
@@ -76,11 +77,7 @@ export default class RiskSaveEditDialog extends Vue {
         this.$emit('cancel-edit')
     }
 
-    onSuccess(resp : RawRisk | null) {
-        if (!resp) {
-            return
-        }
-
+    onSuccess(resp : RawRisk) {
         this.$emit('input', resp)
         this.$emit('save-edit', resp)
         this.syncWorkingCopy()

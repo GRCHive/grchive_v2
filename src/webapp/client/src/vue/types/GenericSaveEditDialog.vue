@@ -61,6 +61,10 @@ export default class GenericSaveEditDialog extends Vue {
     save() {
         this.$emit('save-edit')
     }
+
+    setCanEdit(v : boolean) {
+        this.canEdit = v
+    }
 }
 
 </script>

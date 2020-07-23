@@ -38,7 +38,7 @@ export default class SingleGlAccountFinder extends mixins(VAutocomplete) {
     @Watch('orgId')
     @Watch('engagementId')
     refreshValidAccounts() {
-        GrchiveApi.gl.listAccounts(this.orgId, this.engagementId).then((resp : RawGLAccount[] | null) => {
+        GrchiveApi.gl.listAccounts(this.orgId, this.engagementId).then((resp : RawGLAccount[]) => {
             this.validAccounts = resp
         })
     }

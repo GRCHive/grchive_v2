@@ -151,7 +151,7 @@ export default class ControlForm extends Vue {
             this.workingUser = null
         } else {
             this.loadingWorkingUser = true
-            GrchiveApi.orgs.getOrgUser(this.orgId, this.value.OwnerId).then((resp : RawUser | null) => {
+            GrchiveApi.orgs.getOrgUser(this.orgId, this.value.OwnerId).then((resp : RawUser) => {
                 this.workingUser = resp
             }).finally(() => {
                 this.loadingWorkingUser = false

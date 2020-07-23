@@ -1,5 +1,6 @@
 <template>
     <generic-save-edit-dialog
+        ref="base"
         title="General Ledger Account"
         :op-pending="saveInProgress"
         :edit-mode="editMode"
@@ -26,7 +27,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawGLAccount, createEmptyGLAccount } from '@client/ts/types/gl'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import GeneralLedgerAccountForm from '@client/vue/types/gl/GeneralLedgerAccountForm.vue'
 import { Permission } from '@client/ts/types/roles'
@@ -38,6 +39,10 @@ import { Permission } from '@client/ts/types/roles'
     }
 })
 export default class GeneralLedgerAccountSaveEditDialog extends Vue {
+    $refs! : {
+        base: GenericSaveEditDialog
+    }
+
     @Prop()
     value! : RawGLAccount | null
 
@@ -79,15 +84,19 @@ export default class GeneralLedgerAccountSaveEditDialog extends Vue {
         this.$emit('cancel-edit')
     }
 
-    onSuccess(resp : RawGLAccount | null) {
-        console.log("on success: ", resp)
-        if (!resp) {
-            return
-        }
-
+    onSuccess(resp : RawGLAccount) {
         this.$emit('input', resp)
         this.$emit('save-edit', resp)
         this.syncWorkingCopy()
+    }
+
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            callback: () => {
+                this.$refs.base.setCanEdit(true)
+            },
+            context: 'An error occurred while saving/editing a general ledger account.',
+        })
     }
 
     save() {
@@ -97,13 +106,19 @@ export default class GeneralLedgerAccountSaveEditDialog extends Vue {
 
         this.saveInProgress = true
         if (!this.editMode) {
-            GrchiveApi.gl.createAccount(this.parentOrgId, this.workingCopy).then(this.onSuccess).finally(() => {
-                this.saveInProgress = false
-            })
+            GrchiveApi.gl.createAccount(this.parentOrgId, this.workingCopy)
+                .then(this.onSuccess)
+                .catch(this.onError)
+                .finally(() => {
+                    this.saveInProgress = false
+                })
         } else {
-            GrchiveApi.gl.updateAccount(this.parentOrgId, this.workingCopy).then(this.onSuccess).finally(() => {
-                this.saveInProgress = false
-            })
+            GrchiveApi.gl.updateAccount(this.parentOrgId, this.workingCopy)
+                .then(this.onSuccess)
+                .catch(this.onError)
+                .finally(() => {
+                    this.saveInProgress = false
+                })
         }
     }
 }

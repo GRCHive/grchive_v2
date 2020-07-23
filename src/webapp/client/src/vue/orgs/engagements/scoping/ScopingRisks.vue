@@ -113,7 +113,7 @@ export default class ScopingRisks extends Vue {
             return
         }
 
-        GrchiveApi.risks.listRisks(this.currentOrg.Id, this.currentEngagement.Id).then((resp : RawRisk[] | null) => {
+        GrchiveApi.risks.listRisks(this.currentOrg.Id, this.currentEngagement.Id).then((resp : RawRisk[]) => {
             this.allRisks = resp
         })
     }

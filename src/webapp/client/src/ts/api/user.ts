@@ -10,23 +10,23 @@ export class UserApiClient {
         this.handler = handler
     }
 
-    getCurrentUser() : Promise<RawUser | null> {
+    getCurrentUser() : Promise<RawUser> {
         return this.handler.get('/users/current', {})
     }
 
-    getCurrentUserOrgs() : Promise<RawOrganization[] | null> {
+    getCurrentUserOrgs() : Promise<RawOrganization[]> {
         return this.handler.get('/users/current/orgs', {})
     }
 
-    updateCurrentUser(user : RawUser) : Promise<void | null> {
+    updateCurrentUser(user : RawUser) : Promise<void> {
         return this.handler.put('/users/current', {json : user})
     }
 
-    resendEmailVerification() : Promise<void | null> {
+    resendEmailVerification() : Promise<void> {
         return this.handler.post('/users/current/verify', {})
     }
 
-    checkCurrentUserPermissions(orgId : number, engagementId : number, permissions : Permission[]) : Promise<boolean | null> {
+    checkCurrentUserPermissions(orgId : number, engagementId : number, permissions : Permission[]) : Promise<boolean> {
         if (engagementId == -1) {
             return this.handler.get(`/users/current/orgs/${orgId}/permissions`, {
                 searchParams: qs.stringify({

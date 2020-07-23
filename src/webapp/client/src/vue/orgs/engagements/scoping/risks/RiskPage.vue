@@ -152,13 +152,11 @@ export default class RiskPage extends Vue {
 
     onDeleteRisk() {
         this.deleteInProgress = true
-        GrchiveApi.risks.deleteRisk(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentRisk!.Id).then((resp : void | null) => {
-            if (resp !== null) {
-                this.$router.replace({
-                    name: 'scopingRisks',
-                    params: this.$route.params,
-                })
-            }
+        GrchiveApi.risks.deleteRisk(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentRisk!.Id).then(() => {
+            this.$router.replace({
+                name: 'scopingRisks',
+                params: this.$route.params,
+            })
         }).finally(() => {
             this.deleteInProgress = false
         })

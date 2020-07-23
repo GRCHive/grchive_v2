@@ -35,7 +35,7 @@ export default class UserIdRenderer extends Vue {
             this.relevantUser = null
             return
         }
-        GrchiveApi.orgs.getOrgUser(orgId, this.params.value).then((resp : RawUser | null) => {
+        GrchiveApi.orgs.getOrgUser(orgId, this.params.value).then((resp : RawUser) => {
             this.relevantUser = resp
         })
     }

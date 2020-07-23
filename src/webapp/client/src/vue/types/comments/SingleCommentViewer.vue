@@ -87,7 +87,7 @@ export default class SingleCommentViewer extends Vue {
     cachedUserName : string | null = null
     get userName() : string {
         if (!this.cachedUserName) {
-            GrchiveApi.orgs.getOrgUser(this.threadId.orgId, this.comment.UserId).then((resp : RawUser | null) => {
+            GrchiveApi.orgs.getOrgUser(this.threadId.orgId, this.comment.UserId).then((resp : RawUser) => {
                 if (!resp) {
                     this.cachedUserName = 'Unknown'
                     return
@@ -144,10 +144,7 @@ export default class SingleCommentViewer extends Vue {
     }
 
     deleteComment() {
-        GrchiveApi.comments.deleteComment(this.threadId, this.comment.Id).then((resp : void | null) => {
-            if (resp === null)  {
-                return
-            }
+        GrchiveApi.comments.deleteComment(this.threadId, this.comment.Id).then(() => {
             this.$emit('do-delete')
         })
     }

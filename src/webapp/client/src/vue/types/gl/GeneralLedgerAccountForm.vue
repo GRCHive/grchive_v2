@@ -101,7 +101,7 @@ export default class GeneralLedgerAccountForm extends Vue {
     @Watch('value')
     syncParentAccountFromValue() {
         if (!!this.value.ParentAccountId) {
-            GrchiveApi.gl.getAccount(this.orgId, this.engagementId, this.value.ParentAccountId).then((resp : RawGLAccount | null) => {
+            GrchiveApi.gl.getAccount(this.orgId, this.engagementId, this.value.ParentAccountId).then((resp : RawGLAccount) => {
                 this.parentAccount = resp
             })
         } else {

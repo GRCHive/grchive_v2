@@ -7,7 +7,7 @@ export class RoleApiClient {
         this.handler = handler
     }
 
-    async listRoles(orgId : number) : Promise<Role[] | null> {
+    async listRoles(orgId : number) : Promise<Role[]> {
         return this.handler.get<Role[]>(`/orgs/${orgId}/roles`, {})
     }
 }

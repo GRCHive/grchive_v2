@@ -39,7 +39,7 @@ export default class OrgBreadcrumbs extends Vue {
 
     @Watch('org')
     refreshData() {
-        GrchiveApi.orgs.getParentOrgs(this.org.Id).then((resp : RawOrganization[] | null) => {
+        GrchiveApi.orgs.getParentOrgs(this.org.Id).then((resp : RawOrganization[]) => {
             this.parentOrgs = resp
         })
     }

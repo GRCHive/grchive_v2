@@ -43,7 +43,7 @@ export default class SingleUserFinder extends mixins(VAutocomplete) {
 
     @Watch('orgId')
     refreshValidUsers() {
-        GrchiveApi.orgs.getUsersInOrg(this.orgId).then((resp : RawUser[] | null) => {
+        GrchiveApi.orgs.getUsersInOrg(this.orgId).then((resp : RawUser[]) => {
             this.validUsers = resp
         })
     }

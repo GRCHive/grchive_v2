@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
-import { GrchiveApi } from '@client/ts/main'
 import { Permission } from '@client/ts/types/roles'
 
 @Component

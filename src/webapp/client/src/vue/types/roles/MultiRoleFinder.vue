@@ -43,7 +43,7 @@ export default class MultiRoleFinder extends mixins(VAutocomplete) {
     }
 
     refreshValidRoles() {
-        GrchiveApi.roles.listRoles(this.orgId).then((resp : Role[] | null) => {
+        GrchiveApi.roles.listRoles(this.orgId).then((resp : Role[]) => {
             this.validRoles = resp
         })
     }

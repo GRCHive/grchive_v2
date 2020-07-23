@@ -46,9 +46,11 @@ const GeneralLedgerAccountPage = () => import( /* webpackChunkName: "GeneralLedg
 const GeneralLedgerAccountOverview = () => import( /* webpackChunkName: "GeneralLedgerAccountOverview" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountOverview.vue')
 const GeneralLedgerAccountComments = () => import( /* webpackChunkName: "GeneralLedgerAccountComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountComments.vue')
 
+const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
+
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
-export const GrchiveApi = new ApiClient(store)
+export const GrchiveApi = new ApiClient()
 
 const router = new VueRouter({
     mode: 'history',
@@ -172,8 +174,16 @@ const router = new VueRouter({
                 }
             ],
         },
+        {
+            path: '*',
+            name: 'errorPage',
+            component: ErrorPage
+        },
     ],
 })
+
+import { GrchiveErrorHandler } from '@client/ts/error'
+export const ErrorHandler = new GrchiveErrorHandler(store, router)
 
 new Vue({
     router,

@@ -11,50 +11,34 @@ export class EngagementApiClient {
         this.handler = handler
     }
 
-    async listOrgEngagements(orgId : number) : Promise<RawEngagement[] | null> {
-        return this.handler.get<RawEngagement[]>(`/orgs/${orgId}/engagements`, {}).then((resp : RawEngagement[] | null) => {
-            if (!resp) {
-                return resp
-            }
-
+    async listOrgEngagements(orgId : number) : Promise<RawEngagement[]> {
+        return this.handler.get<RawEngagement[]>(`/orgs/${orgId}/engagements`, {}).then((resp : RawEngagement[]) => {
             resp.forEach(cleanRawEngagementFromJSON)
             return resp
         })
     }
 
-    async createEngagement(eng : RawEngagement, baseEngagement : RawEngagement | null) : Promise<RawEngagement | null> {
+    async createEngagement(eng : RawEngagement, baseEngagement : RawEngagement | null) : Promise<RawEngagement> {
         return this.handler.post<RawEngagement>(`/orgs/${eng.OrgId}/engagements`, {json: {
                 new: engagementToJson(eng),
                 base: !!baseEngagement ? engagementToJson(baseEngagement) : null,
-            }}).then((resp : RawEngagement | null) => {
-            if (!resp) {
-                return resp
-            }
-
+            }}).then((resp : RawEngagement) => {
             cleanRawEngagementFromJSON(resp)
             return resp
         })
     }
 
 
-    async updateEngagement(eng : RawEngagement) : Promise<RawEngagement | null> {
-        return this.handler.put<RawEngagement>(`/orgs/${eng.OrgId}/engagements/${eng.Id}`, {json: engagementToJson(eng)}).then((resp : RawEngagement | null) => {
-            if (!resp) {
-                return resp
-            }
-
+    async updateEngagement(eng : RawEngagement) : Promise<RawEngagement> {
+        return this.handler.put<RawEngagement>(`/orgs/${eng.OrgId}/engagements/${eng.Id}`, {json: engagementToJson(eng)}).then((resp : RawEngagement) => {
             cleanRawEngagementFromJSON(resp)
             return resp
         })
     }
 
 
-    async getEngagement(orgId : number, engId : number) : Promise<RawEngagement | null> {
-        return this.handler.get<RawEngagement>(`/orgs/${orgId}/engagements/${engId}`, {}).then((resp : RawEngagement | null) => {
-            if (!resp) {
-                return resp
-            }
-
+    async getEngagement(orgId : number, engId : number) : Promise<RawEngagement> {
+        return this.handler.get<RawEngagement>(`/orgs/${orgId}/engagements/${engId}`, {}).then((resp : RawEngagement) => {
             cleanRawEngagementFromJSON(resp)
             return resp
         })

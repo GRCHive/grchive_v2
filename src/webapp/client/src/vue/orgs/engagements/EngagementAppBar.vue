@@ -91,7 +91,7 @@ export default class EngagementAppBar extends Vue {
             this.allEngagements = null
             return
         }
-        GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[] | null) => {
+        GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[]) => {
             this.allEngagements = resp
         })
     }

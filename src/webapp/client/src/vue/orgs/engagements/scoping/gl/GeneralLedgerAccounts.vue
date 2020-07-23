@@ -107,7 +107,7 @@ export default class GeneralLedgerAccounts extends Vue {
             return
         }
 
-        GrchiveApi.gl.listAccounts(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawGLAccount[] | null) => {
+        GrchiveApi.gl.listAccounts(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawGLAccount[]) => {
             this.accounts = resp
         })
     }

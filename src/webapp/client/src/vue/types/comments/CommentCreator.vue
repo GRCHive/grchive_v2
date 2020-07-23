@@ -74,10 +74,7 @@ export default class CommentCreator extends Vue {
         }
     }
 
-    onSuccess(resp : RawComment | null) {
-        if (!resp) {
-            return
-        }
+    onSuccess(resp : RawComment) {
         this.$emit('new-comment', resp)
         this.commentStr = ''
     }

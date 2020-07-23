@@ -114,7 +114,7 @@ export default class ScopingControls extends Vue {
             return
         }
 
-        GrchiveApi.controls.listControls(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawControl[] | null) => {
+        GrchiveApi.controls.listControls(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawControl[]) => {
             this.allControls = resp
         })
     }

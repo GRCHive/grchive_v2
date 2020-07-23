@@ -78,11 +78,7 @@ export default class ControlSaveEditDialog extends Vue {
         this.$emit('cancel-edit')
     }
 
-    onSuccess(resp : RawControl | null) {
-        if (!resp) {
-            return
-        }
-
+    onSuccess(resp : RawControl) {
         this.$emit('input', resp)
         this.$emit('save-edit', resp)
         this.syncWorkingCopy()

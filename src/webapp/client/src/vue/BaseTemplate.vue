@@ -20,7 +20,10 @@
                     </v-progress-circular>
                 </v-row>
             </v-container>
+
         </v-main>
+
+        <error-popup-manager></error-popup-manager>
     </v-app>
 </template>
 
@@ -28,8 +31,13 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import ErrorPopupManager from '@client/vue/ErrorPopupManager.vue'
 
-@Component
+@Component({
+    components: {
+        ErrorPopupManager,
+    }
+})
 export default class BaseTemplate extends Vue {
     get isLoading() : boolean {
         return !this.$store.getters.isFinishedLoading

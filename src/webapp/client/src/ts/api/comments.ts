@@ -25,40 +25,28 @@ export class CommentApiClient {
         this.handler = handler
     }
 
-    async listComments(id : CommentThreadId) : Promise<RawComment[] | null> {
-        return this.handler.get<RawComment[]>(threadIdToUrl(id), {}).then((resp : RawComment[] | null) => {
-            if (!resp) {
-                return null
-            }
-
+    async listComments(id : CommentThreadId) : Promise<RawComment[]> {
+        return this.handler.get<RawComment[]>(threadIdToUrl(id), {}).then((resp : RawComment[]) => {
             resp.forEach(cleanRawCommentFromJson)
             return resp
         })
     }
 
-    async createComment(id : CommentThreadId, content : string) : Promise<RawComment | null> {
-         return this.handler.post<RawComment>(threadIdToUrl(id), { json: content }).then((resp : RawComment | null) => {
-            if (!resp) {
-                return null
-            }
-
+    async createComment(id : CommentThreadId, content : string) : Promise<RawComment> {
+         return this.handler.post<RawComment>(threadIdToUrl(id), { json: content }).then((resp : RawComment) => {
             cleanRawCommentFromJson(resp)
             return resp
         })
     }
 
-    async updateComment(id : CommentThreadId, commentId : number, content : string) : Promise<RawComment | null> {
-         return this.handler.put<RawComment>(`${threadIdToUrl(id)}/${commentId}`, { json: content }).then((resp : RawComment | null) => {
-            if (!resp) {
-                return null
-            }
-
+    async updateComment(id : CommentThreadId, commentId : number, content : string) : Promise<RawComment> {
+         return this.handler.put<RawComment>(`${threadIdToUrl(id)}/${commentId}`, { json: content }).then((resp : RawComment) => {
             cleanRawCommentFromJson(resp)
             return resp
         })
     }
 
-    deleteComment(id : CommentThreadId, commentId : number) : Promise<void | null> {
+    deleteComment(id : CommentThreadId, commentId : number) : Promise<void> {
          return this.handler.delete<void>(`${threadIdToUrl(id)}/${commentId}`, {})
     }
 }

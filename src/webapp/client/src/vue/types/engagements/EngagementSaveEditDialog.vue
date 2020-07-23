@@ -88,11 +88,7 @@ export default class EngagementSaveEditDialog extends Vue {
         this.$emit('cancel-edit')
     }
 
-    onSuccess(resp : RawEngagement | null) {
-        if (!resp) {
-            return
-        }
-
+    onSuccess(resp : RawEngagement) {
         this.$emit('input', resp)
         this.$emit('save-edit', resp)
         this.syncWorkingCopy()

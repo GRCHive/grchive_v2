@@ -161,13 +161,11 @@ export default class GeneralLedgerAccountPage extends Vue {
 
     onDeleteAccount() {
         this.deleteInProgress = true
-        GrchiveApi.gl.deleteAccount(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentGeneralLedgerAccount!.Id).then((resp : void | null) => {
-            if (resp !== null) {
-                this.$router.replace({
-                    name: 'glHome',
-                    params: this.$route.params,
-                })
-            }
+        GrchiveApi.gl.deleteAccount(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentGeneralLedgerAccount!.Id).then(() => {
+            this.$router.replace({
+                name: 'glHome',
+                params: this.$route.params,
+            })
         }).finally(() => {
             this.deleteInProgress = false
         })

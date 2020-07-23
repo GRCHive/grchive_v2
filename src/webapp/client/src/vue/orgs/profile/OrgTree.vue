@@ -35,7 +35,7 @@ export default class OrgTree extends Vue {
             return
         }
 
-        GrchiveApi.orgs.getSuborgs(this.currentOrg!.Id).then((resp : RawOrganization[] | null) => {
+        GrchiveApi.orgs.getSuborgs(this.currentOrg!.Id).then((resp : RawOrganization[]) => {
             this.suborgs = resp
         })
     }

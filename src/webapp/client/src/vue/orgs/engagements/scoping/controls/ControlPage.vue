@@ -151,13 +151,11 @@ export default class ControlPage extends Vue {
 
     onDeleteControl() {
         this.deleteInProgress = true
-        GrchiveApi.controls.deleteControl(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentControl!.Id).then((resp : void | null) => {
-            if (resp !== null) {
-                this.$router.replace({
-                    name: 'scopingControls',
-                    params: this.$route.params,
-                })
-            }
+        GrchiveApi.controls.deleteControl(this.currentOrg!.Id, this.currentEngagement!.Id, this.currentControl!.Id).then(() => {
+            this.$router.replace({
+                name: 'scopingControls',
+                params: this.$route.params,
+            })
         }).finally(() => {
             this.deleteInProgress = false
         })

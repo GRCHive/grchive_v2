@@ -31,7 +31,7 @@ export default class SingleEngagementFinder extends mixins(VAutocomplete) {
 
     @Watch('orgId')
     refreshValidEngagements() {
-        GrchiveApi.engagements.listOrgEngagements(this.orgId).then((resp : RawEngagement[] | null) => {
+        GrchiveApi.engagements.listOrgEngagements(this.orgId).then((resp : RawEngagement[]) => {
             this.validEngagements = resp
         })
     }

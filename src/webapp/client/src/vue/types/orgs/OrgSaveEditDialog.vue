@@ -70,11 +70,7 @@ export default class OrgSaveEditDialog extends Vue {
         this.$emit('cancel-edit')
     }
 
-    onSuccess(resp : RawOrganization | null) {
-        if (!resp) {
-            return
-        }
-
+    onSuccess(resp : RawOrganization) {
         this.$emit('input', resp)
         this.$emit('save-edit', resp)
         this.syncWorkingCopy()

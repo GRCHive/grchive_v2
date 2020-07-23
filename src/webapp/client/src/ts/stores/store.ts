@@ -2,17 +2,16 @@ import { StoreOptions } from 'vuex'
 
 import { UserStoreModule, UserStoreState } from '@client/ts/stores/modules/userStore'
 import { PermissionStoreModule, PermissionStoreState } from '@client/ts/stores/modules/permissionStore'
-import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
 import { AppLayoutStoreModule, AppLayoutStoreState } from '@client/ts/stores/modules/appLayoutStore'
 import { OrgStoreModule, OrgStoreState } from '@client/ts/stores/modules/orgStore'
 import { EngagementStoreModule, EngagementStoreState } from '@client/ts/stores/modules/engagementStore'
 import { RiskStoreModule, RiskStoreState } from '@client/ts/stores/modules/riskStore'
 import { GeneralLedgerStoreModule, GeneralLedgerStoreState } from '@client/ts/stores/modules/glStore'
 import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules/controlStore'
+import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
 
 export interface RootState {
     user: UserStoreState
-    errors: ErrorStoreState
     appLayout: AppLayoutStoreState
     org: OrgStoreState
     permission: PermissionStoreState
@@ -20,6 +19,7 @@ export interface RootState {
     risks: RiskStoreState
     controls: ControlStoreState
     gl : GeneralLedgerStoreState
+    errors : ErrorStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -34,14 +34,14 @@ export const RootStoreOptions : StoreOptions<RootState> = {
     strict: true,
     modules: {
         user: UserStoreModule,
-        errors: ErrorStoreModule,
         appLayout: AppLayoutStoreModule,
         org : OrgStoreModule,
         permission: PermissionStoreModule,
         engagements: EngagementStoreModule,
         risks: RiskStoreModule,
         controls: ControlStoreModule,
-        gl: GeneralLedgerStoreModule
+        gl: GeneralLedgerStoreModule,
+        errors: ErrorStoreModule
     },
     actions: {
         initialize(context) {
