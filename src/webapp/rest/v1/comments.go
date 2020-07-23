@@ -1,15 +1,10 @@
 package main
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/comments"
-	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
-	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
-	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
-	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
 	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
@@ -18,7 +13,7 @@ import (
 )
 
 func (w *WebappApplication) addCommentEndpoints(resource backend.ResourceIdentifier, r *gin.RouterGroup, handlers ...gin.HandlerFunc) {
-	commentR := r.Group("/comments", handlers...)
+	commentR := r.Group("/comments", append(handlers, w.middleware.LoadCommentThreadIdIntoContext(resource))...)
 	{
 		commentR.GET("/",
 			w.acl.ACLUserHasPermissions(roles.PCommentsList),
@@ -45,43 +40,8 @@ func (w *WebappApplication) addCommentEndpoints(resource backend.ResourceIdentif
 	}
 }
 
-func (w *WebappApplication) getCommentThreadIdFromContext(resource backend.ResourceIdentifier, c *gin.Context) (int64, error) {
-	org, err := w.middleware.GetResourceFromContext(c, backend.RIOrganization)
-	if err != nil {
-		return -1, err
-	}
-
-	engagement, err := w.middleware.GetResourceFromContext(c, backend.RIEngagement)
-	if err != nil {
-		return -1, err
-	}
-
-	rsc, err := w.middleware.GetResourceFromContext(c, resource)
-	if err != nil {
-		return -1, err
-	}
-
-	torg := org.(*orgs.Organization)
-	teng := engagement.(*engagements.Engagement)
-
-	var threadId int64
-
-	switch resource {
-	case backend.RIRisk:
-		trsc := rsc.(*risks.Risk)
-		threadId, err = w.backend.itf.Comments.GetThreadIdForRisk(trsc.Id, teng.Id, torg.Id)
-	case backend.RIControl:
-		trsc := rsc.(*controls.Control)
-		threadId, err = w.backend.itf.Comments.GetThreadIdForControl(trsc.Id, teng.Id, torg.Id)
-	default:
-		err = errors.New("Unsupported resource for comments.")
-	}
-
-	return threadId, err
-}
-
 func (w *WebappApplication) getCommentFromContext(resource backend.ResourceIdentifier, c *gin.Context) (*comments.Comment, error) {
-	threadId, err := w.getCommentThreadIdFromContext(resource, c)
+	threadId, err := w.middleware.GetCommentThreadIdFromContext(c)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +59,7 @@ func (w *WebappApplication) getCommentFromContext(resource backend.ResourceIdent
 
 func (w *WebappApplication) createResourceCommentsList(resource backend.ResourceIdentifier) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		threadId, err := w.getCommentThreadIdFromContext(resource, c)
+		threadId, err := w.middleware.GetCommentThreadIdFromContext(c)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 				Err:     err,
@@ -123,7 +83,7 @@ func (w *WebappApplication) createResourceCommentsList(resource backend.Resource
 
 func (w *WebappApplication) createResourceCommentsCreate(resource backend.ResourceIdentifier) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		threadId, err := w.getCommentThreadIdFromContext(resource, c)
+		threadId, err := w.middleware.GetCommentThreadIdFromContext(c)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 				Err:     err,

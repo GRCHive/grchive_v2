@@ -25,6 +25,16 @@ func (m *MiddlewareClient) GetAuditTrailId(c *gin.Context) audit.AuditTrailId {
 		ret.OrgId = &org.(*orgs.Organization).Id
 	}
 
+	eng, err := m.GetResourceFromContext(c, backend.RIEngagement)
+	if err == nil {
+		ret.EngagementId = &eng.(*engagements.Engagement).Id
+	}
+
+	threadId, err := m.GetCommentThreadIdFromContext(c)
+	if err == nil {
+		ret.ThreadId = &threadId
+	}
+
 	return ret
 }
 

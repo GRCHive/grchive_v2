@@ -9,6 +9,7 @@ import (
 type AuditTrailId struct {
 	OrgId        *int64
 	EngagementId *int64
+	ThreadId     *int64
 	UserId       *int64
 	IpAddress    *string
 }
@@ -35,6 +36,13 @@ func WrapDatabaseAuditTx(db *sqlx.DB, id AuditTrailId, fns ...utility.TxHandler)
 		_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.current_engagement_id TO %d", engId))
 		return err
 	}, func(tx *sqlx.Tx) error {
+		threadId := int64(-1)
+		if id.ThreadId != nil {
+			threadId = *id.ThreadId
+		}
+		_, err := tx.Exec(fmt.Sprintf("SET LOCAL grchive.current_thread_id TO %d", threadId))
+		return err
+	}, func(tx *sqlx.Tx) error {
 		userId := int64(-1)
 		if id.UserId != nil {
 			userId = *id.UserId
@@ -56,6 +64,7 @@ func CreateNilSystemAuditId() AuditTrailId {
 	return AuditTrailId{
 		OrgId:        nil,
 		EngagementId: nil,
+		ThreadId:     nil,
 		UserId:       nil,
 		IpAddress:    nil,
 	}
