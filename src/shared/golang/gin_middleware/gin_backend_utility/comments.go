@@ -6,6 +6,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
+	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"net/http"
@@ -42,7 +43,14 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 			return
 		}
 
-		rsc, err := m.GetResourceFromContext(c, resource)
+		var rsc interface{}
+
+		switch resource {
+		case backend.RIGeneralLedger:
+			rsc, err = m.GetGeneralLedgerFromContext(c)
+		default:
+			rsc, err = m.GetResourceFromContext(c, resource)
+		}
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
@@ -63,6 +71,9 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 		case backend.RIControl:
 			trsc := rsc.(*controls.Control)
 			threadId, err = m.Itf.Comments.GetThreadIdForControl(trsc.Id, teng.Id, torg.Id)
+		case backend.RIGeneralLedger:
+			trsc := rsc.(*gl.GeneralLedger)
+			threadId, err = m.Itf.Comments.GetThreadIdForGeneralLedger(trsc.Id, teng.Id, torg.Id)
 		default:
 			err = errors.New("Unsupported resource for comments.")
 		}

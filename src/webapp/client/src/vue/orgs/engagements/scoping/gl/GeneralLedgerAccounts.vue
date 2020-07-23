@@ -37,6 +37,13 @@
         <loading-container
             :loading="!accounts"
         >
+            <template v-slot:default="{show}">
+                <gl-account-tree-viewer
+                    v-if="show"
+                    :accounts="accounts"
+                >
+                </gl-account-tree-viewer>
+            </template>
         </loading-container>
     </div>
 </template>
@@ -54,12 +61,14 @@ import { Permission } from '@client/ts/types/roles'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 import GeneralLedgerAccountSaveEditDialog from '@client/vue/types/gl/GeneralLedgerAccountSaveEditDialog.vue'
+import GlAccountTreeViewer from '@client/vue/types/gl/GlAccountTreeViewer.vue'
 
 @Component({
     components: {
         LoadingContainer,
         RestrictRolePermissionButton,
-        GeneralLedgerAccountSaveEditDialog
+        GeneralLedgerAccountSaveEditDialog,
+        GlAccountTreeViewer
     }
 })
 export default class GeneralLedgerAccounts extends Vue {

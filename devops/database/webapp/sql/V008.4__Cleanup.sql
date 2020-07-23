@@ -1,0 +1,2 @@
+ALTER TABLE gl_accounts
+ALTER COLUMN gl_id SET NOT NULL;

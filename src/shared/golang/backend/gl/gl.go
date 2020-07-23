@@ -15,6 +15,11 @@ const (
 	GLATContra                  = 6
 )
 
+type GeneralLedger struct {
+	Id           int64 `db:"id"`
+	EngagementId int64 `db:"engagement_id"`
+}
+
 type GLAccount struct {
 	Id                  int64         `db:"id"`
 	EngagementId        int64         `db:"engagement_id"`
@@ -24,6 +29,7 @@ type GLAccount struct {
 	AccountType         GLAccountType `db:"account_type"`
 	ParentAccountId     *int64        `db:"parent_account_id"`
 	FinanciallyRelevant bool          `db:"financially_relevant"`
+	GlId                int64         `db:"gl_id"`
 }
 
 type GLManager struct {

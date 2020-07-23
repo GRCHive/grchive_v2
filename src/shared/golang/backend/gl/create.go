@@ -13,17 +13,20 @@ func (m *GLManager) CreateGLAccount(tx *sqlx.Tx, acc *GLAccount) error {
 			account_id,
 			account_type,
 			parent_account_id,
-			financially_relevant
+			financially_relevant,
+			gl_id
 		)
-		VALUES (
+		SELECT
 			:engagement_id,
 			:name,
 			:description,
 			:account_id,
 			:account_type,
 			:parent_account_id,
-			:financially_relevant
-		)
+			:financially_relevant,
+			gl.id
+		FROM general_ledger AS gl
+		WHERE gl.engagement_id = :engagement_id
 		RETURNING id
 	`, acc)
 

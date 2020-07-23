@@ -18,6 +18,7 @@ const (
 	RIEngagement
 	RIRisk
 	RIControl
+	RIGeneralLedger
 )
 
 func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (interface{}, error) {

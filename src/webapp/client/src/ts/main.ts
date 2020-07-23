@@ -128,7 +128,6 @@ const router = new VueRouter({
             ]
         },
         {
-            name: 'scopingGL',
             path: '/orgs/:orgId/engagements/:engId/scoping/gl',
             component: ScopingGeneralLedger,
             children: [

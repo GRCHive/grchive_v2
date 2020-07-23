@@ -198,8 +198,16 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 						}
 					}
 
-					glR := singleEngR.Group("/gl")
+					glR := singleEngR.Group("/gl",
+						w.middleware.LoadGeneralLedgerIntoContext,
+					)
 					{
+						w.addCommentEndpoints(
+							backend.RIGeneralLedger,
+							glR,
+							w.acl.ACLUserHasPermissions(roles.PGLList),
+						)
+
 						accountsR := glR.Group("/accs")
 						{
 							accountsR.GET("/",
