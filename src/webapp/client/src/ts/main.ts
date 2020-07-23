@@ -42,6 +42,9 @@ const ControlComments = () => import( /* webpackChunkName: "ControlComments" */ 
 const ScopingGeneralLedger = () => import( /* webpackChunkName: "ScopingGeneralLedger" */ '@client/vue/orgs/engagements/scoping/ScopingGeneralLedger.vue')
 const GeneralLedgerAccounts = () => import( /* webpackChunkName: "GeneralLedgerAccounts" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccounts.vue')
 const GeneralLedgerComments = () => import( /* webpackChunkName: "GeneralLedgerComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerComments.vue')
+const GeneralLedgerAccountPage = () => import( /* webpackChunkName: "GeneralLedgerAccountPage" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountPage.vue')
+const GeneralLedgerAccountOverview = () => import( /* webpackChunkName: "GeneralLedgerAccountOverview" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountOverview.vue')
+const GeneralLedgerAccountComments = () => import( /* webpackChunkName: "GeneralLedgerAccountComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountComments.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
@@ -145,6 +148,27 @@ const router = new VueRouter({
                     name: 'glComments',
                     path: 'comments',
                     component: GeneralLedgerComments
+                }
+            ],
+        },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/gl/accs/:accId',
+            component: GeneralLedgerAccountPage,
+            children: [
+                {
+                    name: 'glAccHome',
+                    path: '',
+                    redirect: { name: 'glAccOverview' }
+                },
+                {
+                    name: 'glAccOverview',
+                    path: 'overview',
+                    component: GeneralLedgerAccountOverview
+                },
+                {
+                    name: 'glAccComments',
+                    path: 'comments',
+                    component: GeneralLedgerAccountComments
                 }
             ],
         },

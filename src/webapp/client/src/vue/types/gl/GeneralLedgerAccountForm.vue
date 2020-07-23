@@ -64,6 +64,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { RawGLAccount, GLAccountType } from '@client/ts/types/gl'
+import { GrchiveApi } from '@client/ts/main'
 import SingleGlAccountFinder from '@client/vue/types/gl/SingleGlAccountFinder.vue'
 import * as rules from '@client/ts/frontend/formRules'
 
@@ -95,6 +96,21 @@ export default class GeneralLedgerAccountForm extends Vue {
         } else {
             this.value.ParentAccountId = null
         }
+    }
+
+    @Watch('value')
+    syncParentAccountFromValue() {
+        if (!!this.value.ParentAccountId) {
+            GrchiveApi.gl.getAccount(this.orgId, this.engagementId, this.value.ParentAccountId).then((resp : RawGLAccount | null) => {
+                this.parentAccount = resp
+            })
+        } else {
+            this.parentAccount = null
+        }
+    }
+
+    mounted() {
+        this.syncParentAccountFromValue()
     }
 
     get accountTypeItems() : any {

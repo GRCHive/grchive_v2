@@ -19,6 +19,9 @@ export const GeneralLedgerStoreModule : Module<GeneralLedgerStoreState, RootStat
     },
     actions: {
         initializeGeneralLedgerStore(context, { orgId , engId, glAccountId }) {
+            GrchiveApi.gl.getAccount(orgId, engId, glAccountId).then((resp : RawGLAccount | null) => {
+                context.commit('setRawGeneralLedger', resp)
+            })
         }
     },
 }

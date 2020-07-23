@@ -217,6 +217,31 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							accountsR.POST("/",
 								w.acl.ACLUserHasPermissions(roles.PGLCreate),
 								w.apiv1CreateGLAccount)
+
+							singleAccountR := accountsR.Group("/:accId",
+								w.middleware.LoadResourceIntoContext(backend.RIGLAccount, "accId"),
+								w.middleware.CheckResourcePartOfEngagement(backend.RIGLAccount),
+							)
+
+							{
+								singleAccountR.GET("/",
+									w.acl.ACLUserHasPermissions(roles.PGLView),
+									w.apiv1GetGLAccount)
+
+								singleAccountR.DELETE("/",
+									w.acl.ACLUserHasPermissions(roles.PGLDelete),
+									w.apiv1DeleteGLAccount)
+
+								singleAccountR.PUT("/",
+									w.acl.ACLUserHasPermissions(roles.PGLUpdate),
+									w.apiv1UpdateGLAccount)
+
+								w.addCommentEndpoints(
+									backend.RIGLAccount,
+									singleAccountR,
+									w.acl.ACLUserHasPermissions(roles.PGLView),
+								)
+							}
 						}
 					}
 				}

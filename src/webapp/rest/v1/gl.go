@@ -67,3 +67,80 @@ func (w *WebappApplication) apiv1CreateGLAccount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, acc)
 }
+
+func (w *WebappApplication) apiv1GetGLAccount(c *gin.Context) {
+	acc, err := w.middleware.GetResourceFromContext(c, backend.RIGLAccount)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv2GetGLAccount - Obtain account in context",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, acc.(*gl.GLAccount))
+}
+
+func (w *WebappApplication) apiv1DeleteGLAccount(c *gin.Context) {
+	acc, err := w.middleware.GetResourceFromContext(c, backend.RIGLAccount)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv2DeleteGLAccount - Obtain account in context",
+		})
+		return
+	}
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.GL.DeleteGLAccount(tx, acc.(*gl.GLAccount).Id)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1DeleteGLAccount - Delete account",
+		})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func (w *WebappApplication) apiv1UpdateGLAccount(c *gin.Context) {
+	acc, err := w.middleware.GetResourceFromContext(c, backend.RIGLAccount)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv2UpdateGLAccount - Obtain account in context",
+		})
+		return
+	}
+	tacc := acc.(*gl.GLAccount)
+
+	updatedAcc := gl.GLAccount{}
+	err = c.BindJSON(&updatedAcc)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateGLAccount - Read account from JSON body.",
+		})
+		return
+	}
+	updatedAcc.Id = tacc.Id
+	updatedAcc.EngagementId = tacc.EngagementId
+	updatedAcc.GlId = tacc.GlId
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.GL.UpdateGLAccount(tx, &updatedAcc)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateGLAccount - Update GL account",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedAcc)
+}

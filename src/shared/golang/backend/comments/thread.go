@@ -50,3 +50,20 @@ func (m *CommentManager) GetThreadIdForGeneralLedger(ledgerId int64, engagementI
 	`, ledgerId, engagementId, orgId)
 	return id, err
 }
+
+func (m *CommentManager) GetThreadIdForGLAccount(accId int64, engagementId int64, orgId int64) (int64, error) {
+	id := int64(-1)
+	err := m.db.Get(&id, `
+		SELECT t.thread_id
+		FROM gl_accounts_comment_threads AS t
+		INNER JOIN gl_accounts AS r
+			ON r.id = t.resource_id
+		INNER JOIN engagements AS e
+			ON e.id = r.engagement_id
+		WHERE
+			r.id = $1 AND
+			e.id = $2 AND
+			e.org_id = $3
+	`, accId, engagementId, orgId)
+	return id, err
+}

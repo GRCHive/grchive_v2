@@ -74,6 +74,9 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 		case backend.RIGeneralLedger:
 			trsc := rsc.(*gl.GeneralLedger)
 			threadId, err = m.Itf.Comments.GetThreadIdForGeneralLedger(trsc.Id, teng.Id, torg.Id)
+		case backend.RIGLAccount:
+			trsc := rsc.(*gl.GLAccount)
+			threadId, err = m.Itf.Comments.GetThreadIdForGLAccount(trsc.Id, teng.Id, torg.Id)
 		default:
 			err = errors.New("Unsupported resource for comments.")
 		}

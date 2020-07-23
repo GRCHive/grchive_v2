@@ -25,7 +25,7 @@ export default class GeneralLedgerAccountComments extends Vue {
         return {
             orgId: this.currentOrg!.Id,
             engagementId: this.currentEngagement!.Id,
-            glAccountId: this.currentGLAccount!.Id,
+            glAccountId: this.currentGeneralLedgerAccount!.Id,
         }
     }
 

@@ -80,7 +80,7 @@ export default class GlAccountTreeViewer extends Vue {
         }
 
         this.$router.push({
-            name: 'glAccountHome',
+            name: 'glAccHome',
             params: {
                 ...this.$route.params,
                 accId: `${inp[0]}`,
@@ -90,3 +90,11 @@ export default class GlAccountTreeViewer extends Vue {
 }
 
 </script>
+
+<style scoped>
+
+>>>.v-treeview-node {
+    cursor: pointer;
+}
+
+</style>

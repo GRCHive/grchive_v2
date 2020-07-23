@@ -29,6 +29,7 @@
                     :parent-org-id="currentOrg.Id"
                     @cancel-edit="showHideNew = false"
                     @save-edit="onNewAccount"
+                    :key="dialogKey"
                 >
                 </general-ledger-account-save-edit-dialog>
             </v-dialog>
@@ -86,6 +87,7 @@ export default class GeneralLedgerAccounts extends Vue {
 
     accounts : RawGLAccount[] | null = null
     showHideNew: boolean = false
+    dialogKey : number = 1
 
     onNewAccount(acc : RawGLAccount) {
         this.showHideNew = false
@@ -93,6 +95,9 @@ export default class GeneralLedgerAccounts extends Vue {
             return
         }
         this.accounts.unshift(acc)
+
+        // Need to force the dialog to regenerate to repull the list of eligible parent accounts.
+        this.dialogKey += 1
     }
 
     @Watch('currentOrg')

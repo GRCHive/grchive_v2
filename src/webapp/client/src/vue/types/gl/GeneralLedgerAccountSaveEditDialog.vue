@@ -80,6 +80,7 @@ export default class GeneralLedgerAccountSaveEditDialog extends Vue {
     }
 
     onSuccess(resp : RawGLAccount | null) {
+        console.log("on success: ", resp)
         if (!resp) {
             return
         }
@@ -100,6 +101,9 @@ export default class GeneralLedgerAccountSaveEditDialog extends Vue {
                 this.saveInProgress = false
             })
         } else {
+            GrchiveApi.gl.updateAccount(this.parentOrgId, this.workingCopy).then(this.onSuccess).finally(() => {
+                this.saveInProgress = false
+            })
         }
     }
 }

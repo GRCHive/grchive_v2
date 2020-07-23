@@ -9,3 +9,13 @@ func (m *GLManager) GetGeneralLedgerForEngagement(engagementId int64) (*GeneralL
 	`, engagementId)
 	return &ledger, err
 }
+
+func (m *GLManager) GetGLAccountFromId(id int64) (*GLAccount, error) {
+	acc := GLAccount{}
+	err := m.db.Get(&acc, `
+		SELECT *
+		FROM gl_accounts
+		WHERE id = $1
+	`, id)
+	return &acc, err
+}

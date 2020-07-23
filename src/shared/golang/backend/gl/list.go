@@ -6,6 +6,7 @@ func (m *GLManager) ListGLAccountsForEngagement(engagementId int64) ([]*GLAccoun
 		SELECT *
 		FROM gl_accounts
 		WHERE engagement_id = $1
+		ORDER BY id DESC
 	`, engagementId)
 	return accs, err
 }
