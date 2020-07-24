@@ -21,6 +21,7 @@ go_library(
         "//src/shared/golang/backend/sessions:lib",
         "//src/shared/golang/backend/users:lib",
         "//src/shared/golang/backend/utility:lib",
+        "//src/shared/golang/backend/vendors:lib",
     ],
 )
 

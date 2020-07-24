@@ -41,6 +41,10 @@ export default class ErrorWrapperDisplay extends Vue {
 
     @Prop({ type: Boolean, default: false })
     showGoBack!: boolean
+
+    goBack() {
+        this.$router.back()
+    }
 }
 
 </script>

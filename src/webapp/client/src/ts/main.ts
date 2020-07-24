@@ -49,6 +49,11 @@ const GeneralLedgerAccountOverview = () => import( /* webpackChunkName: "General
 const GeneralLedgerAccountSubaccounts = () => import( /* webpackChunkName: "GeneralLedgerAccountSubaccounts" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountSubaccounts.vue')
 const GeneralLedgerAccountComments = () => import( /* webpackChunkName: "GeneralLedgerAccountComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountComments.vue')
 
+const ScopingVendors = () => import( /* webpackChunkName: "ScopingVendors" */ '@client/vue/orgs/engagements/scoping/ScopingVendors.vue')
+const VendorPage = () => import( /* webpackChunkName: "VendorPage" */ '@client/vue/orgs/engagements/scoping/vendors/VendorPage.vue')
+const VendorOverview = () => import( /* webpackChunkName: "VendorOverview" */ '@client/vue/orgs/engagements/scoping/vendors/VendorOverview.vue')
+const VendorComments = () => import( /* webpackChunkName: "VendorComments" */ '@client/vue/orgs/engagements/scoping/vendors/VendorComments.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -183,6 +188,29 @@ const router = new VueRouter({
                 }
             ],
         },
+        { name: 'scopingVendors', path: '/orgs/:orgId/engagements/:engId/scoping/vendors', component: ScopingVendors },
+        { 
+            path: '/orgs/:orgId/engagements/:engId/scoping/vendors/:vendorId',
+            component: VendorPage,
+            children: [
+                {
+                    name: 'vendorHome',
+                    path: '',
+                    redirect: { name: 'vendorOverview' }
+                },
+                {
+                    name: 'vendorOverview',
+                    path: 'overview',
+                    component: VendorOverview,
+                },
+                {
+                    name: 'vendorComments',
+                    path: 'comments',
+                    component: VendorComments,
+                },
+            ]
+        },
+
         {
             path: '*',
             name: 'errorPage',

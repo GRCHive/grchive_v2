@@ -31,6 +31,7 @@ go_binary(
         "//src/shared/golang/backend/roles:lib",
         "//src/shared/golang/backend/sessions:lib",
         "//src/shared/golang/backend/utility:lib",
+        "//src/shared/golang/backend/vendors:lib",
         "//src/shared/golang/envconfig:lib",
         "//src/shared/golang/fusionauth:lib",
         "//src/shared/golang/gin_middleware/gin_acl:lib",

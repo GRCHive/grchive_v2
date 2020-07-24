@@ -13,6 +13,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/sessions"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
+	"gitlab.com/grchive/grchive-v2/shared/backend/vendors"
 )
 
 type BackendInterface struct {
@@ -26,6 +27,7 @@ type BackendInterface struct {
 	Controls    *controls.ControlManager
 	Comments    *comments.CommentManager
 	GL          *gl.GLManager
+	Vendors     *vendors.VendorManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -40,6 +42,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Controls:    controls.CreateControlManager(db),
 		Comments:    comments.CreateCommentManager(db),
 		GL:          gl.CreateGLManager(db),
+		Vendors:     vendors.CreateVendorManager(db),
 	}
 }
 

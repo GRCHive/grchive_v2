@@ -20,6 +20,7 @@ const (
 	RIControl
 	RIGeneralLedger
 	RIGLAccount
+	RIVendor
 )
 
 func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (interface{}, error) {
@@ -60,6 +61,12 @@ func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (inter
 			return nil, err
 		}
 		return b.GL.GetGLAccountFromId(accId)
+	case RIVendor:
+		vendorId, err := strconv.ParseInt(key, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		return b.Vendors.GetVendorFromId(vendorId)
 	default:
 		return nil, errors.New("Unsupported resource identifier.")
 	}

@@ -267,6 +267,42 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							}
 						}
 					}
+
+					vendorsR := singleEngR.Group("/vendors")
+					{
+						vendorsR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PVendorsList),
+							w.apiv1ListVendors)
+
+						vendorsR.POST("/",
+							w.acl.ACLUserHasPermissions(roles.PVendorsCreate),
+							w.apiv1CreateVendor)
+
+						singleVendorR := vendorsR.Group("/:vendorId",
+							w.middleware.LoadResourceIntoContext(backend.RIVendor, "vendorId"),
+							w.middleware.CheckResourcePartOfEngagement(backend.RIVendor),
+						)
+
+						{
+							singleVendorR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PVendorsView),
+								w.apiv1GetVendor)
+
+							singleVendorR.PUT("/",
+								w.acl.ACLUserHasPermissions(roles.PVendorsUpdate),
+								w.apiv1UpdateVendor)
+
+							singleVendorR.DELETE("/",
+								w.acl.ACLUserHasPermissions(roles.PVendorsDelete),
+								w.apiv1DeleteVendor)
+
+							w.addCommentEndpoints(
+								backend.RIVendor,
+								singleVendorR,
+								w.acl.ACLUserHasPermissions(roles.PVendorsView),
+							)
+						}
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

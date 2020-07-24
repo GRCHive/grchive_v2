@@ -9,6 +9,7 @@ import { RiskStoreModule, RiskStoreState } from '@client/ts/stores/modules/riskS
 import { GeneralLedgerStoreModule, GeneralLedgerStoreState } from '@client/ts/stores/modules/glStore'
 import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules/controlStore'
 import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
+import { VendorStoreModule, VendorStoreState } from '@client/ts/stores/modules/vendorStore'
 
 export interface RootState {
     user: UserStoreState
@@ -20,6 +21,7 @@ export interface RootState {
     controls: ControlStoreState
     gl : GeneralLedgerStoreState
     errors : ErrorStoreState
+    vendors: VendorStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -28,6 +30,7 @@ export interface CurrentResourceInitialization {
     riskId?: number
     controlId?: number
     glAccountId? : number
+    vendorId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -41,7 +44,8 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         risks: RiskStoreModule,
         controls: ControlStoreModule,
         gl: GeneralLedgerStoreModule,
-        errors: ErrorStoreModule
+        errors: ErrorStoreModule,
+        vendors: VendorStoreModule,
     },
     actions: {
         initialize(context) {
@@ -104,6 +108,17 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                 context.commit('gl/setRawGeneralLedger', null)
             }
 
+            if (!!params.vendorId) {
+                if (!context.state.vendors.rawVendor || context.state.vendors.rawVendor.Id != params.vendorId) {
+                    context.dispatch('vendors/initializeVendorStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        vendorId: params.vendorId,
+                    })
+                }
+            } else {
+                context.commit('vendors/setRawVendor', null)
+            }
         }
     },
     getters: {

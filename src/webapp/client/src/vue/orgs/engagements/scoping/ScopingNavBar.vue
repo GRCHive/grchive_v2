@@ -103,7 +103,9 @@ export default class ScopingNavBar extends Vue {
             {
                 title: 'Vendors',
                 icon: 'mdi-store',
-                disabled: true,
+                path: 'scopingVendors',
+                params: this.baseParams,
+                permissions: [Permission.PVendorsList],
             },
             {
                 title: 'General Ledger',

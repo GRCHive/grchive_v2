@@ -4,6 +4,7 @@ export interface CommentThreadId {
     riskId? : number
     controlId? : number
     glAccountId? : number
+    vendorId?: number
 }
 
 export interface RawComment {

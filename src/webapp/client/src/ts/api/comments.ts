@@ -15,6 +15,8 @@ function threadIdToUrl(id : CommentThreadId) : string {
         } else {
             apiUrl = `${baseUrl}/gl/accs/${id.glAccountId}`
         }
+    } else if (!!id.vendorId) {
+        apiUrl = `${baseUrl}/vendors/${id.vendorId}`
     }
     return `${apiUrl}/comments`
 }

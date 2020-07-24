@@ -35,6 +35,16 @@ export enum Permission {
 	PGLDelete                    = "org.gl.delete",
 	PGLCreate                    = "org.gl.create",
 	PGLList                      = "org.gl.list",
+	PVendorsView                 = "org.vendors.view",
+	PVendorsUpdate               = "org.vendors.update",
+	PVendorsDelete               = "org.vendors.delete",
+	PVendorsCreate               = "org.vendors.create",
+	PVendorsList                 = "org.vendors.list",
+	PVendorProductsView          = "org.vendors.products.view",
+	PVendorProductsUpdate        = "org.vendors.products.update",
+	PVendorProductsDelete        = "org.vendors.products.delete",
+	PVendorProductsCreate        = "org.vendors.products.create",
+	PVendorProductsList          = "org.vendors.products.list",
     PNull = "null",
 }
 
