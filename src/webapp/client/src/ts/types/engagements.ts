@@ -13,6 +13,13 @@ export interface RawEngagement {
     Roles         : Role[] | null
 }
 
+export interface RawEngagementScopingStats {
+    NumRisks :                          number
+    NumControls:                        number
+    NumGLAccounts:                      number
+    NumFinanciallyRelevantGLAccounts:   number
+}
+
 export function createEmptyEngagement() : RawEngagement {
     return {
         Id: -1,

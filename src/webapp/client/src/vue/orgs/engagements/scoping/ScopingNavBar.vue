@@ -60,7 +60,8 @@ export default class ScopingNavBar extends Vue {
             {
                 title: 'Dashboard',
                 icon: 'mdi-view-dashboard',
-                disabled: true,
+                path: 'scopingDashboard',
+                params: this.baseParams,
             },
             {
                 title: 'Relationships',

@@ -1,6 +1,7 @@
 import { ApiHttpHandler } from '@client/ts/api/handler'
 import {
     RawEngagement,
+    RawEngagementScopingStats,
     cleanRawEngagementFromJSON,
     engagementToJson
 } from '@client/ts/types/engagements'
@@ -42,5 +43,9 @@ export class EngagementApiClient {
             cleanRawEngagementFromJSON(resp)
             return resp
         })
+    }
+
+    getScopingStats(orgId: number, engId: number) : Promise<RawEngagementScopingStats> {
+        return this.handler.get<RawEngagementScopingStats>(`/orgs/${orgId}/engagements/${engId}/stats/scoping`, {})
     }
 }

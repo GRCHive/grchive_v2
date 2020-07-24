@@ -1,7 +1,7 @@
 import { Module } from 'vuex'
 import { RawControl } from '@client/ts/types/controls'
 import { RootState } from '@client/ts/stores/store'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 export interface ControlStoreState {
     rawControl : RawControl | null
@@ -19,8 +19,10 @@ export const ControlStoreModule : Module<ControlStoreState, RootState> = {
     },
     actions: {
         initializeControlStore(context, { orgId , engId, controlId }) {
-            GrchiveApi.controls.getControl(orgId, engId, controlId).then((resp : RawControl | null) => {
+            GrchiveApi.controls.getControl(orgId, engId, controlId).then((resp : RawControl) => {
                 context.commit('setRawControl', resp)
+            }).catch((err : any) => {
+                ErrorHandler.failurePageOnError(err)
             })
         }
     },

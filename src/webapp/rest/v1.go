@@ -136,6 +136,11 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 						w.acl.ACLUserHasPermissions(roles.POrgEngagementUpdate),
 						w.apiv1UpdateEngagement)
 
+					statsR := singleEngR.Group("/stats", w.acl.ACLUserHasPermissions(roles.POrgEngagementView))
+					{
+						statsR.GET("/scoping", w.apiv1GetEngagementScopingStats)
+					}
+
 					risksR := singleEngR.Group("/risks")
 					{
 						risksR.GET("/",

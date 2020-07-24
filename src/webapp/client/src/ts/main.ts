@@ -29,6 +29,8 @@ const OrgTree = () => import( /* webpackChunkName: "OrgTree" */ '@client/vue/org
 const OrgEngagementList = () => import( /* webpackChunkName: "OrgEngagementList" */ '@client/vue/orgs/engagements/OrgEngagementList.vue')
 const OrgEngagement = () => import( /* webpackChunkName: "OrgEngagement" */ '@client/vue/orgs/engagements/OrgEngagement.vue')
 
+const ScopingDashboard = () => import( /* webpackChunkName: "ScopingDashboard" */ '@client/vue/orgs/engagements/scoping/ScopingDashboard.vue')
+
 const ScopingRisks = () => import( /* webpackChunkName: "ScopingRisks" */ '@client/vue/orgs/engagements/scoping/ScopingRisks.vue')
 const RiskPage = () => import( /* webpackChunkName: "RiskPage" */ '@client/vue/orgs/engagements/scoping/risks/RiskPage.vue')
 const RiskOverview = () => import( /* webpackChunkName: "RiskOverview" */ '@client/vue/orgs/engagements/scoping/risks/RiskOverview.vue')
@@ -88,7 +90,8 @@ const router = new VueRouter({
         },
         { name: 'orgEngagements', path: '/orgs/:orgId/engagements', component: OrgEngagementList },
         { name: 'orgSingleEngagement', path: '/orgs/:orgId/engagements/:engId', component: OrgEngagement },
-        { name: 'scopingHome', path: '/orgs/:orgId/engagements/:engId/scoping', redirect: { name : 'scopingRisks' }},
+        { name: 'scopingHome', path: '/orgs/:orgId/engagements/:engId/scoping', redirect: { name : 'scopingDashboard' }},
+        { name: 'scopingDashboard', path: '/orgs/:orgId/engagements/:engId/scoping/dashboard', component: ScopingDashboard },
         { name: 'scopingRisks', path: '/orgs/:orgId/engagements/:engId/scoping/risks', component: ScopingRisks },
         { 
             path: '/orgs/:orgId/engagements/:engId/scoping/risks/:riskId',

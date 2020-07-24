@@ -1,7 +1,7 @@
 import { Module } from 'vuex'
 import { RawEngagement } from '@client/ts/types/engagements'
 import { RootState } from '@client/ts/stores/store'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 export interface EngagementStoreState {
     rawEngagement : RawEngagement | null
@@ -19,8 +19,10 @@ export const EngagementStoreModule : Module<EngagementStoreState, RootState> = {
     },
     actions: {
         initializeEngagementStore(context, { orgId , engId }) {
-            GrchiveApi.engagements.getEngagement(orgId, engId).then((resp : RawEngagement | null) => {
+            GrchiveApi.engagements.getEngagement(orgId, engId).then((resp : RawEngagement) => {
                 context.commit('setRawEngagement', resp)
+            }).catch((err : any) => {
+                ErrorHandler.failurePageOnError(err)
             })
         }
     },

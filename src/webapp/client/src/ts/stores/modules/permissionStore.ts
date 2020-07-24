@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Module } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { Permission } from '@client/ts/types/roles'
 
 export interface PermissionStoreState {
@@ -56,8 +56,12 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
                 return
             }
 
-            GrchiveApi.user.checkCurrentUserPermissions(orgId, engagementId, toLoad).then((resp : boolean | null) => {
+            GrchiveApi.user.checkCurrentUserPermissions(orgId, engagementId, toLoad).then((resp : boolean) => {
                 context.commit('setHasPermissions', { orgId, engagementId, permissions: toLoad, val: resp })
+            }).catch((err : any) => {
+                ErrorHandler.failurePopupOnError(err, {
+                    context: 'Failed to retrieve user permissions.'
+                })
             })
         }
     },
