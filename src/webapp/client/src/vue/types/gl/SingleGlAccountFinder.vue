@@ -4,7 +4,7 @@
         :value="value"
         @input="onInput"
         chips
-        clearable
+        :clearable="!readonly"
         deletable-chips
         filled
         :loading="!validAccounts"

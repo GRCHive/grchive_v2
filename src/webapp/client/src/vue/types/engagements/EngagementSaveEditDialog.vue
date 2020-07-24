@@ -20,7 +20,7 @@
                 v-model="baseEngagement"
                 label="Roll-Forward From"
                 v-if="!editMode"
-                clearable
+                :clearable="canEdit"
                 :org-id="parentOrgId"
             >
             </single-engagement-finder>
@@ -34,7 +34,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawEngagement, createEmptyEngagement, cleanRawEngagementFromJSON } from '@client/ts/types/engagements'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import EngagementForm from '@client/vue/types/engagements/EngagementForm.vue'
 import SingleEngagementFinder from '@client/vue/types/engagements/SingleEngagementFinder.vue'
@@ -94,6 +94,12 @@ export default class EngagementSaveEditDialog extends Vue {
         this.syncWorkingCopy()
     }
 
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            context: 'Failed to save/edit engagement.'
+        })
+    }
+
     save() {
         if (!this.workingCopy) {
             return
@@ -101,11 +107,11 @@ export default class EngagementSaveEditDialog extends Vue {
 
         this.saveInProgress = true
         if (!this.editMode) {
-            GrchiveApi.engagements.createEngagement(this.workingCopy, this.baseEngagement).then(this.onSuccess).finally(() => {
+            GrchiveApi.engagements.createEngagement(this.workingCopy, this.baseEngagement).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         } else {
-            GrchiveApi.engagements.updateEngagement(this.workingCopy).then(this.onSuccess).finally(() => {
+            GrchiveApi.engagements.updateEngagement(this.workingCopy).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         }

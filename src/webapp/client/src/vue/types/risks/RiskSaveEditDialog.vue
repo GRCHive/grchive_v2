@@ -24,7 +24,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawRisk, createEmptyRisk } from '@client/ts/types/risks'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import RiskForm from '@client/vue/types/risks/RiskForm.vue'
 import { Permission } from '@client/ts/types/roles'
@@ -83,6 +83,12 @@ export default class RiskSaveEditDialog extends Vue {
         this.syncWorkingCopy()
     }
 
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            context: 'Failed to create/edit risk.'
+        })
+    }
+
     save() {
         if (!this.workingCopy) {
             return
@@ -90,11 +96,11 @@ export default class RiskSaveEditDialog extends Vue {
 
         this.saveInProgress = true
         if (!this.editMode) {
-            GrchiveApi.risks.createRisk(this.parentOrgId, this.workingCopy!).then(this.onSuccess).finally(() => {
+            GrchiveApi.risks.createRisk(this.parentOrgId, this.workingCopy!).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         } else {
-            GrchiveApi.risks.updateRisk(this.parentOrgId, this.workingCopy!).then(this.onSuccess).finally(() => {
+            GrchiveApi.risks.updateRisk(this.parentOrgId, this.workingCopy!).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         }

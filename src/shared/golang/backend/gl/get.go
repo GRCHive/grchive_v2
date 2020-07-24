@@ -19,3 +19,41 @@ func (m *GLManager) GetGLAccountFromId(id int64) (*GLAccount, error) {
 	`, id)
 	return &acc, err
 }
+
+func (m *GLManager) GetGLSubaccountsFromId(id int64) ([]*GLAccount, error) {
+	accs := []*GLAccount{}
+	err := m.db.Select(&accs, `
+		WITH RECURSIVE subaccs AS (
+			SELECT *
+			FROM gl_accounts
+			WHERE id = $1
+			UNION
+				SELECT gl.*
+				FROM gl_accounts AS gl
+				INNER JOIN subaccs AS sub
+					ON sub.id = gl.parent_account_id
+		)
+		SELECT *
+		FROM subaccs
+	`, id)
+	return accs, err
+}
+
+func (m *GLManager) GetGLParentAccountsFromId(id int64) ([]*GLAccount, error) {
+	accs := []*GLAccount{}
+	err := m.db.Select(&accs, `
+		WITH RECURSIVE subaccs AS (
+			SELECT *
+			FROM gl_accounts
+			WHERE id = $1
+			UNION
+				SELECT gl.*
+				FROM gl_accounts AS gl
+				INNER JOIN subaccs AS sub
+					ON sub.parent_account_id = gl.id
+		)
+		SELECT *
+		FROM subaccs
+	`, id)
+	return accs, err
+}

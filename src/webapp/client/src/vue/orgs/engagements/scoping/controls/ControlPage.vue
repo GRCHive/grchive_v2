@@ -79,7 +79,7 @@ import RestrictRolePermissionTab from '@client/vue/loading/RestrictRolePermissio
 import { Permission } from '@client/ts/types/roles'
 import { RawControl } from '@client/ts/types/controls'
 import { RawOrganization } from '@client/ts/types/orgs'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { RawEngagement } from '@client/ts/types/engagements'
 import ConfirmationDialog from '@client/vue/shared/ConfirmationDialog.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
@@ -155,6 +155,10 @@ export default class ControlPage extends Vue {
             this.$router.replace({
                 name: 'scopingControls',
                 params: this.$route.params,
+            })
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to delete control.'
             })
         }).finally(() => {
             this.deleteInProgress = false

@@ -9,6 +9,11 @@
             >
                 <template v-slot:default="{show}">
                     <div v-if="show">
+                        <gl-account-breadcrumbs
+                            :acc="currentGeneralLedgerAccount"
+                            class="mt-3"
+                        >
+                        </gl-account-breadcrumbs>
                         <v-list-item class="px-0">
                             <v-list-item-content>
                                 <v-list-item-title class="text-h4">
@@ -52,6 +57,7 @@
 
                         <v-tabs>
                             <v-tab :to="overviewTo">Overview</v-tab>
+                            <v-tab :to="subaccountsTo">Subaccounts</v-tab>
                             <restrict-role-permission-tab
                                 :permissions="commentPermissions"
                                 :to="commentsTo"
@@ -80,10 +86,11 @@ import RestrictRolePermissionTab from '@client/vue/loading/RestrictRolePermissio
 import { Permission } from '@client/ts/types/roles'
 import { RawGLAccount } from '@client/ts/types/gl'
 import { RawOrganization } from '@client/ts/types/orgs'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { RawEngagement } from '@client/ts/types/engagements'
 import ConfirmationDialog from '@client/vue/shared/ConfirmationDialog.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
+import GlAccountBreadcrumbs from '@client/vue/types/gl/GlAccountBreadcrumbs.vue'
 
 @Component({
     components: {
@@ -91,7 +98,8 @@ import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
         RestrictRolePermissionButton,
         RestrictRolePermissionTab,
         ConfirmationDialog,
-        LoadingContainer
+        LoadingContainer,
+        GlAccountBreadcrumbs
     }
 })
 export default class GeneralLedgerAccountPage extends Vue {
@@ -101,6 +109,13 @@ export default class GeneralLedgerAccountPage extends Vue {
     get overviewTo() : any {
         return {
             name: 'glAccOverview',
+            params: this.$route.params,
+        }
+    }
+
+    get subaccountsTo() : any {
+        return {
+            name: 'glAccSubaccounts',
             params: this.$route.params,
         }
     }
@@ -165,6 +180,10 @@ export default class GeneralLedgerAccountPage extends Vue {
             this.$router.replace({
                 name: 'glHome',
                 params: this.$route.params,
+            })
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to delete general ledger account.'
             })
         }).finally(() => {
             this.deleteInProgress = false

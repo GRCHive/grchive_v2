@@ -34,7 +34,7 @@
 
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component
 export default class VerifyEmailBanner extends Vue {
@@ -50,7 +50,11 @@ export default class VerifyEmailBanner extends Vue {
 
     sendVerification() {
         this.sentEmail = true
-        GrchiveApi.user.resendEmailVerification()
+        GrchiveApi.user.resendEmailVerification().catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to resend email verification.'
+            })
+        })
     }
 }
 

@@ -24,7 +24,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawOrganization, createEmptyOrg } from '@client/ts/types/orgs'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import OrgForm from '@client/vue/types/orgs/OrgForm.vue'
 import { Permission } from '@client/ts/types/roles'
@@ -76,6 +76,12 @@ export default class OrgSaveEditDialog extends Vue {
         this.syncWorkingCopy()
     }
 
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            context: 'Failed to save/edit the organization profile.'
+        })
+    }
+
     save() {
         if (!this.workingCopy) {
             return
@@ -84,16 +90,16 @@ export default class OrgSaveEditDialog extends Vue {
         this.saveInProgress = true
 
         if (this.editMode) {
-            GrchiveApi.orgs.updateOrg(this.workingCopy!).then(this.onSuccess).finally(() => {
+            GrchiveApi.orgs.updateOrg(this.workingCopy!).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         } else {
             if (this.parentOrgId == -1) {
-                GrchiveApi.orgs.createOrg(this.workingCopy!).then(this.onSuccess).finally(() => {
+                GrchiveApi.orgs.createOrg(this.workingCopy!).then(this.onSuccess).catch(this.onError).finally(() => {
                     this.saveInProgress = false
                 })
             } else {
-                GrchiveApi.orgs.createSuborg(this.parentOrgId, this.workingCopy!).then(this.onSuccess).finally(() => {
+                GrchiveApi.orgs.createSuborg(this.parentOrgId, this.workingCopy!).then(this.onSuccess).catch(this.onError).finally(() => {
                     this.saveInProgress = false
                 })
             }

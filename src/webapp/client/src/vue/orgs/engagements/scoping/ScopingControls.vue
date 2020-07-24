@@ -70,7 +70,7 @@ import { Permission } from '@client/ts/types/roles'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
 import { RawControl } from '@client/ts/types/controls'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import FullHeightBase from '@client/vue/shared/FullHeightBase.vue'
 import ControlSaveEditDialog from '@client/vue/types/controls/ControlSaveEditDialog.vue'
@@ -116,6 +116,8 @@ export default class ScopingControls extends Vue {
 
         GrchiveApi.controls.listControls(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawControl[]) => {
             this.allControls = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePageOnError(err)
         })
     }
 

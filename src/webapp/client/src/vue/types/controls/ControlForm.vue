@@ -119,7 +119,7 @@ import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawControl, ControlType, ControlFrequencyType } from '@client/ts/types/controls'
 import { RawUser } from '@client/ts/types/users'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import RRuleCreator from '@client/vue/shared/form/RRuleCreator.vue'
 import * as rules from '@client/ts/frontend/formRules'
 import SingleUserFinder from '@client/vue/types/users/SingleUserFinder.vue'
@@ -153,6 +153,10 @@ export default class ControlForm extends Vue {
             this.loadingWorkingUser = true
             GrchiveApi.orgs.getOrgUser(this.orgId, this.value.OwnerId).then((resp : RawUser) => {
                 this.workingUser = resp
+            }).catch((err : any) => {
+                ErrorHandler.failurePopupOnError(err, {
+                    context: 'Failed to get information on the control\'s owner.'
+                })
             }).finally(() => {
                 this.loadingWorkingUser = false
             })

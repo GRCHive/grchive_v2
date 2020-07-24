@@ -158,3 +158,53 @@ func (w *WebappApplication) apiv1UpdateGLAccount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, updatedAcc)
 }
+
+func (w *WebappApplication) apiv1GetGLSubaccounts(c *gin.Context) {
+	acc, err := w.middleware.GetResourceFromContext(c, backend.RIGLAccount)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetGLSubaccounts- Obtain account in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+	tacc := acc.(*gl.GLAccount)
+
+	results, err := w.backend.itf.GL.GetGLSubaccountsFromId(tacc.Id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetGLSubaccounts - Get subaccounts",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, results)
+}
+
+func (w *WebappApplication) apiv1GetGLParentAccounts(c *gin.Context) {
+	acc, err := w.middleware.GetResourceFromContext(c, backend.RIGLAccount)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetGLParentAccounts - Obtain account in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+	tacc := acc.(*gl.GLAccount)
+
+	results, err := w.backend.itf.GL.GetGLParentAccountsFromId(tacc.Id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetGLParentAccounts - Get parent accounts",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, results)
+}

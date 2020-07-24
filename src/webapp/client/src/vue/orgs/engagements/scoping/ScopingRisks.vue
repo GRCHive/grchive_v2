@@ -69,7 +69,7 @@ import { Permission } from '@client/ts/types/roles'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
 import { RawRisk } from '@client/ts/types/risks'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import RiskSaveEditDialog from '@client/vue/types/risks/RiskSaveEditDialog.vue'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import RiskGrid from '@client/vue/types/risks/RiskGrid.vue'
@@ -115,6 +115,8 @@ export default class ScopingRisks extends Vue {
 
         GrchiveApi.risks.listRisks(this.currentOrg.Id, this.currentEngagement.Id).then((resp : RawRisk[]) => {
             this.allRisks = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePageOnError(err)
         })
     }
 

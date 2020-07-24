@@ -57,7 +57,7 @@ import { Watch } from 'vue-property-decorator'
 import BaseAppBar from '@client/vue/BaseAppBar.vue'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import EngagementGrid from '@client/vue/types/engagements/EngagementGrid.vue'
 
 @Component({
@@ -93,6 +93,10 @@ export default class EngagementAppBar extends Vue {
         }
         GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[]) => {
             this.allEngagements = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to get all available engagements.'
+            })
         })
     }
 

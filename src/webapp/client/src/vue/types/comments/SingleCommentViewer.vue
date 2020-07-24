@@ -62,7 +62,7 @@ import Component from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { RawComment, CommentThreadId } from '@client/ts/types/comments'
 import { standardFormatTime } from '@client/ts/time'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { RawUser } from '@client/ts/types/users'
 import { Permission } from '@client/ts/types/roles'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
@@ -93,6 +93,10 @@ export default class SingleCommentViewer extends Vue {
                     return
                 }
                 this.cachedUserName = `${resp.FullName} (${resp.Email})`
+            }).catch((err : any) => {
+                ErrorHandler.failurePopupOnError(err, {
+                    context: 'Failed to get comment user.'
+                })
             })
             return 'Loading...'
         }
@@ -146,6 +150,10 @@ export default class SingleCommentViewer extends Vue {
     deleteComment() {
         GrchiveApi.comments.deleteComment(this.threadId, this.comment.Id).then(() => {
             this.$emit('do-delete')
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to delete comment.'
+            })
         })
     }
 }

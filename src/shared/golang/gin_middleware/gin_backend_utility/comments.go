@@ -30,8 +30,8 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "LoadCommentThreadIdIntoContext - Get Org in context",
-				Code:    gin_backend_utility.GECBadRequest,
-				Message: gin_backend_utility.GEMBadRequest,
+				Code:    GECBadRequest,
+				Message: GEMBadRequest,
 			})
 			return
 		}
@@ -41,8 +41,8 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "LoadCommentThreadIdIntoContext - Get engagement in context",
-				Code:    gin_backend_utility.GECBadRequest,
-				Message: gin_backend_utility.GEMBadRequest,
+				Code:    GECBadRequest,
+				Message: GEMBadRequest,
 			})
 			return
 		}
@@ -59,8 +59,8 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "LoadCommentThreadIdIntoContext - Get resource in context",
-				Code:    gin_backend_utility.GECBadRequest,
-				Message: gin_backend_utility.GEMBadRequest,
+				Code:    GECBadRequest,
+				Message: GEMBadRequest,
 			})
 			return
 		}

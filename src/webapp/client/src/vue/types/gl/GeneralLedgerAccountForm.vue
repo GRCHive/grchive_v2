@@ -64,7 +64,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { RawGLAccount, GLAccountType } from '@client/ts/types/gl'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import SingleGlAccountFinder from '@client/vue/types/gl/SingleGlAccountFinder.vue'
 import * as rules from '@client/ts/frontend/formRules'
 
@@ -103,6 +103,10 @@ export default class GeneralLedgerAccountForm extends Vue {
         if (!!this.value.ParentAccountId) {
             GrchiveApi.gl.getAccount(this.orgId, this.engagementId, this.value.ParentAccountId).then((resp : RawGLAccount) => {
                 this.parentAccount = resp
+            }).catch((err : any) => {
+                ErrorHandler.failurePopupOnError(err, {
+                    context: 'Failed to get information about the parent general ledger account.'
+                })
             })
         } else {
             this.parentAccount = null

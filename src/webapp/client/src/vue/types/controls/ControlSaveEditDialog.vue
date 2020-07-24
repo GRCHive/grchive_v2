@@ -25,7 +25,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawControl, createEmptyControl } from '@client/ts/types/controls'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import GenericSaveEditDialog from '@client/vue/types/GenericSaveEditDialog.vue'
 import ControlForm from '@client/vue/types/controls/ControlForm.vue'
 import { Permission } from '@client/ts/types/roles'
@@ -84,6 +84,12 @@ export default class ControlSaveEditDialog extends Vue {
         this.syncWorkingCopy()
     }
 
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            context: 'Failed to save/edit control.'
+        })
+    }
+
     save() {
         if (!this.workingCopy) {
             return
@@ -91,11 +97,11 @@ export default class ControlSaveEditDialog extends Vue {
 
         this.saveInProgress = true
         if (!this.editMode) {
-            GrchiveApi.controls.createControl(this.parentOrgId, this.workingCopy).then(this.onSuccess).finally(() => {
+            GrchiveApi.controls.createControl(this.parentOrgId, this.workingCopy).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         } else {
-            GrchiveApi.controls.updateControl(this.parentOrgId, this.workingCopy).then(this.onSuccess).finally(() => {
+            GrchiveApi.controls.updateControl(this.parentOrgId, this.workingCopy).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.saveInProgress = false
             })
         }

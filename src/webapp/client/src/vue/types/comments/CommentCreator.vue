@@ -33,7 +33,7 @@ import { Prop, Watch } from 'vue-property-decorator'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
 import { RawComment, CommentThreadId } from '@client/ts/types/comments'
 import { Permission } from '@client/ts/types/roles'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component({
     components: {
@@ -79,14 +79,20 @@ export default class CommentCreator extends Vue {
         this.commentStr = ''
     }
 
+    onError(err : any) {
+        ErrorHandler.failurePopupOnError(err, {
+            context: 'Failed to create/edit comment.'
+        })
+    }
+
     submitComment() {
         this.inProgress = true
         if (!!this.value) {
-            GrchiveApi.comments.updateComment(this.threadId, this.value.Id, this.commentStr).then(this.onSuccess).finally(() => {
+            GrchiveApi.comments.updateComment(this.threadId, this.value.Id, this.commentStr).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.inProgress = false
             })
         } else {
-            GrchiveApi.comments.createComment(this.threadId, this.commentStr).then(this.onSuccess).finally(() => {
+            GrchiveApi.comments.createComment(this.threadId, this.commentStr).then(this.onSuccess).catch(this.onError).finally(() => {
                 this.inProgress = false
             })
         }

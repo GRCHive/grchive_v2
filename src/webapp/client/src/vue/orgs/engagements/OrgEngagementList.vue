@@ -73,6 +73,7 @@ import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermis
 import EngagementSaveEditDialog from '@client/vue/types/engagements/EngagementSaveEditDialog.vue'
 import EngagementGrid from '@client/vue/types/engagements/EngagementGrid.vue'
 import FullHeightBase from '@client/vue/shared/FullHeightBase.vue'
+import { ErrorHandler } from '@client/ts/main'
 
 @Component({
     components: {
@@ -112,6 +113,8 @@ export default class OrgEngagementList extends Vue {
         }
         GrchiveApi.engagements.listOrgEngagements(this.currentOrg.Id).then((resp : RawEngagement[]) => {
             this.allEngagements = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePageOnError(err)
         })
     }
 

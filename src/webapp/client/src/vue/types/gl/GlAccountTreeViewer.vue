@@ -48,10 +48,13 @@ export default class GlAccountTreeViewer extends Vue {
     @Prop({required: true})
     accounts! : RawGLAccount[]
 
+    @Prop({ default: null})
+    root! : RawGLAccount | null
+
     accountTypeToString = accountTypeToString
 
     get accountTree() : GLAccountTree {
-        return new GLAccountTree(this.accounts, null)
+        return new GLAccountTree(this.accounts, this.root)
     }
 
     get accountItems() : any[] {
@@ -77,6 +80,12 @@ export default class GlAccountTreeViewer extends Vue {
     goToAccount(inp : Array<number>) {
         if (!inp.length) {
             return
+        }
+
+        if (!!this.root) {
+            if (inp[0] == this.root.Id) {
+                return
+            }
         }
 
         this.$router.push({

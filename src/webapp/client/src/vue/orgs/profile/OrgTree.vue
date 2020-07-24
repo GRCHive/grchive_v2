@@ -14,7 +14,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import OrgTreeViewer from '@client/vue/types/orgs/OrgTreeViewer.vue'
 import { Watch } from 'vue-property-decorator'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { RawOrganization } from '@client/ts/types/orgs'
 
 @Component({
@@ -37,6 +37,10 @@ export default class OrgTree extends Vue {
 
         GrchiveApi.orgs.getSuborgs(this.currentOrg!.Id).then((resp : RawOrganization[]) => {
             this.suborgs = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to get organization tree.'
+            })
         })
     }
 

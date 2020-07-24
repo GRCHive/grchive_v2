@@ -7,7 +7,7 @@
         :readonly="readonly"
         :loading="!validEngagements"
         :items="engagementItems"
-        :clearable="clearable"
+        :clearable="clearable && !readonly"
         @input="onInput"
     >
     </v-autocomplete>
@@ -20,7 +20,7 @@ import Component, { mixins } from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { VAutocomplete } from 'vuetify/lib'
 import { RawEngagement } from '@client/ts/types/engagements'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component
 export default class SingleEngagementFinder extends mixins(VAutocomplete) {
@@ -33,6 +33,10 @@ export default class SingleEngagementFinder extends mixins(VAutocomplete) {
     refreshValidEngagements() {
         GrchiveApi.engagements.listOrgEngagements(this.orgId).then((resp : RawEngagement[]) => {
             this.validEngagements = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to get all available engagements.'
+            })
         })
     }
 

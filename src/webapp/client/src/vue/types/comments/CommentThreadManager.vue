@@ -33,7 +33,7 @@ import CommentThreadViewer from '@client/vue/types/comments/CommentThreadViewer.
 import CommentCreator from '@client/vue/types/comments/CommentCreator.vue'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawComment, CommentThreadId } from '@client/ts/types/comments'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component({
     components: {
@@ -52,6 +52,8 @@ export default class CommentThreadManager extends Vue {
     refreshThread() {
         GrchiveApi.comments.listComments(this.threadId).then((resp : RawComment[]) => {
             this.allComments = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePageOnError(err)
         })
     }
 

@@ -13,6 +13,14 @@ export class GeneralLedgerApiClient {
         return this.handler.get<RawGLAccount[]>(`/orgs/${orgId}/engagements/${engagementId}/gl/accs`, {})
     }
 
+    listSubaccounts(orgId : number, engagementId : number, accId: number): Promise<RawGLAccount[]> {
+        return this.handler.get<RawGLAccount[]>(`/orgs/${orgId}/engagements/${engagementId}/gl/accs/${accId}/subaccounts`, {})
+    }
+
+    listParentAccounts(orgId : number, engagementId : number, accId: number): Promise<RawGLAccount[]> {
+        return this.handler.get<RawGLAccount[]>(`/orgs/${orgId}/engagements/${engagementId}/gl/accs/${accId}/parents`, {})
+    }
+
     createAccount(orgId : number, acc : RawGLAccount) : Promise<RawGLAccount> {
         return this.handler.post<RawGLAccount>(`/orgs/${orgId}/engagements/${acc.EngagementId}/gl/accs`, {json: acc})
     }

@@ -3,18 +3,17 @@
         page-name="Profile"
     >
         <template v-slot:content>
+            <org-breadcrumbs
+                :org="currentOrg"
+                class="mt-3"
+            >
+            </org-breadcrumbs>
+
             <v-list-item class="px-0">
-                <v-list-item-content two-line>
+                <v-list-item-content>
                     <v-list-item-title class="text-h4">
                         {{ currentOrg.Name }} Profile
                     </v-list-item-title>
-
-                    <v-list-item-subtitle>
-                        <org-breadcrumbs
-                            :org="currentOrg"
-                        >
-                        </org-breadcrumbs>
-                    </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>

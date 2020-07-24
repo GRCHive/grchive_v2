@@ -12,7 +12,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Watch, Prop } from 'vue-property-decorator'
 import { RawOrganization } from '@client/ts/types/orgs'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component
 export default class OrgBreadcrumbs extends Vue {
@@ -41,6 +41,10 @@ export default class OrgBreadcrumbs extends Vue {
     refreshData() {
         GrchiveApi.orgs.getParentOrgs(this.org.Id).then((resp : RawOrganization[]) => {
             this.parentOrgs = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePopupOnError(err, {
+                context: 'Failed to get parent organizations.'
+            })
         })
     }
 

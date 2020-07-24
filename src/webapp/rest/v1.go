@@ -246,6 +246,14 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 									w.acl.ACLUserHasPermissions(roles.PGLUpdate),
 									w.apiv1UpdateGLAccount)
 
+								singleAccountR.GET("/subaccounts",
+									w.acl.ACLUserHasPermissions(roles.PGLView),
+									w.apiv1GetGLSubaccounts)
+
+								singleAccountR.GET("/parents",
+									w.acl.ACLUserHasPermissions(roles.PGLView),
+									w.apiv1GetGLParentAccounts)
+
 								w.addCommentEndpoints(
 									backend.RIGLAccount,
 									singleAccountR,

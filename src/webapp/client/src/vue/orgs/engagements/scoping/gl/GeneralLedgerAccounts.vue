@@ -57,7 +57,7 @@ import { Watch } from 'vue-property-decorator'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
 import { RawGLAccount } from '@client/ts/types/gl'
-import { GrchiveApi } from '@client/ts/main'
+import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 import { Permission } from '@client/ts/types/roles'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
 import RestrictRolePermissionButton from '@client/vue/loading/RestrictRolePermissionButton.vue'
@@ -109,6 +109,8 @@ export default class GeneralLedgerAccounts extends Vue {
 
         GrchiveApi.gl.listAccounts(this.currentOrg!.Id, this.currentEngagement!.Id).then((resp : RawGLAccount[]) => {
             this.accounts = resp
+        }).catch((err : any) => {
+            ErrorHandler.failurePageOnError(err)
         })
     }
 

@@ -17,8 +17,8 @@ func (m *MiddlewareClient) LoadGeneralLedgerIntoContext(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &WebappError{
 			Err:     err,
 			Context: "LoadGeneralLedgerIntoContext - Obtain engagement in context",
-			Code:    gin_backend_utility.GECBadRequest,
-			Message: gin_backend_utility.GEMBadRequest,
+			Code:    GECBadRequest,
+			Message: GEMBadRequest,
 		})
 		return
 	}
@@ -29,8 +29,8 @@ func (m *MiddlewareClient) LoadGeneralLedgerIntoContext(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &WebappError{
 			Err:     err,
 			Context: "LoadGeneralLedgerIntoContext - Load general ledger",
-			Code:    gin_backend_utility.GECBadRequest,
-			Message: gin_backend_utility.GEMBadRequest,
+			Code:    GECBadRequest,
+			Message: GEMBadRequest,
 		})
 		return
 	}

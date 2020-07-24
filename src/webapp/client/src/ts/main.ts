@@ -44,6 +44,7 @@ const GeneralLedgerAccounts = () => import( /* webpackChunkName: "GeneralLedgerA
 const GeneralLedgerComments = () => import( /* webpackChunkName: "GeneralLedgerComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerComments.vue')
 const GeneralLedgerAccountPage = () => import( /* webpackChunkName: "GeneralLedgerAccountPage" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountPage.vue')
 const GeneralLedgerAccountOverview = () => import( /* webpackChunkName: "GeneralLedgerAccountOverview" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountOverview.vue')
+const GeneralLedgerAccountSubaccounts = () => import( /* webpackChunkName: "GeneralLedgerAccountSubaccounts" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountSubaccounts.vue')
 const GeneralLedgerAccountComments = () => import( /* webpackChunkName: "GeneralLedgerAccountComments" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccountComments.vue')
 
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
@@ -166,6 +167,11 @@ const router = new VueRouter({
                     name: 'glAccOverview',
                     path: 'overview',
                     component: GeneralLedgerAccountOverview
+                },
+                {
+                    name: 'glAccSubaccounts',
+                    path: 'subaccounts',
+                    component: GeneralLedgerAccountSubaccounts
                 },
                 {
                     name: 'glAccComments',

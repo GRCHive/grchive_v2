@@ -41,7 +41,7 @@ func CreateErrorMessageForLackingPermissions(allPermissions ...roles.Permission)
 	builder.WriteString("You are missing the permissions: ")
 	for idx, p := range allPermissions {
 		builder.WriteString("\"")
-		builder.WriteString(p)
+		builder.WriteString(string(p))
 		builder.WriteString("\"")
 
 		if idx != len(allPermissions)-1 {
