@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="position: relative;">
         <slot v-bind:show="!!hasPermissions"></slot>
         <v-overlay
             absolute
@@ -10,9 +10,18 @@
                 </v-progress-circular>
             </v-row>
 
-            <div v-else>
-                {{ tooltipStr }} 
-            </div>
+            <v-tooltip max-width="400px" bottom v-else>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-icon
+                        color="error"
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        mdi-lock
+                    </v-icon>
+                </template>
+                <span>{{ tooltipStr }}</span>
+            </v-tooltip>
         </v-overlay>
     </div>
 </template>

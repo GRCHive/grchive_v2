@@ -104,6 +104,10 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
         },
         currentUserHasPermissions(state : PermissionStoreState) : (orgId : number, engagementId : number, permissions : Permission[]) => boolean | null {
             return (orgId : number, engagementId : number, permissions: Permission[]) : boolean | null => {
+                if (permissions.length == 0) {
+                    return true
+                }
+
                 if (!(orgId in state.orgPermissionMaps)) {
                     return null
                 }

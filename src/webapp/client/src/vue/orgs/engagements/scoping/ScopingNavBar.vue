@@ -13,6 +13,7 @@ import Component from 'vue-class-component'
 import { NavLink } from '@client/ts/frontend/navLink'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
+import { Permission } from '@client/ts/types/roles'
 import GenericNavBar from '@client/vue/navbar/GenericNavBar.vue'
 
 @Component({
@@ -88,12 +89,14 @@ export default class ScopingNavBar extends Vue {
                         icon: 'mdi-fire',
                         path: 'scopingRisks',
                         params: this.baseParams,
+                        permissions: [Permission.PRisksList],
                     },
                     {
                         title: 'Controls',
                         icon: 'mdi-shield-lock-outline',
                         path: 'scopingControls',
                         params: this.baseParams,
+                        permissions: [Permission.PControlsList],
                     },
                 ],
             },
@@ -107,6 +110,7 @@ export default class ScopingNavBar extends Vue {
                 icon: 'mdi-bank-outline',
                 path: 'glHome',
                 params: this.baseParams,
+                permissions: [Permission.PGLList],
             },
             {
                 title: 'IT',
