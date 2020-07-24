@@ -70,7 +70,7 @@ export default class EngagementNavBar extends Vue {
                     {
                         title: 'Scoping',
                         icon: 'mdi-crosshairs',
-                        path: 'scopingRisks'
+                        path: 'scopingDashboard'
                         params: this.baseParams,
                     },
                     {
