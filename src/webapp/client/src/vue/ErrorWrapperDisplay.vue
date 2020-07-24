@@ -44,3 +44,10 @@ export default class ErrorWrapperDisplay extends Vue {
 }
 
 </script>
+
+<style scoped>
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+</style>

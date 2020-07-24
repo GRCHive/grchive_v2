@@ -16,6 +16,8 @@ func (w *WebappApplication) apiv1ListAllOrgEngagements(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgEngagements - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -38,6 +40,8 @@ func (w *WebappApplication) apiv1ListAllOrgEngagementsForCurrentUser(c *gin.Cont
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgEngagementsForCurrentUser - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -47,6 +51,8 @@ func (w *WebappApplication) apiv1ListAllOrgEngagementsForCurrentUser(c *gin.Cont
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgEngagementsForCurrentUser - Obtain current user in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -74,6 +80,8 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateEngagement - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -84,6 +92,8 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateEngagement - Read engagement data from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -95,6 +105,8 @@ func (w *WebappApplication) apiv1CreateEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     nil,
 			Context: "apiv1CreateEngagement - Must have at least one role.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -127,6 +139,8 @@ func (w *WebappApplication) apiv1UpdateEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateEngagement - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -137,6 +151,8 @@ func (w *WebappApplication) apiv1UpdateEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateEngagement - Obtain org in request.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -168,6 +184,8 @@ func (w *WebappApplication) apiv1GetEngagement(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetEngagement - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}

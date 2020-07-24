@@ -55,16 +55,23 @@ export default class ErrorPage extends Vue {
         const msg = this.$route.query.message
         const technical = this.$route.query.technical
         const httpCode = this.$route.query.httpCode
+        const displayId = this.$route.query.displayId
+        const context = this.$route.query.context
 
         if (code === null || code === undefined ||
             msg === null || msg === undefined ||
             technical === null || technical === undefined ||
-            httpCode === null || httpCode === null
+            httpCode === null || httpCode === null ||
+            displayId === null || displayId === null ||
+            context === null || context === null
         ) {
             return null
         }
 
-        return new ErrorWrapper(<GrchiveErrorCodes>Number(code), <string>msg, JSON.parse(atob(<string>technical)), Number(httpCode))
+        let ret = new ErrorWrapper(<GrchiveErrorCodes>Number(code), <string>msg, JSON.parse(atob(<string>technical)), Number(httpCode))
+        ret.displayId = <string>displayId
+        ret.context = <string>context
+        return ret
     }
 
     goBack() {
@@ -83,11 +90,6 @@ export default class ErrorPage extends Vue {
 #errorContainer {
     max-width: 800px;
     text-align: center;
-}
-
-pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
 }
 
 </style>

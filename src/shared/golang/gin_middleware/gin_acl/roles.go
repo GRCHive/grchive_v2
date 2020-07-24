@@ -60,6 +60,8 @@ func (acl *ACLClient) ACLUserHasPermissions(permissions ...roles.Permission) gin
 			c.AbortWithError(http.StatusUnauthorized, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "Check user has permission",
+				Code:    gin_backend_utility.GECUnauthorized,
+				Message: gin_backend_utility.CreateErrorMessageForLackingPermissions(permissions...),
 			})
 		}, permissions...)
 	}

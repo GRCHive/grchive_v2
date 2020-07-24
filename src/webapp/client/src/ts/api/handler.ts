@@ -1,11 +1,20 @@
 import ky from 'ky'
+import { v4 as uuidv4 } from 'uuid'
 
 const apiPrefix : string = '/api/v1'
 
 const baseOptions : any = {
     retry: {
-        limit: 1
+        limit: 1,
+    },
+    hooks: {
+        beforeRequest: [
+            (request : any) => {
+                request.headers.set('Grchive-Request-Id', uuidv4())
+            }
+        ]
     }
+
 }
 
 export class ApiHttpHandler {

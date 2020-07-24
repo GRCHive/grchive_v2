@@ -38,6 +38,8 @@ func (w *WebappApplication) apiv1UpdateCurrentUser(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "Read user from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -127,6 +129,8 @@ func (w *WebappApplication) apiv1ListOrgUsers(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListOrgUsers - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -137,6 +141,8 @@ func (w *WebappApplication) apiv1ListOrgUsers(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListOrgUsers - Obtain org users",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -149,6 +155,8 @@ func (w *WebappApplication) apiv1GetOrgUser(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListOrgUsers - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}

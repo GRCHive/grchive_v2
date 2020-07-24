@@ -91,7 +91,7 @@ import { Watch } from 'vue-property-decorator'
 import { ErrorWrapper } from '@client/ts/error'
 import ErrorWrapperDisplay from '@client/vue/ErrorWrapperDisplay.vue'
 
-const errorDurationSeconds = 50000
+const errorDurationSeconds = 10
 
 @Component({
     components: {

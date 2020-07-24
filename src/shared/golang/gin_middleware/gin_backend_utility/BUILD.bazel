@@ -10,6 +10,10 @@ go_library(
     importpath = "gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility",
     deps = [
         "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_gin_gonic_gin//render:go_default_library",
+        "@com_github_lib_pq//:go_default_library",
+        "@com_github_rs_zerolog//:go_default_library",
+        "@com_github_rs_zerolog//log:go_default_library",
         "//src/shared/golang/backend:lib",
         "//src/shared/golang/backend/audit:lib",
         "//src/shared/golang/backend/controls:lib",

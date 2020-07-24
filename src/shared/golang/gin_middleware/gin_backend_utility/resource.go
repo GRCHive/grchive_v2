@@ -19,6 +19,8 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "CheckResourcePartOfOrg - Get org",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -30,6 +32,8 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "CheckResourcePartOfOrg - Get resource",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -46,6 +50,8 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 				c.AbortWithError(http.StatusBadRequest, &WebappError{
 					Err:     err,
 					Context: "CheckResourcePartOfOrg - Failed to check user in org",
+					Code:    GECBadRequest,
+					Message: GEMBadRequestTree,
 				})
 				return
 			}
@@ -58,6 +64,8 @@ func (m *MiddlewareClient) CheckResourcePartOfOrg(resource backend.ResourceIdent
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     nil,
 				Context: "CheckResourcePartOfOrg - Resource Org mismatch",
+				Code:    GECBadRequest,
+				Message: GEMBadRequestTree,
 			})
 
 		} else {
@@ -73,6 +81,8 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "CheckResourcePartOfEngagement - Get engagement",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -84,6 +94,8 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     err,
 				Context: "CheckResourcePartOfEngagement - Get resource",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -107,6 +119,8 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 			c.AbortWithError(http.StatusBadRequest, &WebappError{
 				Err:     nil,
 				Context: "CheckResourcePartOfEngagement - Resource Engagement mismatch",
+				Code:    GECBadRequest,
+				Message: GEMBadRequestTree,
 			})
 
 		} else {

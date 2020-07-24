@@ -16,6 +16,8 @@ func (w *WebappApplication) apiv1ListRisks(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListRisks - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -38,6 +40,8 @@ func (w *WebappApplication) apiv1CreateRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateRisk - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -48,6 +52,8 @@ func (w *WebappApplication) apiv1CreateRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateRisk - Read risk from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -74,6 +80,8 @@ func (w *WebappApplication) apiv1GetRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetRisk - Obtain risk in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -87,6 +95,8 @@ func (w *WebappApplication) apiv1UpdateRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateRisk - Obtain risk in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -97,6 +107,8 @@ func (w *WebappApplication) apiv1UpdateRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateRisk - Read risk from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -126,6 +138,8 @@ func (w *WebappApplication) apiv1DeleteRisk(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1DeleteRisk - Obtain risk in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}

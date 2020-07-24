@@ -14,6 +14,8 @@ func (w *WebappApplication) apiv1ListAllOrgRoles(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgRoles - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -36,6 +38,8 @@ func (w *WebappApplication) apiv1ListAllOrgRolesForCurrentUser(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgRolesForCurrentUser - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -45,6 +49,8 @@ func (w *WebappApplication) apiv1ListAllOrgRolesForCurrentUser(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListAllOrgRolesForCurrentUser - Obtain current user in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}

@@ -16,6 +16,8 @@ func (w *WebappApplication) apiv1ListGLAccounts(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1ListGLAccounts - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -38,6 +40,8 @@ func (w *WebappApplication) apiv1CreateGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateGLAccount - Obtain engagement in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -48,6 +52,8 @@ func (w *WebappApplication) apiv1CreateGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateGLAccount - Read account from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -74,6 +80,8 @@ func (w *WebappApplication) apiv1GetGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv2GetGLAccount - Obtain account in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -87,6 +95,8 @@ func (w *WebappApplication) apiv1DeleteGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv2DeleteGLAccount - Obtain account in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -112,6 +122,8 @@ func (w *WebappApplication) apiv1UpdateGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv2UpdateGLAccount - Obtain account in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -123,6 +135,8 @@ func (w *WebappApplication) apiv1UpdateGLAccount(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateGLAccount - Read account from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}

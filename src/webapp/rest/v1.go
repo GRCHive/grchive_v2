@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
+	"gitlab.com/grchive/grchive-v2/shared/gin_middleware/gin_backend_utility"
 	"net/http"
 )
 
@@ -13,13 +14,19 @@ func (w *WebappApplication) apiv1EnsureAuth(c *gin.Context) {
 	// Support API keys for non browser users.
 	sess := w.sessionStore.GetLoginSession(c)
 	if !sess.IsLoggedIn() {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithError(http.StatusUnauthorized, &gin_backend_utility.WebappError{
+			Code:    gin_backend_utility.GECUnauthorized,
+			Message: gin_backend_utility.GEMUnauthorizedLogin,
+		})
 		return
 	}
 
 	err := w.middleware.StoreCurrentUserIntoContext(c, sess.GetSessionUser())
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "Store user into context.",
+		})
 		return
 	}
 
@@ -27,7 +34,10 @@ func (w *WebappApplication) apiv1EnsureAuth(c *gin.Context) {
 }
 
 func (w *WebappApplication) registerApiv1(r *gin.Engine) {
-	apiR := r.Group("/api/v1", w.apiv1EnsureAuth)
+	apiR := r.Group("/api/v1",
+		gin_backend_utility.ApiMiddlewareErrorHandling,
+		w.apiv1EnsureAuth,
+	)
 	{
 		userR := apiR.Group("/users")
 		{

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -66,9 +65,8 @@ func (w *WebappApplication) Run() {
 	r.RedirectTrailingSlash = true
 	r.RedirectFixedPath = true
 
-	r.Use(logger.SetLogger(logger.Config{
-		Logger: &w.log,
-	}))
+	r.Use(gin_backend_utility.PingPongGrchiveRequestId)
+	r.Use(gin_backend_utility.CreateLogger(w.log))
 	r.Use(gin.Recovery())
 	r.Use(redirect_response.GinHTTPRedirectStatusCodes)
 

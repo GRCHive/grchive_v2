@@ -16,6 +16,8 @@ func (w *WebappApplication) apiv1CreateNewOrg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "Obtain org in request.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -49,6 +51,8 @@ func (w *WebappApplication) apiv1CreateSuborg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateSuborg - Obtain org in request.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -58,6 +62,8 @@ func (w *WebappApplication) apiv1CreateSuborg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1CreateSuborg - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -88,6 +94,8 @@ func (w *WebappApplication) apiv1GetOrg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -100,6 +108,8 @@ func (w *WebappApplication) apiv1UpdateOrg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateOrg - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -110,6 +120,8 @@ func (w *WebappApplication) apiv1UpdateOrg(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1UpdateOrg - Obtain org in request.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
@@ -135,13 +147,15 @@ func (w *WebappApplication) apiv1GetSuborgs(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetSuborg - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
 
 	suborgs, err := w.backend.itf.Orgs.GetSuborgsFromId(org.(*orgs.Organization).Id)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetSuborg - Get suborgs",
 		})
@@ -157,13 +171,15 @@ func (w *WebappApplication) apiv1GetParentOrgs(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetParentOrgs - Obtain org in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
 		})
 		return
 	}
 
 	parents, err := w.backend.itf.Orgs.GetParentOrgsFromId(org.(*orgs.Organization).Id)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
 			Err:     err,
 			Context: "apiv1GetParentOrgs - Get parent orgs",
 		})

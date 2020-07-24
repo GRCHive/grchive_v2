@@ -3,7 +3,12 @@ import { RootState } from '@client/ts/stores/store'
 import { v4 as uuidv4 } from 'uuid'
 
 export enum GrchiveErrorCodes {
-    Generic = 0
+	GECNoError    = 0,
+	GECBadRequest = 1,
+	GECDbInternal = 2,
+	GECDbExternal = 3,
+	GECUnauthorized = 10000,
+    Generic = 99999,
 }
 
 export class ErrorWrapper {
@@ -42,7 +47,7 @@ async function constructErrorWrapperFromGenericError(err : any) : Promise<ErrorW
             !!data ? data.GrchiveCode : GrchiveErrorCodes.Generic,
             !!data ? data.GrchiveMessage : 'Unknown',
             {
-                headers: err.response.headers,
+                headers: Object.fromEntries(err.response.headers.entries()),
                 url: err.response.url, 
             },
             err.response.status,

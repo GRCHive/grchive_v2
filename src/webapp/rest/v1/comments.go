@@ -64,13 +64,15 @@ func (w *WebappApplication) createResourceCommentsList(resource backend.Resource
 			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "createResourceCommentsList - Obtain thread id",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
 
 		comments, err := w.backend.itf.Comments.GetCommentsForThread(threadId)
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "createResourceCommentsList - Obtain comments",
 			})
@@ -132,6 +134,8 @@ func (w *WebappApplication) createResourceCommentsUpdate(resource backend.Resour
 			c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "createResourceCommentsUpdate - Get current comment",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -141,6 +145,8 @@ func (w *WebappApplication) createResourceCommentsUpdate(resource backend.Resour
 			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "createResourceCommentsUpdate - Read comment from JSON body.",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
@@ -165,9 +171,11 @@ func (w *WebappApplication) createResourceCommentsDelete(resource backend.Resour
 	return func(c *gin.Context) {
 		comment, err := w.getCommentFromContext(resource, c)
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
 				Err:     err,
 				Context: "createResourceCommentsDelete - Get current comment",
+				Code:    gin_backend_utility.GECBadRequest,
+				Message: gin_backend_utility.GEMBadRequest,
 			})
 			return
 		}
