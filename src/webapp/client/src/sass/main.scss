@@ -3,3 +3,8 @@
 .max-height {
     height: 100%; 
 }
+
+// To support our restrict role permission container while keeping the behavior of the vuetify navlinks.
+.v-application--is-ltr .v-list-group--no-action > .v-list-group__items > div > .v-list-item {
+    padding-left: 72px;
+}
