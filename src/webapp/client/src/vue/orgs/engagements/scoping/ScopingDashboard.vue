@@ -81,6 +81,33 @@
                                     </div>
                                 </v-card>
                             </v-col>
+
+                            <v-col cols="1">
+                                <v-card>
+                                    <div class="stat-container">
+                                        <div class="d-flex justify-center icon-container">
+                                            <v-icon x-large>
+                                                mdi-store
+                                            </v-icon>
+                                        </div>
+
+                                        <div class="d-flex justify-center text-overline">
+                                            <span class="font-weight-bold">
+                                                {{ stats.NumVendors }}
+                                            </span>
+                                            Vendors
+                                        </div>
+
+                                        <div class="d-flex justify-center text-overline">
+                                            <span class="font-weight-bold">
+                                                {{ stats.NumVendorProducts }}
+                                            </span>
+                                            Products
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
                         </v-row>
                     </div>
                 </template>

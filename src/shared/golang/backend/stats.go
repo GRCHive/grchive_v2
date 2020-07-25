@@ -5,6 +5,8 @@ type EngagementScopingStats struct {
 	NumControls                      int
 	NumGLAccounts                    int
 	NumFinanciallyRelevantGLAccounts int
+	NumVendors                       int
+	NumVendorProducts                int
 }
 
 func (m *BackendInterface) GetEngagementScopingStats(engagementId int64) (*EngagementScopingStats, error) {
@@ -33,5 +35,16 @@ func (m *BackendInterface) GetEngagementScopingStats(engagementId int64) (*Engag
 
 	stats.NumGLAccounts = glAccountsNotRelevant + glAccountsRelevant
 	stats.NumFinanciallyRelevantGLAccounts = glAccountsRelevant
+
+	stats.NumVendors, err = m.Vendors.GetNumVendorsForEngagement(engagementId)
+	if err != nil {
+		return nil, err
+	}
+
+	stats.NumVendorProducts, err = m.Vendors.GetNumVendorProductsForEngagement(engagementId)
+	if err != nil {
+		return nil, err
+	}
+
 	return &stats, nil
 }

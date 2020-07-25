@@ -18,6 +18,8 @@ export interface RawEngagementScopingStats {
     NumControls:                        number
     NumGLAccounts:                      number
     NumFinanciallyRelevantGLAccounts:   number
+    NumVendors:                         number
+    NumVendorProducts:                  number
 }
 
 export function createEmptyEngagement() : RawEngagement {
