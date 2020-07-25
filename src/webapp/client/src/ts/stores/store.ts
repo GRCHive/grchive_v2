@@ -31,6 +31,7 @@ export interface CurrentResourceInitialization {
     controlId?: number
     glAccountId? : number
     vendorId? : number
+    vendorProductId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -118,6 +119,19 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                 }
             } else {
                 context.commit('vendors/setRawVendor', null)
+            }
+
+            if (!!params.vendorProductId) {
+                if (!context.state.vendors.rawVendorProduct || context.state.vendors.rawVendorProduct.Id != params.vendorProductId) {
+                    context.dispatch('vendors/initializeVendorProductStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        vendorId: params.vendorId,
+                        vendorProductId: params.vendorProductId,
+                    })
+                }
+            } else {
+                context.commit('vendors/setRawVendorProduct', null)
             }
         }
     },

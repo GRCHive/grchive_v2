@@ -52,7 +52,9 @@ const GeneralLedgerAccountComments = () => import( /* webpackChunkName: "General
 const ScopingVendors = () => import( /* webpackChunkName: "ScopingVendors" */ '@client/vue/orgs/engagements/scoping/ScopingVendors.vue')
 const VendorPage = () => import( /* webpackChunkName: "VendorPage" */ '@client/vue/orgs/engagements/scoping/vendors/VendorPage.vue')
 const VendorOverview = () => import( /* webpackChunkName: "VendorOverview" */ '@client/vue/orgs/engagements/scoping/vendors/VendorOverview.vue')
+const VendorProducts = () => import( /* webpackChunkName: "VendorProducts" */ '@client/vue/orgs/engagements/scoping/vendors/VendorProducts.vue')
 const VendorComments = () => import( /* webpackChunkName: "VendorComments" */ '@client/vue/orgs/engagements/scoping/vendors/VendorComments.vue')
+const VendorProductOverview = () => import( /* webpackChunkName: "VendorProductOverview" */ '@client/vue/orgs/engagements/scoping/vendors/VendorProductOverview.vue')
 
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
@@ -202,6 +204,18 @@ const router = new VueRouter({
                     name: 'vendorOverview',
                     path: 'overview',
                     component: VendorOverview,
+                },
+                {
+                    name: 'vendorProducts',
+                    path: 'products',
+                    component: VendorProducts,
+                    children: [
+                        {
+                            name: 'vendorProductOverview',
+                            path: ':productId',
+                            component: VendorProductOverview
+                        },
+                    ]
                 },
                 {
                     name: 'vendorComments',

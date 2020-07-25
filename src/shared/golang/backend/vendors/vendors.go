@@ -12,6 +12,14 @@ type Vendor struct {
 	Url          string `db:"url"`
 }
 
+type VendorProduct struct {
+	Id          int64  `db:"id"`
+	VendorId    int64  `db:"vendor_id"`
+	Name        string `db:"name"`
+	Description string `db:"description"`
+	Url         string `db:"url"`
+}
+
 type VendorManager struct {
 	db *sqlx.DB
 }

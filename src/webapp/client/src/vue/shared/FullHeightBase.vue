@@ -20,6 +20,7 @@ export default class FullHeightBase extends Vue {
     get style() : any {
         return {
             height: `${this.divHeight}px`,
+            overflow: 'auto',
         }
     }
 

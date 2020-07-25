@@ -301,6 +301,36 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 								singleVendorR,
 								w.acl.ACLUserHasPermissions(roles.PVendorsView),
 							)
+
+							productsR := singleVendorR.Group("/products")
+							{
+								productsR.GET("/",
+									w.acl.ACLUserHasPermissions(roles.PVendorProductsList),
+									w.apiv1ListVendorProducts)
+
+								productsR.POST("/",
+									w.acl.ACLUserHasPermissions(roles.PVendorProductsCreate),
+									w.apiv1CreateVendorProduct)
+
+								singleProductR := productsR.Group("/:productId",
+									w.middleware.LoadResourceIntoContext(backend.RIVendorProduct, "productId"),
+									w.middleware.CheckResourcePartOfVendor(backend.RIVendorProduct),
+								)
+
+								{
+									singleProductR.GET("/",
+										w.acl.ACLUserHasPermissions(roles.PVendorsView),
+										w.apiv1GetVendorProduct)
+
+									singleProductR.PUT("/",
+										w.acl.ACLUserHasPermissions(roles.PVendorsUpdate),
+										w.apiv1UpdateVendorProduct)
+
+									singleProductR.DELETE("/",
+										w.acl.ACLUserHasPermissions(roles.PVendorsDelete),
+										w.apiv1DeleteVendorProduct)
+								}
+							}
 						}
 					}
 				}

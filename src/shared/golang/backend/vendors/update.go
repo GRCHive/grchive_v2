@@ -14,3 +14,14 @@ func (m *VendorManager) UpdateVendor(tx *sqlx.Tx, vendor *Vendor) error {
 	`, vendor)
 	return err
 }
+
+func (m *VendorManager) UpdateVendorProduct(tx *sqlx.Tx, product *VendorProduct) error {
+	_, err := tx.NamedExec(`
+		UPDATE vendor_products
+		SET name = :name,
+			description = :description,
+			url = :url
+		WHERE id = :id
+	`, product)
+	return err
+}

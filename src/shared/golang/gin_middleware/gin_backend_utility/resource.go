@@ -132,3 +132,50 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 		}
 	}
 }
+
+func (m *MiddlewareClient) CheckResourcePartOfVendor(resource backend.ResourceIdentifier) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		vendor, err := m.GetResourceFromContext(c, backend.RIVendor)
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, &WebappError{
+				Err:     err,
+				Context: "CheckResourcePartOfVendor - Get vendor",
+				Code:    GECBadRequest,
+				Message: GEMBadRequest,
+			})
+			return
+		}
+
+		tvendor := vendor.(*vendors.Vendor)
+		rsc, err := m.GetResourceFromContext(c, resource)
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, &WebappError{
+				Err:     err,
+				Context: "CheckResourcePartOfVendor - Get resource",
+				Code:    GECBadRequest,
+				Message: GEMBadRequest,
+			})
+			return
+		}
+
+		mismatch := false
+		switch resource {
+		case backend.RIVendorProduct:
+			trsc := rsc.(*vendors.VendorProduct)
+			mismatch = trsc.VendorId != tvendor.Id
+		default:
+			mismatch = true
+		}
+
+		if mismatch {
+			c.AbortWithError(http.StatusBadRequest, &WebappError{
+				Err:     nil,
+				Context: "CheckResourcePartOfVendor - Resource Vendor mismatch",
+				Code:    GECBadRequest,
+				Message: GEMBadRequestTree,
+			})
+		} else {
+			c.Next()
+		}
+	}
+}

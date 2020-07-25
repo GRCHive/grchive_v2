@@ -52,6 +52,7 @@
                     <div v-if="show">
                         <v-tabs>
                             <v-tab :to="overviewTo">Overview</v-tab>
+                            <v-tab :to="productsTo">Products</v-tab>
                             <restrict-role-permission-tab
                                 :permissions="commentPermissions"
                                 :to="commentsTo"
@@ -129,6 +130,14 @@ export default class VendorPage extends Vue {
         return {
             name: 'vendorOverview',
             params: this.$route.params,
+        }
+    }
+
+    get productsTo() : any {
+        return {
+            name: 'vendorProducts',
+            params: this.$route.params,
+            permissions: [Permission.PVendorProductsList]
         }
     }
 

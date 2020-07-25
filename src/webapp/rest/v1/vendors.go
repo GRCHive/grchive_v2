@@ -159,3 +159,153 @@ func (w *WebappApplication) apiv1DeleteVendor(c *gin.Context) {
 	}
 	c.Status(http.StatusNoContent)
 }
+
+func (w *WebappApplication) apiv1ListVendorProducts(c *gin.Context) {
+	currentVendor, err := w.middleware.GetResourceFromContext(c, backend.RIVendor)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1ListVendorProducts - Obtain vendor in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	tVendor := currentVendor.(*vendors.Vendor)
+	products, err := w.backend.itf.Vendors.ListVendorProductsForVendor(tVendor.Id)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1ListVendorProducts - Get products",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, products)
+}
+
+func (w *WebappApplication) apiv1CreateVendorProduct(c *gin.Context) {
+	currentVendor, err := w.middleware.GetResourceFromContext(c, backend.RIVendor)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1CreateVendorProduct - Obtain vendor in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	tVendor := currentVendor.(*vendors.Vendor)
+
+	product := vendors.VendorProduct{}
+	err = c.BindJSON(&product)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1CreateVendorVendor - Read product from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+	product.VendorId = tVendor.Id
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Vendors.CreateVendorProduct(tx, &product)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1CreateVendorProduct - Create product",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
+}
+
+func (w *WebappApplication) apiv1GetVendorProduct(c *gin.Context) {
+	product, err := w.middleware.GetResourceFromContext(c, backend.RIVendorProduct)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1GetVendorProduct - Obtain vendor product in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, product.(*vendors.VendorProduct))
+}
+
+func (w *WebappApplication) apiv1UpdateVendorProduct(c *gin.Context) {
+	product, err := w.middleware.GetResourceFromContext(c, backend.RIVendorProduct)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateVendorProduct - Obtain product in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	newProduct := vendors.VendorProduct{}
+	err = c.BindJSON(&newProduct)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateVendorProduct - Read vendor product from JSON body.",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	tproduct := product.(*vendors.VendorProduct)
+	newProduct.Id = tproduct.Id
+	newProduct.VendorId = tproduct.VendorId
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Vendors.UpdateVendorProduct(tx, &newProduct)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1UpdateVendorProduct - Update vendor",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, newProduct)
+}
+
+func (w *WebappApplication) apiv1DeleteVendorProduct(c *gin.Context) {
+	currentVendorProduct, err := w.middleware.GetResourceFromContext(c, backend.RIVendorProduct)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1DeleteVendorProduct - Obtain vendor in context",
+			Code:    gin_backend_utility.GECBadRequest,
+			Message: gin_backend_utility.GEMBadRequest,
+		})
+		return
+	}
+
+	err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
+		return w.backend.itf.Vendors.DeleteVendorProduct(tx, currentVendorProduct.(*vendors.VendorProduct).Id)
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1DeleteVendorProduct - Delete vendor",
+		})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
