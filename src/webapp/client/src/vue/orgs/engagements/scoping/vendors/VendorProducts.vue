@@ -4,7 +4,7 @@
     >
         <template v-slot:default="{show}">
             <v-row v-if="show">
-                <v-col cols="2">
+                <v-col cols="2" class="py-0">
                     <v-list>
                         <v-dialog
                             v-model="showHideNew"
@@ -55,7 +55,7 @@
                     </v-list>
                 </v-col>
 
-                <v-col cols="10">
+                <v-col cols="10" class="py-0">
                     <restrict-role-permission-container
                         :permissions="viewPermissions"
                         :org-id="currentOrg.Id"
