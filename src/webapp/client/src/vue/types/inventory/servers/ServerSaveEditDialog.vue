@@ -104,6 +104,13 @@ export default class ServerSaveEditDialog extends Vue {
                 this.saveInProgress = false
             })
         } else {
+            GrchiveApi.inventory.updateInventory<RawServer>(
+                InventoryType.ITServer,
+                this.parentOrgId,
+                this.workingCopy)
+            .then(this.onSuccess).catch(this.onError).finally(() => {
+                this.saveInProgress = false
+            })
         }
     }
 }

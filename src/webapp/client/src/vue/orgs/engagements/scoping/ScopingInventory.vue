@@ -156,12 +156,10 @@ export default class ScopingInventory extends Vue {
             return
         }
 
-        console.log(this.currentOrg, this.currentEngagement)
         if (!this.currentOrg || !this.currentEngagement) {
             return
         }
 
-        console.log(this.inventoryPermissions)
         // Do nothing until we load all permissions so we can know for sure when we want to direct the user to an error page.
         if (this.inventoryPermissions.server === null ||
             this.inventoryPermissions.desktop === null ||

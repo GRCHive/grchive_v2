@@ -63,6 +63,10 @@ const ScopingLaptopList = () => import( /* webpackChunkName: "ScopingLaptopList"
 const ScopingMobileList = () => import( /* webpackChunkName: "ScopingMobileList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingMobileList.vue')
 const ScopingEmbeddedList = () => import( /* webpackChunkName: "ScopingEmbeddedList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingEmbeddedList.vue')
 
+const ServerPage = () => import( /* webpackChunkName: "ServerPage" */ '@client/vue/orgs/engagements/scoping/inventory/servers/ServerPage.vue')
+const ServerOverview = () => import( /* webpackChunkName: "ServerOverview" */ '@client/vue/orgs/engagements/scoping/inventory/servers/ServerOverview.vue')
+const ServerComments = () => import( /* webpackChunkName: "ServerComments" */ '@client/vue/orgs/engagements/scoping/inventory/servers/ServerComments.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -266,6 +270,28 @@ const router = new VueRouter({
                 },
             ]
         },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory/servers/:serverId',
+            component: ServerPage,
+            children : [
+                {
+                    name: 'serverHome',
+                    path: '',
+                    redirect : { name: 'serverOverview' },
+                },
+                {
+                    name: 'serverOverview',
+                    path: 'overview',
+                    component: ServerOverview,
+                },
+                {
+                    name: 'serverComments',
+                    path: 'comments',
+                    component: ServerComments,
+                },
+            ],
+        },
+
 
         {
             path: '*',

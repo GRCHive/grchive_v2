@@ -143,6 +143,12 @@ func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (inter
 			return nil, err
 		}
 		return b.Vendors.GetVendorProductFromId(productId)
+	case RIInventoryServer:
+		invId, err := strconv.ParseInt(key, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		return b.Inventory.GetInventory(ResourceToInventoryType(id), invId)
 	default:
 		return nil, errors.New("Unsupported resource identifier.")
 	}

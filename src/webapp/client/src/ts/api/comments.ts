@@ -1,5 +1,9 @@
 import { ApiHttpHandler } from '@client/ts/api/handler'
 import { CommentThreadId, RawComment, cleanRawCommentFromJson } from '@client/ts/types/comments'
+import {
+    InventoryType
+} from '@client/ts/types/inventory'
+import { createBaseApiUrl } from '@client/ts/api/inventory'
 
 function threadIdToUrl(id : CommentThreadId) : string {
     const baseUrl : string = `/orgs/${id.orgId}/engagements/${id.engagementId}`
@@ -17,6 +21,8 @@ function threadIdToUrl(id : CommentThreadId) : string {
         }
     } else if (!!id.vendorId) {
         apiUrl = `${baseUrl}/vendors/${id.vendorId}`
+    } else if (!!id.serverId) {
+        apiUrl = `${createBaseApiUrl(InventoryType.ITServer, id.orgId, id.engagementId)}/${id.serverId}`
     }
     return `${apiUrl}/comments`
 }

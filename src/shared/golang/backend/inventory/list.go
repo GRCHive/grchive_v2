@@ -8,19 +8,17 @@ import (
 
 func (m *InventoryManager) ListInventoryForEngagement(it InventoryType, engagementId int64) (interface{}, error) {
 	var ret interface{}
-	var typedColumns string
 	singleEle := CreateTypedInventory(it)
 	switch it {
 	case ITServer:
 		ret = make([]*InventoryServer, 0)
-		typedColumns = `
-			tbl.physical_location AS "physical_location",
-			tbl.operating_system AS "operating_system",
-			tbl.hypervisor AS "hypervisor",
-			text(tbl.static_external_ip) AS "static_external_ip",
-		`
 	default:
 		return nil, errors.New("Not yet supported.")
+	}
+
+	typedColumns, err := inventoryToUniqueColumns(it)
+	if err != nil {
+		return nil, err
 	}
 
 	tblName, err := inventoryTypeToTableName(it)

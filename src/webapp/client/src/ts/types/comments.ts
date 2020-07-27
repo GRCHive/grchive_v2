@@ -5,6 +5,7 @@ export interface CommentThreadId {
     controlId? : number
     glAccountId? : number
     vendorId?: number
+    serverId? : number
 }
 
 export interface RawComment {

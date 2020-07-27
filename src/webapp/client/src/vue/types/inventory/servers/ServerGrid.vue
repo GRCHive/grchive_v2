@@ -96,6 +96,14 @@ export default class ServerGrid extends Vue {
     }
 
     goToServer(e : RowEvent) {
+        this.$router.push({
+            name: 'serverHome',
+            params: {
+                orgId: this.$route.params.orgId,
+                engId: this.$route.params.engId,
+                serverId: e.data.Id,
+            },
+        })
         this.$emit('change-server')
     }
 }

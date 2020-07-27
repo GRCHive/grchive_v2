@@ -1,11 +1,34 @@
 package comments
 
-func (m *CommentManager) GetThreadIdForRisk(riskId int64, engagementId int64, orgId int64) (int64, error) {
+import (
+	"fmt"
+)
+
+func (m *CommentManager) GetThreadIdForInventoryResource(resourceTable string, resourceId int64, engagementId int64, orgId int64) (int64, error) {
 	id := int64(-1)
-	err := m.db.Get(&id, `
+	err := m.db.Get(&id, fmt.Sprintf(`
 		SELECT t.thread_id
-		FROM risks_comment_threads AS t
-		INNER JOIN risks AS r
+		FROM %[1]s_comment_threads AS t
+		INNER JOIN %[1]s AS r
+			ON r.id = t.resource_id
+		INNER JOIN inventory AS inv
+			ON inv.id = r.inventory_id
+		INNER JOIN engagements AS e
+			ON e.id = inv.engagement_id
+		WHERE
+			r.id = $1 AND
+			e.id = $2 AND
+			e.org_id = $3
+	`, resourceTable), resourceId, engagementId, orgId)
+	return id, err
+}
+
+func (m *CommentManager) GetThreadIdForGenericResource(resourceTable string, resourceId int64, engagementId int64, orgId int64) (int64, error) {
+	id := int64(-1)
+	err := m.db.Get(&id, fmt.Sprintf(`
+		SELECT t.thread_id
+		FROM %[1]s_comment_threads AS t
+		INNER JOIN %[1]s AS r
 			ON r.id = t.resource_id
 		INNER JOIN engagements AS e
 			ON e.id = r.engagement_id
@@ -13,74 +36,30 @@ func (m *CommentManager) GetThreadIdForRisk(riskId int64, engagementId int64, or
 			r.id = $1 AND
 			e.id = $2 AND
 			e.org_id = $3
-	`, riskId, engagementId, orgId)
+	`, resourceTable), resourceId, engagementId, orgId)
 	return id, err
+}
+
+func (m *CommentManager) GetThreadIdForRisk(riskId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForGenericResource("risks", riskId, engagementId, orgId)
 }
 
 func (m *CommentManager) GetThreadIdForControl(controlId int64, engagementId int64, orgId int64) (int64, error) {
-	id := int64(-1)
-	err := m.db.Get(&id, `
-		SELECT t.thread_id
-		FROM controls_comment_threads AS t
-		INNER JOIN controls AS r
-			ON r.id = t.resource_id
-		INNER JOIN engagements AS e
-			ON e.id = r.engagement_id
-		WHERE
-			r.id = $1 AND
-			e.id = $2 AND
-			e.org_id = $3
-	`, controlId, engagementId, orgId)
-	return id, err
+	return m.GetThreadIdForGenericResource("controls", controlId, engagementId, orgId)
 }
 
 func (m *CommentManager) GetThreadIdForGeneralLedger(ledgerId int64, engagementId int64, orgId int64) (int64, error) {
-	id := int64(-1)
-	err := m.db.Get(&id, `
-		SELECT t.thread_id
-		FROM general_ledger_comment_threads AS t
-		INNER JOIN general_ledger AS r
-			ON r.id = t.resource_id
-		INNER JOIN engagements AS e
-			ON e.id = r.engagement_id
-		WHERE
-			r.id = $1 AND
-			e.id = $2 AND
-			e.org_id = $3
-	`, ledgerId, engagementId, orgId)
-	return id, err
+	return m.GetThreadIdForGenericResource("general_ledger", ledgerId, engagementId, orgId)
 }
 
 func (m *CommentManager) GetThreadIdForGLAccount(accId int64, engagementId int64, orgId int64) (int64, error) {
-	id := int64(-1)
-	err := m.db.Get(&id, `
-		SELECT t.thread_id
-		FROM gl_accounts_comment_threads AS t
-		INNER JOIN gl_accounts AS r
-			ON r.id = t.resource_id
-		INNER JOIN engagements AS e
-			ON e.id = r.engagement_id
-		WHERE
-			r.id = $1 AND
-			e.id = $2 AND
-			e.org_id = $3
-	`, accId, engagementId, orgId)
-	return id, err
+	return m.GetThreadIdForGenericResource("gl_accounts", accId, engagementId, orgId)
 }
 
 func (m *CommentManager) GetThreadIdForVendor(vendorId int64, engagementId int64, orgId int64) (int64, error) {
-	id := int64(-1)
-	err := m.db.Get(&id, `
-		SELECT t.thread_id
-		FROM vendors_comment_threads AS t
-		INNER JOIN vendors AS r
-			ON r.id = t.resource_id
-		INNER JOIN engagements AS e
-			ON e.id = r.engagement_id
-		WHERE
-			r.id = $1 AND
-			e.id = $2 AND
-			e.org_id = $3
-	`, vendorId, engagementId, orgId)
-	return id, err
+	return m.GetThreadIdForGenericResource("vendors", vendorId, engagementId, orgId)
+}
+
+func (m *CommentManager) GetThreadIdForServer(serverId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForInventoryResource("inventory_servers", serverId, engagementId, orgId)
 }

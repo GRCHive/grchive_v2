@@ -55,6 +55,20 @@ func inventoryTypeToTableName(it InventoryType) (string, error) {
 	}
 }
 
+func inventoryToUniqueColumns(it InventoryType) (string, error) {
+	switch it {
+	case ITServer:
+		return `
+			tbl.physical_location AS "physical_location",
+			tbl.operating_system AS "operating_system",
+			tbl.hypervisor AS "hypervisor",
+			text(tbl.static_external_ip) AS "static_external_ip",
+		`, nil
+	default:
+		return "", errors.New("Inventory type columns not yet supported.")
+	}
+}
+
 func CreateTypedInventory(it InventoryType) interface{} {
 	switch it {
 	case ITServer:
@@ -77,4 +91,21 @@ func SetInventoryEngagementId(inv interface{}, id int64) {
 	baseInventory := ref.FieldByName("Inventory")
 	refId := baseInventory.FieldByName("EngagementId")
 	refId.Set(reflect.ValueOf(id))
+}
+
+func GetBaseInventory(inv interface{}) *Inventory {
+	ref := reflect.ValueOf(inv).Elem()
+	baseInventory := ref.FieldByName("Inventory")
+	return baseInventory.Addr().Interface().(*Inventory)
+}
+
+func GetInventoryId(inv interface{}) int64 {
+	ref := reflect.ValueOf(inv).Elem()
+	return ref.FieldByName("Id").Int()
+}
+
+func SetInventoryId(inv interface{}, id int64) {
+	ref := reflect.ValueOf(inv).Elem()
+	field := ref.FieldByName("Id")
+	field.Set(reflect.ValueOf(id))
 }

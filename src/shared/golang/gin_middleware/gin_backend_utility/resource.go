@@ -6,6 +6,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
+	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
@@ -115,6 +116,9 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 		case backend.RIVendor:
 			trsc := rsc.(*vendors.Vendor)
 			mismatch = trsc.EngagementId != tengagement.Id
+		case backend.RIInventoryServer:
+			trsc := rsc.(*inventory.InventoryServer)
+			mismatch = trsc.Inventory.EngagementId != tengagement.Id
 		default:
 			mismatch = true
 		}

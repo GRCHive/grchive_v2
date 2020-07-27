@@ -4,7 +4,7 @@ import {
     InventoryType
 } from '@client/ts/types/inventory'
 
-function createBaseApiUrl(typ : InventoryType, orgId : number, engagementId : number) : string {
+export function createBaseApiUrl(typ : InventoryType, orgId : number, engagementId : number) : string {
     let suffix = ''
     switch (typ) {
         case InventoryType.ITServer:
@@ -38,5 +38,17 @@ export class InventoryApiClient {
 
     createInventory<T extends RawBaseInventory>(typ : InventoryType, orgId : number, inv : T): Promise<T> {
         return this.handler.post<T>(createBaseApiUrl(typ, orgId, inv.Inventory.EngagementId), {json : inv})
+    }
+
+    updateInventory<T extends RawBaseInventory>(typ : InventoryType, orgId : number, inv : T): Promise<T> {
+        return this.handler.put<T>(createBaseApiUrl(typ, orgId, inv.Inventory.EngagementId)+`/${inv.Id}`, {json : inv})
+    }
+
+    getInventory<T extends RawBaseInventory>(typ : InventoryType, orgId : number, engagementId: number, invId : number): Promise<T> {
+        return this.handler.get<T>(createBaseApiUrl(typ, orgId, engagementId)+`/${invId}`, {})
+    }
+
+    deleteInventory(typ : InventoryType, orgId : number, engagementId : number, invId : number): Promise<void> {
+        return this.handler.delete<void>(createBaseApiUrl(typ, orgId, engagementId)+`/${invId}`, {})
     }
 }

@@ -10,6 +10,9 @@ import { GeneralLedgerStoreModule, GeneralLedgerStoreState } from '@client/ts/st
 import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules/controlStore'
 import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
 import { VendorStoreModule, VendorStoreState } from '@client/ts/stores/modules/vendorStore'
+import { InventoryStoreModule, InventoryStoreState } from '@client/ts/stores/modules/inventoryStore'
+
+import { InventoryType } from '@client/ts/types/inventory'
 
 export interface RootState {
     user: UserStoreState
@@ -22,6 +25,7 @@ export interface RootState {
     gl : GeneralLedgerStoreState
     errors : ErrorStoreState
     vendors: VendorStoreState
+    inventory: InventoryStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -32,6 +36,7 @@ export interface CurrentResourceInitialization {
     glAccountId? : number
     vendorId? : number
     vendorProductId? : number
+    serverId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -47,6 +52,7 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         gl: GeneralLedgerStoreModule,
         errors: ErrorStoreModule,
         vendors: VendorStoreModule,
+        inventory: InventoryStoreModule,
     },
     actions: {
         initialize(context) {
@@ -128,6 +134,19 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                         engId: params.engagementId,
                         vendorId: params.vendorId,
                         vendorProductId: params.vendorProductId,
+                    })
+                }
+            } else {
+                context.commit('vendors/setRawVendorProduct', null)
+            }
+
+            if (!!params.serverId) {
+                if (!context.state.inventory.rawServer || context.state.inventory.rawServer.Id != params.serverId) {
+                    context.dispatch('inventory/initializeInventoryStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        inventoryId: params.serverId,
+                        inventoryType: InventoryType.ITServer,
                     })
                 }
             } else {
