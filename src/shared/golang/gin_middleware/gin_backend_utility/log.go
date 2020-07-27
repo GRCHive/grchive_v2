@@ -36,7 +36,7 @@ func CreateLogger(lg zerolog.Logger) gin.HandlerFunc {
 		var evt *zerolog.Event
 		if status >= http.StatusInternalServerError {
 			evt = logger.Error()
-		} else if status >= http.StatusMultipleChoices {
+		} else if status >= http.StatusBadRequest {
 			evt = logger.Warn()
 		} else {
 			evt = logger.Info()
