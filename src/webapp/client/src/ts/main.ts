@@ -56,6 +56,13 @@ const VendorProducts = () => import( /* webpackChunkName: "VendorProducts" */ '@
 const VendorComments = () => import( /* webpackChunkName: "VendorComments" */ '@client/vue/orgs/engagements/scoping/vendors/VendorComments.vue')
 const VendorProductOverview = () => import( /* webpackChunkName: "VendorProductOverview" */ '@client/vue/orgs/engagements/scoping/vendors/VendorProductOverview.vue')
 
+const ScopingInventory = () => import( /* webpackChunkName: "ScopingInventory" */ '@client/vue/orgs/engagements/scoping/ScopingInventory.vue')
+const ScopingServerList = () => import( /* webpackChunkName: "ScopingServerList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingServerList.vue')
+const ScopingDesktopList = () => import( /* webpackChunkName: "ScopingDesktopList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingDesktopList.vue')
+const ScopingLaptopList = () => import( /* webpackChunkName: "ScopingLaptopList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingLaptopList.vue')
+const ScopingMobileList = () => import( /* webpackChunkName: "ScopingMobileList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingMobileList.vue')
+const ScopingEmbeddedList = () => import( /* webpackChunkName: "ScopingEmbeddedList" */ '@client/vue/orgs/engagements/scoping//inventory/ScopingEmbeddedList.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -221,6 +228,41 @@ const router = new VueRouter({
                     name: 'vendorComments',
                     path: 'comments',
                     component: VendorComments,
+                },
+            ]
+        },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory',
+            component: ScopingInventory,
+            children : [
+                {
+                    name: 'scopingInventory',
+                    path: '',
+                },
+                {
+                    name: 'scopingServers',
+                    path: 'servers',
+                    component: ScopingServerList,
+                },
+                {
+                    name: 'scopingDesktops',
+                    path: 'desktops',
+                    component: ScopingDesktopList,
+                },
+                {
+                    name: 'scopingLaptops',
+                    path: 'laptops',
+                    component: ScopingLaptopList,
+                },
+                {
+                    name: 'scopingMobile',
+                    path: 'mobile',
+                    component: ScopingMobileList,
+                },
+                {
+                    name: 'scopingEmbedded',
+                    path: 'embedded',
+                    component: ScopingEmbeddedList,
                 },
             ]
         },

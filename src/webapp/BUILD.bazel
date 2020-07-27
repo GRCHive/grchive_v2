@@ -25,6 +25,7 @@ go_binary(
         "//src/shared/golang/backend/controls:lib",
         "//src/shared/golang/backend/engagements:lib",
         "//src/shared/golang/backend/gl:lib",
+        "//src/shared/golang/backend/inventory:lib",
         "//src/shared/golang/backend/orgs:lib",
         "//src/shared/golang/backend/users:lib",
         "//src/shared/golang/backend/risks:lib",

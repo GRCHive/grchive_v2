@@ -7,6 +7,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
+	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
 	"gitlab.com/grchive/grchive-v2/shared/backend/roles"
@@ -28,6 +29,7 @@ type BackendInterface struct {
 	Comments    *comments.CommentManager
 	GL          *gl.GLManager
 	Vendors     *vendors.VendorManager
+	Inventory   *inventory.InventoryManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -43,6 +45,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Comments:    comments.CreateCommentManager(db),
 		GL:          gl.CreateGLManager(db),
 		Vendors:     vendors.CreateVendorManager(db),
+		Inventory:   inventory.CreateInventoryManager(db),
 	}
 }
 

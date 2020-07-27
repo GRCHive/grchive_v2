@@ -129,9 +129,10 @@ export default class ScopingNavBar extends Vue {
                         disabled: true,
                     },
                     {
-                        title: 'Servers',
-                        icon: 'mdi-server-network',
-                        disabled: true,
+                        title: 'Inventory',
+                        icon: 'mdi-warehouse',
+                        path: 'scopingInventory',
+                        params: this.baseParams,
                     },
                 ],
             },

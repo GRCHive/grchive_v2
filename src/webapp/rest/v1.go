@@ -13,15 +13,18 @@ func (w *WebappApplication) apiv1EnsureAuth(c *gin.Context) {
 	// TODO: #9jjxxu
 	// Support API keys for non browser users.
 	sess := w.sessionStore.GetLoginSession(c)
-	if !sess.IsLoggedIn() {
+	err := sess.ValidateLogin(w.fusionauth)
+	if err != nil || !sess.IsLoggedIn() {
 		c.AbortWithError(http.StatusUnauthorized, &gin_backend_utility.WebappError{
+			Err:     err,
+			Context: "apiv1EnsureAuth: Check login.",
 			Code:    gin_backend_utility.GECUnauthorized,
 			Message: gin_backend_utility.GEMUnauthorizedLogin,
 		})
 		return
 	}
 
-	err := w.middleware.StoreCurrentUserIntoContext(c, sess.GetSessionUser())
+	err = w.middleware.StoreCurrentUserIntoContext(c, sess.GetSessionUser())
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, &gin_backend_utility.WebappError{
 			Err:     err,
@@ -332,6 +335,15 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 								}
 							}
 						}
+					}
+
+					inventoryR := singleEngR.Group("/inventory")
+					{
+						w.apiv1CreateInventoryEndpoints(inventoryR, "servers", backend.RIInventoryServer)
+						w.apiv1CreateInventoryEndpoints(inventoryR, "desktops", backend.RIInventoryDesktop)
+						w.apiv1CreateInventoryEndpoints(inventoryR, "laptops", backend.RIInventoryLaptop)
+						w.apiv1CreateInventoryEndpoints(inventoryR, "mobile", backend.RIInventoryMobile)
+						w.apiv1CreateInventoryEndpoints(inventoryR, "embedded", backend.RIInventoryEmbedded)
 					}
 				}
 

@@ -1,6 +1,7 @@
 import { Store } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
 import { v4 as uuidv4 } from 'uuid'
+import { Permission, createPermissionListString} from '@client/ts/types/roles'
 
 export enum GrchiveErrorCodes {
 	GECNoError    = 0,
@@ -26,6 +27,12 @@ export class ErrorWrapper {
         this.technical = btoa(JSON.stringify(err))
         this.httpCode = httpCode
     }
+}
+
+export function createManualUnauthorizedError(context : string, roles : Permission[], roleOr : boolean) : ErrorWrapper {
+    let ret = new ErrorWrapper(GrchiveErrorCodes.GECUnauthorized, 'Unauthorized. You require: ' + createPermissionListString(roles, roleOr), null, 500)
+    ret.context = context
+    return ret
 }
 
 interface ServerErrorData {
@@ -75,12 +82,16 @@ export class GrchiveErrorHandler {
         this.router = router
     }
 
+    failurePageOnManualError(err : ErrorWrapper) {
+        this.router.replace({
+            path: '/error',
+            query: err,
+        })
+    }
+
     failurePageOnError(err : any) {
         constructErrorWrapperFromGenericError(err).then((e : ErrorWrapper) => {
-            this.router.replace({
-                path: '/error',
-                query: e,
-            })
+            this.failurePageOnManualError(e)
         })
     }
 

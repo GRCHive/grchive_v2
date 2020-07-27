@@ -54,6 +54,32 @@ const (
 	PVendorProductsDelete            = "org.vendors.products.delete"
 	PVendorProductsCreate            = "org.vendors.products.create"
 	PVendorProductsList              = "org.vendors.products.list"
+	PServersView                     = "org.inventory.servers.view"
+	PServersUpdate                   = "org.inventory.servers.update"
+	PServersDelete                   = "org.inventory.servers.delete"
+	PServersCreate                   = "org.inventory.servers.create"
+	PServersList                     = "org.inventory.servers.list"
+	PDesktopsView                    = "org.inventory.desktops.view"
+	PDesktopsUpdate                  = "org.inventory.desktops.update"
+	PDesktopsDelete                  = "org.inventory.desktops.delete"
+	PDesktopsCreate                  = "org.inventory.desktops.create"
+	PDesktopsList                    = "org.inventory.desktops.list"
+	PLaptopsView                     = "org.inventory.laptops.view"
+	PLaptopsUpdate                   = "org.inventory.laptops.update"
+	PLaptopsDelete                   = "org.inventory.laptops.delete"
+	PLaptopsCreate                   = "org.inventory.laptops.create"
+	PLaptopsList                     = "org.inventory.laptops.list"
+	PMobileView                      = "org.inventory.mobile.view"
+	PMobileUpdate                    = "org.inventory.mobile.update"
+	PMobileDelete                    = "org.inventory.mobile.delete"
+	PMobileCreate                    = "org.inventory.mobile.create"
+	PMobileList                      = "org.inventory.mobile.list"
+	PEmbeddedView                    = "org.inventory.embedded.view"
+	PEmbeddedUpdate                  = "org.inventory.embedded.update"
+	PEmbeddedDelete                  = "org.inventory.embedded.delete"
+	PEmbeddedCreate                  = "org.inventory.embedded.create"
+	PEmbeddedList                    = "org.inventory.embedded.list"
+	PNull                            = "null"
 )
 
 type RoleManager struct {
@@ -80,4 +106,12 @@ func PermissionArrayFromStrings(strs ...string) []Permission {
 		ret[idx] = Permission(s)
 	}
 	return ret
+}
+
+type CrudPermissions struct {
+	List   Permission
+	Create Permission
+	View   Permission
+	Update Permission
+	Delete Permission
 }

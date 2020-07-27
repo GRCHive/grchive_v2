@@ -74,16 +74,19 @@ func (w *WebappApplication) Run() {
 	r.StaticFile("/robots.txt", "src/website/robots.txt")
 	r.StaticFS("/static/client/", w.clientZipFs)
 
-	r.Use(w.sessionStore.ValidateLogin(w.fusionauth))
-	r.Use(w.sessionStore.SyncEmailVerification(w.fusionauth))
+	frontendR := r.Group("/",
+		w.sessionStore.ValidateLogin(w.fusionauth),
+		w.sessionStore.SyncEmailVerification(w.fusionauth),
+	)
 
-	loginR := r.Group("/", w.sessionStore.RedirectIfLoggedIn("/app/"))
+	loginR := frontendR.Group("/",
+		w.sessionStore.RedirectIfLoggedIn("/app/"))
 	loginR.GET("/", w.sessionStore.RedirectIfLoggedOut("/login"))
 	loginR.GET("/login", w.sessionStore.PopulateLoginState, w.renderLogin)
 	loginR.GET("/oauth2callback", w.handleOauthCallback)
-	r.GET("/logout", w.renderLogout)
+	frontendR.GET("/logout", w.renderLogout)
 
-	appR := r.Group("/app", w.sessionStore.RedirectIfLoggedOut("/login"))
+	appR := frontendR.Group("/app", w.sessionStore.RedirectIfLoggedOut("/login"))
 	appR.GET("/*path", w.renderApp)
 
 	w.registerApiv1(r)
