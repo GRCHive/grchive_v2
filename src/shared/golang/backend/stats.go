@@ -1,5 +1,9 @@
 package backend
 
+import (
+	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
+)
+
 type EngagementScopingStats struct {
 	NumRisks                         int
 	NumControls                      int
@@ -7,6 +11,9 @@ type EngagementScopingStats struct {
 	NumFinanciallyRelevantGLAccounts int
 	NumVendors                       int
 	NumVendorProducts                int
+	NumSystems                       int
+	NumDatabases                     int
+	NumInventory                     map[inventory.InventoryType]int
 }
 
 func (m *BackendInterface) GetEngagementScopingStats(engagementId int64) (*EngagementScopingStats, error) {
@@ -46,5 +53,19 @@ func (m *BackendInterface) GetEngagementScopingStats(engagementId int64) (*Engag
 		return nil, err
 	}
 
+	stats.NumSystems, err = m.Systems.GetNumSystemsForEngagement(engagementId)
+	if err != nil {
+		return nil, err
+	}
+
+	stats.NumDatabases, err = m.Databases.GetNumDatabasesForEngagement(engagementId)
+	if err != nil {
+		return nil, err
+	}
+
+	stats.NumInventory, err = m.Inventory.GetNumInventoryForEngagement(engagementId)
+	if err != nil {
+		return nil, err
+	}
 	return &stats, nil
 }

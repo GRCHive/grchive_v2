@@ -19,95 +19,94 @@
                     <div v-if="show">
                         <v-row justify="center">
                             <v-col cols="1">
-                                <v-card>
-                                    <div class="stat-container">
-                                        <div class="d-flex justify-center icon-container">
-                                            <v-icon x-large>
-                                                mdi-fire
-                                            </v-icon>
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumRisks }}
-                                            </span>
-                                            Risks
-                                        </div>
-                                    </div>
-                                </v-card>
+                                <stat-display
+                                    icon="mdi-fire"
+                                    :stats="riskStats"
+                                >
+                                </stat-display>
                             </v-col>
 
                             <v-col cols="1">
-                                <v-card>
-                                    <div class="stat-container">
-                                        <div class="d-flex justify-center icon-container">
-                                            <v-icon x-large>
-                                                mdi-shield-lock-outline
-                                            </v-icon>
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumControls }}
-                                            </span>
-                                            Controls
-                                        </div>
-                                    </div>
-                                </v-card>
+                                <stat-display
+                                    icon="mdi-shield-lock-outline"
+                                    :stats="controlStats"
+                                >
+                                </stat-display>
                             </v-col>
 
                             <v-col cols="1">
-                                <v-card>
-                                    <div class="stat-container">
-                                        <div class="d-flex justify-center icon-container">
-                                            <v-icon x-large>
-                                                mdi-bank-outline
-                                            </v-icon>
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumGLAccounts }}
-                                            </span>
-                                            Accounts
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumFinanciallyRelevantGLAccounts }}
-                                            </span>
-                                            Relevant
-                                        </div>
-                                    </div>
-                                </v-card>
+                                <stat-display
+                                    icon="mdi-bank-outline"
+                                    :stats="glStats"
+                                >
+                                </stat-display>
                             </v-col>
 
                             <v-col cols="1">
-                                <v-card>
-                                    <div class="stat-container">
-                                        <div class="d-flex justify-center icon-container">
-                                            <v-icon x-large>
-                                                mdi-store
-                                            </v-icon>
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumVendors }}
-                                            </span>
-                                            Vendors
-                                        </div>
-
-                                        <div class="d-flex justify-center text-overline">
-                                            <span class="font-weight-bold">
-                                                {{ stats.NumVendorProducts }}
-                                            </span>
-                                            Products
-                                        </div>
-                                    </div>
-                                </v-card>
+                                <stat-display
+                                    icon="mdi-store"
+                                    :stats="vendorStats"
+                                >
+                                </stat-display>
                             </v-col>
 
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-application"
+                                    :stats="systemStats"
+                                >
+                                </stat-display>
+                            </v-col>
+
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-database"
+                                    :stats="databaseStats"
+                                >
+                                </stat-display>
+                            </v-col>
+                        </v-row>
+
+                        <v-row justify="center">
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-server"
+                                    :stats="serverStats"
+                                >
+                                </stat-display>
+                            </v-col>
+
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-monitor"
+                                    :stats="desktopStats"
+                                >
+                                </stat-display>
+                            </v-col>
+
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-laptop"
+                                    :stats="laptopStats"
+                                >
+                                </stat-display>
+                            </v-col>
+
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-cellphone"
+                                    :stats="mobileStats"
+                                >
+                                </stat-display>
+                            </v-col>
+
+                            <v-col cols="1">
+                                <stat-display
+                                    icon="mdi-chip"
+                                    :stats="embeddedStats"
+                                >
+                                </stat-display>
+                            </v-col>
                         </v-row>
                     </div>
                 </template>
@@ -125,12 +124,16 @@ import ScopingTemplate from '@client/vue/orgs/engagements/scoping/ScopingTemplat
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement, RawEngagementScopingStats } from '@client/ts/types/engagements'
 import { GrchiveApi, ErrorHandler } from '@client/ts/main'
+import { StatInfo } from '@client/ts/stats'
+import { InventoryType } from '@client/ts/types/inventory'
 import LoadingContainer from '@client/vue/loading/LoadingContainer.vue'
+import StatDisplay from '@client/vue/shared/StatDisplay.vue'
 
 @Component({
     components: {
         ScopingTemplate,
         LoadingContainer,
+        StatDisplay,
     }
 })
 export default class ScopingDashboard extends Vue {
@@ -142,6 +145,89 @@ export default class ScopingDashboard extends Vue {
 
     get currentEngagement() : RawEngagement | null {
         return this.$store.state.engagements.rawEngagement
+    }
+
+    get riskStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumRisks,
+            text: 'Risks'
+        }]
+    }
+
+    get controlStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumControls,
+            text: 'Risks'
+        }]
+    }
+
+    get glStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumGLAccounts,
+            text: 'Accounts'
+        }, {
+            value: this.stats!.NumFinanciallyRelevantGLAccounts,
+            text: 'Relevant'
+        }]
+    }
+
+    get vendorStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumVendors,
+            text: 'Vendors'
+        }, {
+            value: this.stats!.NumVendorProducts,
+            text: 'Products'
+        }]
+    }
+
+    get systemStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumSystems,
+            text: 'Systems'
+        }]
+    }
+
+    get databaseStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumDatabases,
+            text: 'Databases'
+        }]
+    }
+
+    get serverStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumInventory[InventoryType.ITServer],
+            text: 'Servers'
+        }]
+    }
+
+    get desktopStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumInventory[InventoryType.ITDesktop],
+            text: 'Desktops'
+        }]
+    }
+
+    get laptopStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumInventory[InventoryType.ITLaptop],
+            text: 'Laptops'
+        }]
+    }
+
+    get mobileStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumInventory[InventoryType.ITMobile],
+            text: 'Mobile'
+        }]
+    }
+
+    get embeddedStats() : StatInfo[] {
+        return [{
+            value: this.stats!.NumInventory[InventoryType.ITEmbedded],
+            text: 'Embedded'
+        }]
     }
 
     @Watch('currentOrg')
@@ -169,20 +255,3 @@ export default class ScopingDashboard extends Vue {
 }
 
 </script>
-
-<style scoped>
-
-.stat-container {
-    padding-top: 16px;
-    padding-bottom: 16px;
-}
-
-.icon-container {
-    margin-bottom: 16px;
-}
-
->>>.text-overline {
-    line-height: 1rem;
-}
-
-</style>

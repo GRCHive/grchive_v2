@@ -1,5 +1,6 @@
 import formatRFC3339 from 'date-fns/formatRFC3339'
 import { Role } from '@client/ts/types/roles'
+import { InventoryType } from '@client/ts/types/inventory'
 
 export interface RawEngagement {
     Id            : number
@@ -20,6 +21,9 @@ export interface RawEngagementScopingStats {
     NumFinanciallyRelevantGLAccounts:   number
     NumVendors:                         number
     NumVendorProducts:                  number
+    NumSystems:                         number
+    NumDatabases:                       number
+    NumInventory:                       Record<InventoryType, number>
 }
 
 export function createEmptyEngagement() : RawEngagement {
