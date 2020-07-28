@@ -12,6 +12,14 @@ func (m *InventoryManager) ListInventoryForEngagement(it InventoryType, engageme
 	switch it {
 	case ITServer:
 		ret = make([]*InventoryServer, 0)
+	case ITDesktop:
+		ret = make([]*InventoryDesktop, 0)
+	case ITLaptop:
+		ret = make([]*InventoryLaptop, 0)
+	case ITMobile:
+		ret = make([]*InventoryMobile, 0)
+	case ITEmbedded:
+		ret = make([]*InventoryEmbedded, 0)
 	default:
 		return nil, errors.New("Not yet supported.")
 	}
@@ -41,6 +49,7 @@ func (m *InventoryManager) ListInventoryForEngagement(it InventoryType, engageme
 		INNER JOIN inventory AS inv
 			ON tbl.inventory_id = inv.id
 		WHERE inv.engagement_id = $1
+		ORDER BY tbl.id DESC
 	`, typedColumns, tblName), engagementId)
 
 	if err != nil {

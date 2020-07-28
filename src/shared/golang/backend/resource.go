@@ -144,6 +144,14 @@ func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (inter
 		}
 		return b.Vendors.GetVendorProductFromId(productId)
 	case RIInventoryServer:
+		fallthrough
+	case RIInventoryDesktop:
+		fallthrough
+	case RIInventoryLaptop:
+		fallthrough
+	case RIInventoryMobile:
+		fallthrough
+	case RIInventoryEmbedded:
 		invId, err := strconv.ParseInt(key, 10, 64)
 		if err != nil {
 			return nil, err

@@ -66,6 +66,10 @@ export default class ScopingServerList extends Vue {
     }
 
     onNewServer(s : RawServer) {
+        if (!this.allServers) {
+            return
+        }
+        this.allServers.unshift(s)
     }
 }
 

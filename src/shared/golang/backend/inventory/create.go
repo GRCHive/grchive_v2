@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"errors"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"reflect"
 )
@@ -44,12 +45,17 @@ func (m *InventoryManager) CreateInventory(tx *sqlx.Tx, it InventoryType, inv in
 		return err
 	}
 
+	tblName, err := inventoryTypeToTableName(it)
+	if err != nil {
+		return err
+	}
+
 	var rows *sqlx.Rows
 	err = nil
 	switch it {
 	case ITServer:
-		rows, err = tx.NamedQuery(`
-			INSERT INTO inventory_servers (
+		rows, err = tx.NamedQuery(fmt.Sprintf(`
+			INSERT INTO %s (
 				inventory_id,
 				physical_location,
 				operating_system,
@@ -64,7 +70,57 @@ func (m *InventoryManager) CreateInventory(tx *sqlx.Tx, it InventoryType, inv in
 				:static_external_ip
 			)
 			RETURNING id
-		`, inv)
+		`, tblName), inv)
+	case ITDesktop:
+		rows, err = tx.NamedQuery(fmt.Sprintf(`
+			INSERT INTO %s (
+				inventory_id,
+				physical_location,
+				operating_system
+			)
+			VALUES (
+				:inventory.id,
+				:physical_location,
+				:operating_system
+			)
+			RETURNING id
+		`, tblName), inv)
+	case ITLaptop:
+		rows, err = tx.NamedQuery(fmt.Sprintf(`
+			INSERT INTO %s (
+				inventory_id,
+				operating_system
+			)
+			VALUES (
+				:inventory.id,
+				:operating_system
+			)
+			RETURNING id
+		`, tblName), inv)
+	case ITMobile:
+		rows, err = tx.NamedQuery(fmt.Sprintf(`
+			INSERT INTO %s (
+				inventory_id,
+				operating_system
+			)
+			VALUES (
+				:inventory.id,
+				:operating_system
+			)
+			RETURNING id
+		`, tblName), inv)
+	case ITEmbedded:
+		rows, err = tx.NamedQuery(fmt.Sprintf(`
+			INSERT INTO %s (
+				inventory_id,
+				operating_system
+			)
+			VALUES (
+				:inventory.id,
+				:operating_system
+			)
+			RETURNING id
+		`, tblName), inv)
 	default:
 		err = errors.New("Unsupported inventory type for creation.")
 	}

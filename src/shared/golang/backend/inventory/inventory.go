@@ -46,10 +46,43 @@ type InventoryServer struct {
 	StaticExternalIp string    `db:"static_external_ip"`
 }
 
+type InventoryDesktop struct {
+	Id               int64     `db:"id"`
+	Inventory        Inventory `db:"inventory"`
+	PhysicalLocation string    `db:"physical_location"`
+	OperatingSystem  string    `db:"operating_system"`
+}
+
+type InventoryLaptop struct {
+	Id              int64     `db:"id"`
+	Inventory       Inventory `db:"inventory"`
+	OperatingSystem string    `db:"operating_system"`
+}
+
+type InventoryMobile struct {
+	Id              int64     `db:"id"`
+	Inventory       Inventory `db:"inventory"`
+	OperatingSystem string    `db:"operating_system"`
+}
+
+type InventoryEmbedded struct {
+	Id              int64     `db:"id"`
+	Inventory       Inventory `db:"inventory"`
+	OperatingSystem string    `db:"operating_system"`
+}
+
 func inventoryTypeToTableName(it InventoryType) (string, error) {
 	switch it {
 	case ITServer:
 		return "inventory_servers", nil
+	case ITDesktop:
+		return "inventory_desktops", nil
+	case ITLaptop:
+		return "inventory_laptops", nil
+	case ITMobile:
+		return "inventory_mobile", nil
+	case ITEmbedded:
+		return "inventory_embedded", nil
 	default:
 		return "", errors.New("Inventory type table not yet supported.")
 	}
@@ -64,6 +97,23 @@ func inventoryToUniqueColumns(it InventoryType) (string, error) {
 			tbl.hypervisor AS "hypervisor",
 			text(tbl.static_external_ip) AS "static_external_ip",
 		`, nil
+	case ITDesktop:
+		return `
+			tbl.physical_location AS "physical_location",
+			tbl.operating_system AS "operating_system",
+		`, nil
+	case ITLaptop:
+		return `
+			tbl.operating_system AS "operating_system",
+		`, nil
+	case ITMobile:
+		return `
+			tbl.operating_system AS "operating_system",
+		`, nil
+	case ITEmbedded:
+		return `
+			tbl.operating_system AS "operating_system",
+		`, nil
 	default:
 		return "", errors.New("Inventory type columns not yet supported.")
 	}
@@ -74,13 +124,13 @@ func CreateTypedInventory(it InventoryType) interface{} {
 	case ITServer:
 		return &InventoryServer{}
 	case ITDesktop:
-		return nil
+		return &InventoryDesktop{}
 	case ITLaptop:
-		return nil
+		return &InventoryLaptop{}
 	case ITMobile:
-		return nil
+		return &InventoryMobile{}
 	case ITEmbedded:
-		return nil
+		return &InventoryEmbedded{}
 	default:
 		return nil
 	}

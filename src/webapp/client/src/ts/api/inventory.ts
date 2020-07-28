@@ -16,10 +16,10 @@ export function createBaseApiUrl(typ : InventoryType, orgId : number, engagement
         case InventoryType.ITLaptop:
             suffix = 'laptops'
             break
-        case InventoryType.ITMobileDevice:
+        case InventoryType.ITMobile:
             suffix = 'mobile'
             break
-        case InventoryType.ITEmbeddedDevice:
+        case InventoryType.ITEmbedded:
             suffix = 'embedded'
             break
     }

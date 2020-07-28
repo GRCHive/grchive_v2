@@ -25,8 +25,8 @@ export enum InventoryType {
     ITServer,
     ITDesktop,
     ITLaptop,
-    ITMobileDevice,
-    ITEmbeddedDevice
+    ITMobile,
+    ITEmbedded
 }
 
 export interface RawBaseInventory {
@@ -57,14 +57,48 @@ export interface RawDesktop extends RawBaseInventory {
     OperatingSystem:    string
 }
 
+export function createEmptyDesktop() : RawDesktop {
+    return {
+        Id: -1,
+        Inventory: createEmptyInventory(),
+        PhysicalLocation: '',
+        OperatingSystem: '',
+    }
+}
+
 export interface RawLaptop extends RawBaseInventory {
     OperatingSystem:    string
 }
 
-export interface RawMobileDevice extends RawBaseInventory {
+
+export function createEmptyLaptop() : RawLaptop {
+    return {
+        Id: -1,
+        Inventory: createEmptyInventory(),
+        OperatingSystem: '',
+    }
+}
+
+export interface RawMobile extends RawBaseInventory {
     OperatingSystem:    string
 }
 
-export interface RawEmbeddedDevice extends RawBaseInventory {
+export function createEmptyMobile() : RawMobile {
+    return {
+        Id: -1,
+        Inventory: createEmptyInventory(),
+        OperatingSystem: '',
+    }
+}
+
+export interface RawEmbedded extends RawBaseInventory {
     OperatingSystem:    string
+}
+
+export function createEmptyEmbedded() : RawEmbedded {
+    return {
+        Id: -1,
+        Inventory: createEmptyInventory(),
+        OperatingSystem: '',
+    }
 }
