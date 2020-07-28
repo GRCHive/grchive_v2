@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -178,6 +179,150 @@ func (b *BackendInterface) rollForwardVendors(tx *sqlx.Tx, fromEngagementId int6
 	return err
 }
 
+func (b *BackendInterface) rollForwardInventory(tx *sqlx.Tx, fromEngagementId int64, toEngagementId int64) error {
+	// Roll-forward base inventory data (inventory) first and then roll forward the specific types of inventory next and doing
+	// inventory_id replacement too.
+	_, err := tx.Exec(`
+		INSERT INTO inventory (
+			engagement_id,
+			unique_id,
+			name,
+			description,
+			brand,
+			model
+		)
+		SELECT
+			$2,
+			inv.unique_id,
+			inv.name,
+			inv.description,
+			inv.brand,
+			inv.model
+		FROM inventory AS inv
+		WHERE inv.engagement_id = $1
+	`, fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	commonCte := `
+		WITH inventory_from AS (
+			SELECT *
+			FROM inventory
+			WHERE engagement_id = $1
+		), inventory_to AS (
+			SELECT *
+			FROM inventory
+			WHERE engagement_id = $2
+		), map_inventory AS (
+			SELECT f.id AS "from_id", t.id AS "to_id"
+			FROM inventory_from AS f
+			INNER JOIN inventory_to AS t
+				ON t.name = f.name
+		)
+	`
+	_, err = tx.Exec(fmt.Sprintf(`
+		%s
+		INSERT INTO inventory_servers (
+			inventory_id,
+			physical_location,
+			operating_system,
+			hypervisor,
+			static_external_ip
+		)
+		SELECT
+			map.to_id,
+			inv.physical_location,
+			inv.operating_system,
+			inv.hypervisor,
+			inv.static_external_ip
+		FROM inventory_servers AS inv
+		INNER JOIN map_inventory AS map
+			ON map.from_id = inv.inventory_id
+	`, commonCte), fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(fmt.Sprintf(`
+		%s
+		INSERT INTO inventory_desktops (
+			inventory_id,
+			physical_location,
+			operating_system
+		)
+		SELECT
+			map.to_id,
+			inv.physical_location,
+			inv.operating_system
+		FROM inventory_desktops AS inv
+		INNER JOIN map_inventory AS map
+			ON map.from_id = inv.inventory_id
+	`, commonCte), fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(fmt.Sprintf(`
+		%s
+		INSERT INTO inventory_laptops (
+			inventory_id,
+			operating_system
+		)
+		SELECT
+			map.to_id,
+			inv.operating_system
+		FROM inventory_laptops AS inv
+		INNER JOIN map_inventory AS map
+			ON map.from_id = inv.inventory_id
+	`, commonCte), fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(fmt.Sprintf(`
+		%s
+		INSERT INTO inventory_mobile (
+			inventory_id,
+			operating_system
+		)
+		SELECT
+			map.to_id,
+			inv.operating_system
+		FROM inventory_mobile AS inv
+		INNER JOIN map_inventory AS map
+			ON map.from_id = inv.inventory_id
+	`, commonCte), fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(fmt.Sprintf(`
+		%s
+		INSERT INTO inventory_embedded (
+			inventory_id,
+			operating_system
+		)
+		SELECT
+			map.to_id,
+			inv.operating_system
+		FROM inventory_embedded AS inv
+		INNER JOIN map_inventory AS map
+			ON map.from_id = inv.inventory_id
+	`, commonCte), fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (b *BackendInterface) RollForwardEngagement(tx *sqlx.Tx, fromEngagementId int64, toEngagementId int64) error {
 	if err := b.rollForwardRisks(tx, fromEngagementId, toEngagementId); err != nil {
 		return err
@@ -192,6 +337,10 @@ func (b *BackendInterface) RollForwardEngagement(tx *sqlx.Tx, fromEngagementId i
 	}
 
 	if err := b.rollForwardVendors(tx, fromEngagementId, toEngagementId); err != nil {
+		return err
+	}
+
+	if err := b.rollForwardInventory(tx, fromEngagementId, toEngagementId); err != nil {
 		return err
 	}
 
