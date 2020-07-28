@@ -84,6 +84,11 @@ const (
 	PDatabasesDelete                 = "org.databases.delete"
 	PDatabasesCreate                 = "org.databases.create"
 	PDatabasesList                   = "org.databases.list"
+	PSystemsView                     = "org.systems.view"
+	PSystemsUpdate                   = "org.systems.update"
+	PSystemsDelete                   = "org.systems.delete"
+	PSystemsCreate                   = "org.systems.create"
+	PSystemsList                     = "org.systems.list"
 	PNull                            = "null"
 )
 

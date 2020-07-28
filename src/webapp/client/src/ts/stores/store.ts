@@ -12,6 +12,7 @@ import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/err
 import { VendorStoreModule, VendorStoreState } from '@client/ts/stores/modules/vendorStore'
 import { InventoryStoreModule, InventoryStoreState } from '@client/ts/stores/modules/inventoryStore'
 import { DatabaseStoreModule, DatabaseStoreState } from '@client/ts/stores/modules/databaseStore'
+import { SystemStoreModule, SystemStoreState } from '@client/ts/stores/modules/systemStore'
 
 import { InventoryType } from '@client/ts/types/inventory'
 
@@ -28,6 +29,7 @@ export interface RootState {
     vendors: VendorStoreState
     inventory: InventoryStoreState
     databases: DatabaseStoreState
+    systems : SystemStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -44,6 +46,7 @@ export interface CurrentResourceInitialization {
     mobileId? : number
     embeddedId? : number
     databaseId? : number
+    systemId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -60,7 +63,8 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         errors: ErrorStoreModule,
         vendors: VendorStoreModule,
         inventory: InventoryStoreModule,
-        databases: DatabaseStoreModule
+        databases: DatabaseStoreModule,
+        systems : SystemStoreModule,
     },
     actions: {
         initialize(context) {
@@ -223,6 +227,18 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                 }
             } else {
                 context.commit('databases/setRawDatabase', null)
+            }
+
+            if (!!params.systemId) {
+                if (!context.state.systems.rawSystem || context.state.systems.rawSystem.Id != params.systemId) {
+                    context.dispatch('systems/initializeSystemStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        systemId: params.systemId,
+                    })
+                }
+            } else {
+                context.commit('systems/setRawSystem', null)
             }
         }
     },

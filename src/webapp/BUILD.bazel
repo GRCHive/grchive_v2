@@ -32,6 +32,7 @@ go_binary(
         "//src/shared/golang/backend/risks:lib",
         "//src/shared/golang/backend/roles:lib",
         "//src/shared/golang/backend/sessions:lib",
+        "//src/shared/golang/backend/systems:lib",
         "//src/shared/golang/backend/utility:lib",
         "//src/shared/golang/backend/vendors:lib",
         "//src/shared/golang/envconfig:lib",

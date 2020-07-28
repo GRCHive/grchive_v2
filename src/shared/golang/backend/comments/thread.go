@@ -83,3 +83,7 @@ func (m *CommentManager) GetThreadIdForEmbedded(embeddedId int64, engagementId i
 func (m *CommentManager) GetThreadIdForDatabase(dbId int64, engagementId int64, orgId int64) (int64, error) {
 	return m.GetThreadIdForGenericResource("databases", dbId, engagementId, orgId)
 }
+
+func (m *CommentManager) GetThreadIdForSystem(systemId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForGenericResource("systems", systemId, engagementId, orgId)
+}

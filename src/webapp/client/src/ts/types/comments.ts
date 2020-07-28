@@ -11,6 +11,7 @@ export interface CommentThreadId {
     mobileId? : number
     embeddedId? : number
     databaseId? : number
+    systemId? : number
 }
 
 export interface RawComment {

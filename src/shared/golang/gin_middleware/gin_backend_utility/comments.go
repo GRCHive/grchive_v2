@@ -11,6 +11,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
 	"gitlab.com/grchive/grchive-v2/shared/backend/orgs"
 	"gitlab.com/grchive/grchive-v2/shared/backend/risks"
+	"gitlab.com/grchive/grchive-v2/shared/backend/systems"
 	"gitlab.com/grchive/grchive-v2/shared/backend/vendors"
 	"net/http"
 )
@@ -107,6 +108,9 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 		case backend.RIDatabase:
 			trsc := rsc.(*databases.Database)
 			threadId, err = m.Itf.Comments.GetThreadIdForDatabase(trsc.Id, teng.Id, torg.Id)
+		case backend.RISystem:
+			trsc := rsc.(*systems.System)
+			threadId, err = m.Itf.Comments.GetThreadIdForSystem(trsc.Id, teng.Id, torg.Id)
 		default:
 			err = errors.New("Unsupported resource for comments.")
 		}

@@ -88,6 +88,11 @@ const DatabasePage = () => import( /* webpackChunkName: "DatabasePage" */ '@clie
 const DatabaseOverview = () => import( /* webpackChunkName: "DatabaseOverview" */ '@client/vue/orgs/engagements/scoping/databases/DatabaseOverview.vue')
 const DatabaseComments = () => import( /* webpackChunkName: "DatabaseComments" */ '@client/vue/orgs/engagements/scoping/databases/DatabaseComments.vue')
 
+const ScopingSystems = () => import( /* webpackChunkName: "ScopingSystems" */ '@client/vue/orgs/engagements/scoping/ScopingSystems.vue')
+const SystemPage = () => import( /* webpackChunkName: "SystemPage" */ '@client/vue/orgs/engagements/scoping/systems/SystemPage.vue')
+const SystemOverview = () => import( /* webpackChunkName: "SystemOverview" */ '@client/vue/orgs/engagements/scoping/systems/SystemOverview.vue')
+const SystemComments = () => import( /* webpackChunkName: "SystemComments" */ '@client/vue/orgs/engagements/scoping/systems/SystemComments.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -415,6 +420,28 @@ const router = new VueRouter({
                     name: 'databaseComments',
                     path: 'comments',
                     component: DatabaseComments,
+                },
+            ]
+        },
+        { name: 'scopingSystems', path: '/orgs/:orgId/engagements/:engId/scoping/systems', component: ScopingSystems },
+        { 
+            path: '/orgs/:orgId/engagements/:engId/scoping/systems/:systemId',
+            component: SystemPage,
+            children: [
+                {
+                    name: 'systemHome',
+                    path: '',
+                    redirect: { name: 'systemOverview' }
+                },
+                {
+                    name: 'systemOverview',
+                    path: 'overview',
+                    component: SystemOverview,
+                },
+                {
+                    name: 'systemComments',
+                    path: 'comments',
+                    component: SystemComments,
                 },
             ]
         },

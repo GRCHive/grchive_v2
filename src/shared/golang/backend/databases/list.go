@@ -6,6 +6,7 @@ func (m *DatabaseManager) ListDatabasesForEngagement(engagementId int64) ([]*Dat
 		SELECT *
 		FROM databases
 		WHERE engagement_id = $1
+		ORDER BY id DESC
 	`, engagementId)
 	return dbs, err
 }

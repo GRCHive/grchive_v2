@@ -381,6 +381,42 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							)
 						}
 					}
+
+					systemR := singleEngR.Group("/systems")
+					{
+						systemR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PSystemsList),
+							w.apiv1ListSystems)
+
+						systemR.POST("/",
+							w.acl.ACLUserHasPermissions(roles.PSystemsCreate),
+							w.apiv1CreateSystem)
+
+						singleSystemR := systemR.Group("/:sysId",
+							w.middleware.LoadResourceIntoContext(backend.RISystem, "sysId"),
+							w.middleware.CheckResourcePartOfEngagement(backend.RISystem),
+						)
+
+						{
+							singleSystemR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PSystemsView),
+								w.apiv1GetSystem)
+
+							singleSystemR.PUT("/",
+								w.acl.ACLUserHasPermissions(roles.PSystemsUpdate),
+								w.apiv1UpdateSystem)
+
+							singleSystemR.DELETE("/",
+								w.acl.ACLUserHasPermissions(roles.PSystemsDelete),
+								w.apiv1DeleteSystem)
+
+							w.addCommentEndpoints(
+								backend.RISystem,
+								singleSystemR,
+								w.acl.ACLUserHasPermissions(roles.PSystemsView),
+							)
+						}
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

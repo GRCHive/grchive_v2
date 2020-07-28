@@ -121,7 +121,9 @@ export default class ScopingNavBar extends Vue {
                     {
                         title: 'Systems',
                         icon: 'mdi-application',
-                        disabled: true,
+                        path: 'scopingSystems',
+                        params: this.baseParams,
+                        permissions: [Permission.PSystemsList],
                     },
                     {
                         title: 'Databases',

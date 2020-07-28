@@ -33,6 +33,8 @@ function threadIdToUrl(id : CommentThreadId) : string {
         apiUrl = `${createBaseApiUrl(InventoryType.ITEmbedded, id.orgId, id.engagementId)}/${id.embeddedId}`
     } else if (!!id.databaseId) {
         apiUrl = `${baseUrl}/databases/${id.databaseId}`
+    } else if (!!id.systemId) {
+        apiUrl = `${baseUrl}/systems/${id.systemId}`
     }
     return `${apiUrl}/comments`
 }
