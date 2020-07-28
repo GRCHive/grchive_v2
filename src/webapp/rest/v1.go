@@ -345,6 +345,42 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 						w.apiv1CreateInventoryEndpoints(inventoryR, "mobile", backend.RIInventoryMobile)
 						w.apiv1CreateInventoryEndpoints(inventoryR, "embedded", backend.RIInventoryEmbedded)
 					}
+
+					databaseR := singleEngR.Group("/databases")
+					{
+						databaseR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PDatabasesList),
+							w.apiv1ListDatabases)
+
+						databaseR.POST("/",
+							w.acl.ACLUserHasPermissions(roles.PDatabasesCreate),
+							w.apiv1CreateDatabase)
+
+						singleDatabaseR := databaseR.Group("/:dbId",
+							w.middleware.LoadResourceIntoContext(backend.RIDatabase, "dbId"),
+							w.middleware.CheckResourcePartOfEngagement(backend.RIDatabase),
+						)
+
+						{
+							singleDatabaseR.GET("/",
+								w.acl.ACLUserHasPermissions(roles.PDatabasesView),
+								w.apiv1GetDatabase)
+
+							singleDatabaseR.PUT("/",
+								w.acl.ACLUserHasPermissions(roles.PDatabasesUpdate),
+								w.apiv1UpdateDatabase)
+
+							singleDatabaseR.DELETE("/",
+								w.acl.ACLUserHasPermissions(roles.PDatabasesDelete),
+								w.apiv1DeleteDatabase)
+
+							w.addCommentEndpoints(
+								backend.RIDatabase,
+								singleDatabaseR,
+								w.acl.ACLUserHasPermissions(roles.PDatabasesView),
+							)
+						}
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

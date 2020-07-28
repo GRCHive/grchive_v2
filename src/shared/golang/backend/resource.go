@@ -29,6 +29,7 @@ const (
 	RIInventoryLaptop
 	RIInventoryMobile
 	RIInventoryEmbedded
+	RIDatabase
 )
 
 func ResourceToInventoryType(resource ResourceIdentifier) inventory.InventoryType {
@@ -157,6 +158,12 @@ func (b *BackendInterface) GetResource(id ResourceIdentifier, key string) (inter
 			return nil, err
 		}
 		return b.Inventory.GetInventory(ResourceToInventoryType(id), invId)
+	case RIDatabase:
+		dbId, err := strconv.ParseInt(key, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		return b.Databases.GetDatabaseFromId(dbId)
 	default:
 		return nil, errors.New("Unsupported resource identifier.")
 	}

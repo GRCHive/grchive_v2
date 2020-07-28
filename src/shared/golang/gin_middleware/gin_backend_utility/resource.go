@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
+	"gitlab.com/grchive/grchive-v2/shared/backend/databases"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
 	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
@@ -127,6 +128,9 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 		case backend.RIInventoryEmbedded:
 			engId := inventory.GetInventoryEngagementId(rsc)
 			mismatch = engId != tengagement.Id
+		case backend.RIDatabase:
+			trsc := rsc.(*databases.Database)
+			mismatch = trsc.EngagementId != tengagement.Id
 		default:
 			mismatch = true
 		}

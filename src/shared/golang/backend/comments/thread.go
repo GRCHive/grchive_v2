@@ -79,3 +79,7 @@ func (m *CommentManager) GetThreadIdForMobile(mobileId int64, engagementId int64
 func (m *CommentManager) GetThreadIdForEmbedded(embeddedId int64, engagementId int64, orgId int64) (int64, error) {
 	return m.GetThreadIdForInventoryResource("inventory_embedded", embeddedId, engagementId, orgId)
 }
+
+func (m *CommentManager) GetThreadIdForDatabase(dbId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForGenericResource("databases", dbId, engagementId, orgId)
+}

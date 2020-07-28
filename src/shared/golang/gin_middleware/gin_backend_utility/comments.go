@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/grchive/grchive-v2/shared/backend"
 	"gitlab.com/grchive/grchive-v2/shared/backend/controls"
+	"gitlab.com/grchive/grchive-v2/shared/backend/databases"
 	"gitlab.com/grchive/grchive-v2/shared/backend/engagements"
 	"gitlab.com/grchive/grchive-v2/shared/backend/gl"
 	"gitlab.com/grchive/grchive-v2/shared/backend/inventory"
@@ -103,6 +104,9 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 		case backend.RIInventoryEmbedded:
 			trsc := rsc.(*inventory.InventoryEmbedded)
 			threadId, err = m.Itf.Comments.GetThreadIdForEmbedded(trsc.Id, teng.Id, torg.Id)
+		case backend.RIDatabase:
+			trsc := rsc.(*databases.Database)
+			threadId, err = m.Itf.Comments.GetThreadIdForDatabase(trsc.Id, teng.Id, torg.Id)
 		default:
 			err = errors.New("Unsupported resource for comments.")
 		}

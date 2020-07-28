@@ -8,6 +8,7 @@ import { CommentApiClient } from '@client/ts/api/comments'
 import { GeneralLedgerApiClient } from '@client/ts/api/gl'
 import { VendorApiClient } from '@client/ts/api/vendor'
 import { InventoryApiClient } from '@client/ts/api/inventory'
+import { DatabaseApiClient } from '@client/ts/api/database'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class ApiClient {
@@ -22,6 +23,7 @@ export class ApiClient {
     gl: GeneralLedgerApiClient
     vendors: VendorApiClient
     inventory : InventoryApiClient
+    databases : DatabaseApiClient
 
     constructor() {
         this.handler = new ApiHttpHandler()
@@ -35,5 +37,6 @@ export class ApiClient {
         this.gl = new GeneralLedgerApiClient(this.handler)
         this.vendors = new VendorApiClient(this.handler)
         this.inventory = new InventoryApiClient(this.handler)
+        this.databases = new DatabaseApiClient(this.handler)
     }
 }

@@ -83,6 +83,11 @@ const EmbeddedPage = () => import( /* webpackChunkName: "EmbeddedPage" */ '@clie
 const EmbeddedOverview = () => import( /* webpackChunkName: "EmbeddedOverview" */ '@client/vue/orgs/engagements/scoping/inventory/embedded/EmbeddedOverview.vue')
 const EmbeddedComments = () => import( /* webpackChunkName: "EmbeddedComments" */ '@client/vue/orgs/engagements/scoping/inventory/embedded/EmbeddedComments.vue')
 
+const ScopingDatabases = () => import( /* webpackChunkName: "ScopingDatabases" */ '@client/vue/orgs/engagements/scoping/ScopingDatabases.vue')
+const DatabasePage = () => import( /* webpackChunkName: "DatabasePage" */ '@client/vue/orgs/engagements/scoping/databases/DatabasePage.vue')
+const DatabaseOverview = () => import( /* webpackChunkName: "DatabaseOverview" */ '@client/vue/orgs/engagements/scoping/databases/DatabaseOverview.vue')
+const DatabaseComments = () => import( /* webpackChunkName: "DatabaseComments" */ '@client/vue/orgs/engagements/scoping/databases/DatabaseComments.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -390,6 +395,28 @@ const router = new VueRouter({
                     component: EmbeddedComments,
                 },
             ],
+        },
+        { name: 'scopingDatabases', path: '/orgs/:orgId/engagements/:engId/scoping/databases', component: ScopingDatabases },
+        { 
+            path: '/orgs/:orgId/engagements/:engId/scoping/databases/:databaseId',
+            component: DatabasePage,
+            children: [
+                {
+                    name: 'databaseHome',
+                    path: '',
+                    redirect: { name: 'databaseOverview' }
+                },
+                {
+                    name: 'databaseOverview',
+                    path: 'overview',
+                    component: DatabaseOverview,
+                },
+                {
+                    name: 'databaseComments',
+                    path: 'comments',
+                    component: DatabaseComments,
+                },
+            ]
         },
         {
             path: '*',

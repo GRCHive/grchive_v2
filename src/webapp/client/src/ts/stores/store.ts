@@ -11,6 +11,7 @@ import { ControlStoreModule, ControlStoreState } from '@client/ts/stores/modules
 import { ErrorStoreModule, ErrorStoreState } from '@client/ts/stores/modules/errorStore'
 import { VendorStoreModule, VendorStoreState } from '@client/ts/stores/modules/vendorStore'
 import { InventoryStoreModule, InventoryStoreState } from '@client/ts/stores/modules/inventoryStore'
+import { DatabaseStoreModule, DatabaseStoreState } from '@client/ts/stores/modules/databaseStore'
 
 import { InventoryType } from '@client/ts/types/inventory'
 
@@ -26,6 +27,7 @@ export interface RootState {
     errors : ErrorStoreState
     vendors: VendorStoreState
     inventory: InventoryStoreState
+    databases: DatabaseStoreState
 }
 
 export interface CurrentResourceInitialization {
@@ -41,6 +43,7 @@ export interface CurrentResourceInitialization {
     laptopId? : number
     mobileId? : number
     embeddedId? : number
+    databaseId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -57,6 +60,7 @@ export const RootStoreOptions : StoreOptions<RootState> = {
         errors: ErrorStoreModule,
         vendors: VendorStoreModule,
         inventory: InventoryStoreModule,
+        databases: DatabaseStoreModule
     },
     actions: {
         initialize(context) {
@@ -207,6 +211,18 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                 }
             } else {
                 context.commit('inventory/setRawEmbedded', null)
+            }
+
+            if (!!params.databaseId) {
+                if (!context.state.databases.rawDatabase || context.state.databases.rawDatabase.Id != params.databaseId) {
+                    context.dispatch('databases/initializeDatabaseStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        databaseId: params.databaseId,
+                    })
+                }
+            } else {
+                context.commit('databases/setRawDatabase', null)
             }
         }
     },

@@ -23,6 +23,7 @@ go_binary(
         "//src/shared/golang/backend/audit:lib",
         "//src/shared/golang/backend/comments:lib",
         "//src/shared/golang/backend/controls:lib",
+        "//src/shared/golang/backend/databases:lib",
         "//src/shared/golang/backend/engagements:lib",
         "//src/shared/golang/backend/gl:lib",
         "//src/shared/golang/backend/inventory:lib",

@@ -79,6 +79,11 @@ const (
 	PEmbeddedDelete                  = "org.inventory.embedded.delete"
 	PEmbeddedCreate                  = "org.inventory.embedded.create"
 	PEmbeddedList                    = "org.inventory.embedded.list"
+	PDatabasesView                   = "org.databases.view"
+	PDatabasesUpdate                 = "org.databases.update"
+	PDatabasesDelete                 = "org.databases.delete"
+	PDatabasesCreate                 = "org.databases.create"
+	PDatabasesList                   = "org.databases.list"
 	PNull                            = "null"
 )
 
