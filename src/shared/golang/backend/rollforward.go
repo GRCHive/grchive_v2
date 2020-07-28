@@ -348,6 +348,27 @@ func (b *BackendInterface) rollForwardDatabases(tx *sqlx.Tx, fromEngagementId in
 	return err
 }
 
+func (b *BackendInterface) rollForwardSystems(tx *sqlx.Tx, fromEngagementId int64, toEngagementId int64) error {
+	_, err := tx.Exec(`
+		INSERT INTO systems (
+			engagement_id,
+			unique_id,
+			name,
+			description,
+			purpose
+		)
+		SELECT
+			$2,
+			sys.unique_id,
+			sys.name,
+			sys.description,
+			sys.purpose
+		FROM systems AS sys
+		WHERE sys.engagement_id = $1
+	`, fromEngagementId, toEngagementId)
+	return err
+}
+
 func (b *BackendInterface) RollForwardEngagement(tx *sqlx.Tx, fromEngagementId int64, toEngagementId int64) error {
 	if err := b.rollForwardRisks(tx, fromEngagementId, toEngagementId); err != nil {
 		return err
@@ -370,6 +391,10 @@ func (b *BackendInterface) RollForwardEngagement(tx *sqlx.Tx, fromEngagementId i
 	}
 
 	if err := b.rollForwardDatabases(tx, fromEngagementId, toEngagementId); err != nil {
+		return err
+	}
+
+	if err := b.rollForwardSystems(tx, fromEngagementId, toEngagementId); err != nil {
 		return err
 	}
 
