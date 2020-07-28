@@ -6,6 +6,10 @@ export interface CommentThreadId {
     glAccountId? : number
     vendorId?: number
     serverId? : number
+    desktopId? : number
+    laptopId? : number
+    mobileId? : number
+    embeddedId? : number
 }
 
 export interface RawComment {

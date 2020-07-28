@@ -143,6 +143,13 @@ func SetInventoryEngagementId(inv interface{}, id int64) {
 	refId.Set(reflect.ValueOf(id))
 }
 
+func GetInventoryEngagementId(inv interface{}) int64 {
+	ref := reflect.ValueOf(inv).Elem()
+	baseInventory := ref.FieldByName("Inventory")
+	refId := baseInventory.FieldByName("EngagementId")
+	return refId.Int()
+}
+
 func GetBaseInventory(inv interface{}) *Inventory {
 	ref := reflect.ValueOf(inv).Elem()
 	baseInventory := ref.FieldByName("Inventory")

@@ -8,7 +8,6 @@ import (
 
 func (m *InventoryManager) ListInventoryForEngagement(it InventoryType, engagementId int64) (interface{}, error) {
 	var ret interface{}
-	singleEle := CreateTypedInventory(it)
 	switch it {
 	case ITServer:
 		ret = make([]*InventoryServer, 0)
@@ -60,6 +59,7 @@ func (m *InventoryManager) ListInventoryForEngagement(it InventoryType, engageme
 
 	refRet := reflect.ValueOf(ret)
 	for rows.Next() {
+		singleEle := CreateTypedInventory(it)
 		err = rows.StructScan(singleEle)
 		if err != nil {
 			return nil, err

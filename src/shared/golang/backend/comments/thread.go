@@ -63,3 +63,19 @@ func (m *CommentManager) GetThreadIdForVendor(vendorId int64, engagementId int64
 func (m *CommentManager) GetThreadIdForServer(serverId int64, engagementId int64, orgId int64) (int64, error) {
 	return m.GetThreadIdForInventoryResource("inventory_servers", serverId, engagementId, orgId)
 }
+
+func (m *CommentManager) GetThreadIdForDesktop(desktopId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForInventoryResource("inventory_desktops", desktopId, engagementId, orgId)
+}
+
+func (m *CommentManager) GetThreadIdForLaptop(laptopId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForInventoryResource("inventory_laptops", laptopId, engagementId, orgId)
+}
+
+func (m *CommentManager) GetThreadIdForMobile(mobileId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForInventoryResource("inventory_mobile", mobileId, engagementId, orgId)
+}
+
+func (m *CommentManager) GetThreadIdForEmbedded(embeddedId int64, engagementId int64, orgId int64) (int64, error) {
+	return m.GetThreadIdForInventoryResource("inventory_embedded", embeddedId, engagementId, orgId)
+}

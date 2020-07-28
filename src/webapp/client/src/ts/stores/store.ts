@@ -37,6 +37,10 @@ export interface CurrentResourceInitialization {
     vendorId? : number
     vendorProductId? : number
     serverId? : number
+    desktopId? : number
+    laptopId? : number
+    mobileId? : number
+    embeddedId? : number
 }
 
 export const RootStoreOptions : StoreOptions<RootState> = {
@@ -150,7 +154,59 @@ export const RootStoreOptions : StoreOptions<RootState> = {
                     })
                 }
             } else {
-                context.commit('vendors/setRawVendorProduct', null)
+                context.commit('inventory/setRawServer', null)
+            }
+
+            if (!!params.desktopId) {
+                if (!context.state.inventory.rawDesktop || context.state.inventory.rawDesktop.Id != params.desktopId) {
+                    context.dispatch('inventory/initializeInventoryStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        inventoryId: params.desktopId,
+                        inventoryType: InventoryType.ITDesktop,
+                    })
+                }
+            } else {
+                context.commit('inventory/setRawDesktop', null)
+            }
+
+            if (!!params.laptopId) {
+                if (!context.state.inventory.rawLaptop || context.state.inventory.rawLaptop.Id != params.laptopId) {
+                    context.dispatch('inventory/initializeInventoryStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        inventoryId: params.laptopId,
+                        inventoryType: InventoryType.ITLaptop,
+                    })
+                }
+            } else {
+                context.commit('inventory/setRawLaptop', null)
+            }
+
+            if (!!params.mobileId) {
+                if (!context.state.inventory.rawMobile || context.state.inventory.rawMobile.Id != params.mobileId) {
+                    context.dispatch('inventory/initializeInventoryStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        inventoryId: params.mobileId,
+                        inventoryType: InventoryType.ITMobile,
+                    })
+                }
+            } else {
+                context.commit('inventory/setRawMobile', null)
+            }
+
+            if (!!params.embeddedId) {
+                if (!context.state.inventory.rawEmbedded || context.state.inventory.rawEmbedded.Id != params.embeddedId) {
+                    context.dispatch('inventory/initializeInventoryStore', {
+                        orgId: params.orgId,
+                        engId: params.engagementId,
+                        inventoryId: params.embeddedId,
+                        inventoryType: InventoryType.ITEmbedded,
+                    })
+                }
+            } else {
+                context.commit('inventory/setRawEmbedded', null)
             }
         }
     },

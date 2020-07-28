@@ -91,6 +91,18 @@ func (m *MiddlewareClient) LoadCommentThreadIdIntoContext(resource backend.Resou
 		case backend.RIInventoryServer:
 			trsc := rsc.(*inventory.InventoryServer)
 			threadId, err = m.Itf.Comments.GetThreadIdForServer(trsc.Id, teng.Id, torg.Id)
+		case backend.RIInventoryDesktop:
+			trsc := rsc.(*inventory.InventoryDesktop)
+			threadId, err = m.Itf.Comments.GetThreadIdForDesktop(trsc.Id, teng.Id, torg.Id)
+		case backend.RIInventoryLaptop:
+			trsc := rsc.(*inventory.InventoryLaptop)
+			threadId, err = m.Itf.Comments.GetThreadIdForLaptop(trsc.Id, teng.Id, torg.Id)
+		case backend.RIInventoryMobile:
+			trsc := rsc.(*inventory.InventoryMobile)
+			threadId, err = m.Itf.Comments.GetThreadIdForMobile(trsc.Id, teng.Id, torg.Id)
+		case backend.RIInventoryEmbedded:
+			trsc := rsc.(*inventory.InventoryEmbedded)
+			threadId, err = m.Itf.Comments.GetThreadIdForEmbedded(trsc.Id, teng.Id, torg.Id)
 		default:
 			err = errors.New("Unsupported resource for comments.")
 		}

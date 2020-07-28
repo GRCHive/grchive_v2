@@ -67,6 +67,22 @@ const ServerPage = () => import( /* webpackChunkName: "ServerPage" */ '@client/v
 const ServerOverview = () => import( /* webpackChunkName: "ServerOverview" */ '@client/vue/orgs/engagements/scoping/inventory/servers/ServerOverview.vue')
 const ServerComments = () => import( /* webpackChunkName: "ServerComments" */ '@client/vue/orgs/engagements/scoping/inventory/servers/ServerComments.vue')
 
+const DesktopPage = () => import( /* webpackChunkName: "DesktopPage" */ '@client/vue/orgs/engagements/scoping/inventory/desktops/DesktopPage.vue')
+const DesktopOverview = () => import( /* webpackChunkName: "DesktopOverview" */ '@client/vue/orgs/engagements/scoping/inventory/desktops/DesktopOverview.vue')
+const DesktopComments = () => import( /* webpackChunkName: "DesktopComments" */ '@client/vue/orgs/engagements/scoping/inventory/desktops/DesktopComments.vue')
+
+const LaptopPage = () => import( /* webpackChunkName: "LaptopPage" */ '@client/vue/orgs/engagements/scoping/inventory/laptops/LaptopPage.vue')
+const LaptopOverview = () => import( /* webpackChunkName: "LaptopOverview" */ '@client/vue/orgs/engagements/scoping/inventory/laptops/LaptopOverview.vue')
+const LaptopComments = () => import( /* webpackChunkName: "LaptopComments" */ '@client/vue/orgs/engagements/scoping/inventory/laptops/LaptopComments.vue')
+
+const MobilePage = () => import( /* webpackChunkName: "MobilePage" */ '@client/vue/orgs/engagements/scoping/inventory/mobile/MobilePage.vue')
+const MobileOverview = () => import( /* webpackChunkName: "MobileOverview" */ '@client/vue/orgs/engagements/scoping/inventory/mobile/MobileOverview.vue')
+const MobileComments = () => import( /* webpackChunkName: "MobileComments" */ '@client/vue/orgs/engagements/scoping/inventory/mobile/MobileComments.vue')
+
+const EmbeddedPage = () => import( /* webpackChunkName: "EmbeddedPage" */ '@client/vue/orgs/engagements/scoping/inventory/embedded/EmbeddedPage.vue')
+const EmbeddedOverview = () => import( /* webpackChunkName: "EmbeddedOverview" */ '@client/vue/orgs/engagements/scoping/inventory/embedded/EmbeddedOverview.vue')
+const EmbeddedComments = () => import( /* webpackChunkName: "EmbeddedComments" */ '@client/vue/orgs/engagements/scoping/inventory/embedded/EmbeddedComments.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
@@ -291,8 +307,90 @@ const router = new VueRouter({
                 },
             ],
         },
-
-
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory/desktops/:desktopId',
+            component: DesktopPage,
+            children : [
+                {
+                    name: 'desktopHome',
+                    path: '',
+                    redirect : { name: 'desktopOverview' },
+                },
+                {
+                    name: 'desktopOverview',
+                    path: 'overview',
+                    component: DesktopOverview,
+                },
+                {
+                    name: 'desktopComments',
+                    path: 'comments',
+                    component: DesktopComments,
+                },
+            ],
+        },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory/laptops/:laptopId',
+            component: LaptopPage,
+            children : [
+                {
+                    name: 'laptopHome',
+                    path: '',
+                    redirect : { name: 'laptopOverview' },
+                },
+                {
+                    name: 'laptopOverview',
+                    path: 'overview',
+                    component: LaptopOverview,
+                },
+                {
+                    name: 'laptopComments',
+                    path: 'comments',
+                    component: LaptopComments,
+                },
+            ],
+        },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory/mobile/:mobileId',
+            component: MobilePage,
+            children : [
+                {
+                    name: 'mobileHome',
+                    path: '',
+                    redirect : { name: 'mobileOverview' },
+                },
+                {
+                    name: 'mobileOverview',
+                    path: 'overview',
+                    component: MobileOverview,
+                },
+                {
+                    name: 'mobileComments',
+                    path: 'comments',
+                    component: MobileComments,
+                },
+            ],
+        },
+        {
+            path: '/orgs/:orgId/engagements/:engId/scoping/inventory/embedded/:embeddedId',
+            component: EmbeddedPage,
+            children : [
+                {
+                    name: 'embeddedHome',
+                    path: '',
+                    redirect : { name: 'embeddedOverview' },
+                },
+                {
+                    name: 'embeddedOverview',
+                    path: 'overview',
+                    component: EmbeddedOverview,
+                },
+                {
+                    name: 'embeddedComments',
+                    path: 'comments',
+                    component: EmbeddedComments,
+                },
+            ],
+        },
         {
             path: '*',
             name: 'errorPage',

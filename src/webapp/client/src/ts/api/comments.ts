@@ -23,6 +23,14 @@ function threadIdToUrl(id : CommentThreadId) : string {
         apiUrl = `${baseUrl}/vendors/${id.vendorId}`
     } else if (!!id.serverId) {
         apiUrl = `${createBaseApiUrl(InventoryType.ITServer, id.orgId, id.engagementId)}/${id.serverId}`
+    } else if (!!id.desktopId) {
+        apiUrl = `${createBaseApiUrl(InventoryType.ITDesktop, id.orgId, id.engagementId)}/${id.desktopId}`
+    } else if (!!id.laptopId) {
+        apiUrl = `${createBaseApiUrl(InventoryType.ITLaptop, id.orgId, id.engagementId)}/${id.laptopId}`
+    } else if (!!id.mobileId) {
+        apiUrl = `${createBaseApiUrl(InventoryType.ITMobile, id.orgId, id.engagementId)}/${id.mobileId}`
+    } else if (!!id.embeddedId) {
+        apiUrl = `${createBaseApiUrl(InventoryType.ITEmbedded, id.orgId, id.engagementId)}/${id.embeddedId}`
     }
     return `${apiUrl}/comments`
 }

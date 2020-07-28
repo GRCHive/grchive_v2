@@ -117,8 +117,16 @@ func (m *MiddlewareClient) CheckResourcePartOfEngagement(resource backend.Resour
 			trsc := rsc.(*vendors.Vendor)
 			mismatch = trsc.EngagementId != tengagement.Id
 		case backend.RIInventoryServer:
-			trsc := rsc.(*inventory.InventoryServer)
-			mismatch = trsc.Inventory.EngagementId != tengagement.Id
+			fallthrough
+		case backend.RIInventoryDesktop:
+			fallthrough
+		case backend.RIInventoryLaptop:
+			fallthrough
+		case backend.RIInventoryMobile:
+			fallthrough
+		case backend.RIInventoryEmbedded:
+			engId := inventory.GetInventoryEngagementId(rsc)
+			mismatch = engId != tengagement.Id
 		default:
 			mismatch = true
 		}
