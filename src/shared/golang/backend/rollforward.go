@@ -114,8 +114,66 @@ func (b *BackendInterface) rollForwardGeneralLedger(tx *sqlx.Tx, fromEngagementI
 		SET parent_account_id = map_acc.to_id
 		FROM map_acc
 		WHERE
-			gl_accounts.engagement_id = $2 
+			gl_accounts.engagement_id = $2 AND
 			gl_accounts.parent_account_id = map_acc.from_id
+	`, fromEngagementId, toEngagementId)
+	return err
+}
+
+func (b *BackendInterface) rollForwardVendors(tx *sqlx.Tx, fromEngagementId int64, toEngagementId int64) error {
+	// First copy over vendors then copy over products and do the vendor_id replacement during the product copy.
+	_, err := tx.Exec(`
+		INSERT INTO vendors (
+			engagement_id,
+			name,
+			description,
+			url
+		)
+		SELECT
+			$2,
+			v.name,
+			v.description,
+			v.url
+		FROM vendors AS v
+		WHERE v.engagement_id = $1
+	`, fromEngagementId, toEngagementId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`
+		WITH vendors_from AS (
+			SELECT *
+			FROM vendors
+			WHERE engagement_id = $1
+		), vendors_to AS (
+			SELECT *
+			FROM vendors
+			WHERE engagement_id = $2
+		), map_vendors AS (
+			SELECT f.id AS "from_id", t.id AS "to_id"
+			FROM vendors_from AS f
+			INNER JOIN vendors_to AS t
+				ON t.name = f.name
+		)
+		INSERT INTO vendor_products (
+			vendor_id,
+			name,
+			description,
+			url
+		)
+		SELECT
+			mv.to_id,
+			vp.name,
+			vp.description,
+			vp.url
+		FROM vendor_products AS vp
+		INNER JOIN vendors AS v
+			ON v.id = vp.vendor_id
+		INNER JOIN map_vendors AS mv
+			ON mv.from_id = v.id
+		WHERE v.engagement_id = $1
 	`, fromEngagementId, toEngagementId)
 	return err
 }
@@ -130,6 +188,10 @@ func (b *BackendInterface) RollForwardEngagement(tx *sqlx.Tx, fromEngagementId i
 	}
 
 	if err := b.rollForwardGeneralLedger(tx, fromEngagementId, toEngagementId); err != nil {
+		return err
+	}
+
+	if err := b.rollForwardVendors(tx, fromEngagementId, toEngagementId); err != nil {
 		return err
 	}
 
