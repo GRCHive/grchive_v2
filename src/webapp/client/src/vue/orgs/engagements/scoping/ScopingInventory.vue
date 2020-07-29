@@ -57,7 +57,7 @@ import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { RawOrganization } from '@client/ts/types/orgs'
 import { RawEngagement } from '@client/ts/types/engagements'
-import { Permission } from '@client/ts/types/roles'
+import { Permission, PermissionAnd, PermissionOr, SinglePermission } from '@client/ts/types/roles'
 import { ErrorHandler } from '@client/ts/main'
 import { createManualUnauthorizedError } from '@client/ts/error'
 import ScopingTemplate from '@client/vue/orgs/engagements/scoping/ScopingTemplate.vue'
@@ -197,14 +197,13 @@ export default class ScopingInventory extends Vue {
         } else {
             ErrorHandler.failurePageOnManualError(
                 createManualUnauthorizedError('You do not have sufficient privileges to view any inventory items.',
-                    [
-                        this.serversPermissions,
-                        this.desktopsPermissions,
-                        this.laptopsPermissions,
-                        this.mobilePermissions,
-                        this.embeddedPermissions,
-                    ].flat(),
-                    true,
+                    new PermissionOr([
+                        new PermissionAnd(this.serversPermissions.map((ele : Permission) => new SinglePermission(ele))),
+                        new PermissionAnd(this.desktopsPermissions.map((ele : Permission) => new SinglePermission(ele))),
+                        new PermissionAnd(this.laptopsPermissions.map((ele : Permission) => new SinglePermission(ele))),
+                        new PermissionAnd(this.mobilePermissions.map((ele : Permission) => new SinglePermission(ele))),
+                        new PermissionAnd(this.embeddedPermissions.map((ele : Permission) => new SinglePermission(ele))),
+                    ]),
                 )
             )
         }

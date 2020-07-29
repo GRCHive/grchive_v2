@@ -32,6 +32,9 @@ export default class VendorGrid extends Vue {
     get gridOptions() : any {
         return {
             enableCellTextSelection: true,
+            defaultColDef: {
+                resizable: true,
+            },
         }
     }
 
@@ -62,7 +65,7 @@ export default class VendorGrid extends Vue {
     }
 
     onFirstDataRender(params : any) {
-        params.api.sizeColumnsToFit()
+        params.columnApi.autoSizeAllColumns()
     }
 
     goToVendor(e : RowEvent) {

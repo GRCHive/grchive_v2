@@ -1,18 +1,6 @@
-export interface CommentThreadId {
-    orgId : number
-    engagementId : number
-    riskId? : number
-    controlId? : number
-    glAccountId? : number
-    vendorId?: number
-    serverId? : number
-    desktopId? : number
-    laptopId? : number
-    mobileId? : number
-    embeddedId? : number
-    databaseId? : number
-    systemId? : number
-}
+import { ResourceId } from '@client/ts/types/resource'
+
+export type CommentThreadId = ResourceId
 
 export interface RawComment {
     Id           : number

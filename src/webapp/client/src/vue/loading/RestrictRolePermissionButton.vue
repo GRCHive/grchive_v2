@@ -6,7 +6,7 @@
             @mousedown.stop
             @mouseup.stop
             @click.stop="onClick"
-            :disabled="!hasPermissions"
+            :disabled="!hasPermissions || disabled"
             :small="small"
             :x-small="xSmall"
             :loading="loading"

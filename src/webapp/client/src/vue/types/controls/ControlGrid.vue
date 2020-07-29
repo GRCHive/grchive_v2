@@ -7,6 +7,7 @@
         :grid-options="gridOptions"
         @first-data-rendered="onFirstDataRender"
         @row-clicked="goToControl"
+        @selection-changed="onChangeSelection"
     >
     </ag-grid-vue>
 </template>
@@ -14,49 +15,60 @@
 <script lang="ts">
 
 import Vue from 'vue'
-import Component from 'vue-class-component'
+import Component, { mixins } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { RawControl } from '@client/ts/types/controls'
-import { RowEvent } from 'ag-grid-community'
+import { RowEvent, AgGridEvent } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue'
 import RatingRenderer from '@client/vue/shared/grid/RatingRenderer.vue'
 import TrueFalseRenderer from '@client/vue/shared/grid/TrueFalseRenderer.vue'
 import ControlTypeRenderer from '@client/vue/shared/grid/ControlTypeRenderer.vue'
 import UserIdRenderer from '@client/vue/shared/grid/UserIdRenderer.vue'
 import ControlFrequencyRenderer from '@client/vue/shared/grid/ControlFrequencyRenderer.vue'
+import RelationshipWrapperGridMixin from '@client/vue/types/relationships/RelationshipWrapperGridMixin.vue'
 
 @Component({
     components: {
         AgGridVue,
     }
 })
-export default class ControlGrid extends Vue {
-    @Prop({required: true})    
+export default class ControlGrid extends mixins(RelationshipWrapperGridMixin) {
+    @Prop()
+    value!: RawControl[]
+
+    @Prop({required: true})
     controls!: RawControl[]
+
+    @Prop({type: Boolean, default: false})
+    selectable!: boolean
 
     get gridOptions() : any {
         return {
             enableCellTextSelection: true,
+            defaultColDef: {
+                resizable: true,
+            },
         }
     }
 
     get frameworkComponents() : any {
-        return {
+        return this.convertFrameworkComponents({
             RatingRenderer,
             TrueFalseRenderer,
             ControlTypeRenderer,
             UserIdRenderer,
             ControlFrequencyRenderer
-        }
+        })
     }
 
     get columnDefs() : any[] {
-        return [
+        return this.convertColumnDefs([
             {
                 headerName: 'ID',
                 field: 'HumanId',
                 sortable: true,
                 filter: true,
+                checkboxSelection: this.selectable,
             },
             {
                 headerName: 'Name',
@@ -98,27 +110,37 @@ export default class ControlGrid extends Vue {
                 filter: true,
                 cellRenderer: 'TrueFalseRenderer',
             },
-        ]
+        ])
     }
 
     get rowData() : any[] {
-        return this.controls
+        return this.convertRowData(this.controls)
     }
 
     onFirstDataRender(params : any) {
-        params.api.sizeColumnsToFit()
+        params.columnApi.autoSizeAllColumns()
     }
 
     goToControl(e : RowEvent) {
+        if (this.selectable) {
+            return
+        }
+
         this.$router.push({
             name: 'controlHome',
             params: {
                 orgId: this.$route.params.orgId,
                 engId: this.$route.params.engId,
-                controlId: e.data.Id,
+                controlId: e.data.Id || e.data.Data.Id,
             },
         })
         this.$emit('change-control')
+    }
+
+    onChangeSelection(event : AgGridEvent) {
+        this.$emit('input', event.api.getSelectedRows().map((ele : any) => {
+            return ele.Data || ele
+        })
     }
 }
 

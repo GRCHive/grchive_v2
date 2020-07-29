@@ -32,6 +32,9 @@ export default class MobileGrid extends Vue {
     get gridOptions() : any {
         return {
             enableCellTextSelection: true,
+            defaultColDef: {
+                resizable: true,
+            },
         }
     }
 
@@ -74,7 +77,7 @@ export default class MobileGrid extends Vue {
     }
 
     onFirstDataRender(params : any) {
-        params.api.sizeColumnsToFit()
+        params.columnApi.autoSizeAllColumns()
     }
 
     goToMobile(e : RowEvent) {

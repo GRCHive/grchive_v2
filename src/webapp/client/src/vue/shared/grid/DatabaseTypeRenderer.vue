@@ -15,11 +15,13 @@ export default class DatabaseTypeRenderer extends Vue {
     params : any = null
 
     get typeStr() : string {
-        switch (this.params.data.TypeId) {
+        const typeId = this.params.data.TypeId || this.params.data.Data.TypeId
+        const otherType = this.params.data.OtherType || this.params.data.Data.OtherType
+        switch (typeId) {
             case DatabaseType.Other:
-                return `Other (${this.params.data.OtherType})`
+                return `Other (${otherType})`
             default:
-                return databaseTypeToString(this.params.data.TypeId)
+                return databaseTypeToString(typeId)
         }
     }
 

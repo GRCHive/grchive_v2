@@ -17,13 +17,17 @@ export default class ControlFrequencyRenderer extends Vue {
     params : any = null
 
     get freqStr() : string {
-        switch (this.params.data.FreqType) {
+        const freqType = this.params.data.FreqType || this.params.data.Data.FreqType
+        const freqInterval = this.params.data.FreqInterval || this.params.data.Data.FreqInterval
+        const freqOther = this.params.data.FreqOther || this.params.data.Data.FreqOther
+
+        switch (freqType) {
             case ControlFrequencyType.CFTAdHoc:
                 return 'Ad-Hoc'
             case ControlFrequencyType.CFTInterval:
-                return Case.title(RRule.fromString(this.params.data.FreqInterval).toText())
+                return Case.title(RRule.fromString(freqInterval).toText())
             case ControlFrequencyType.CFTOther:
-                return this.params.data.FreqOther
+                return freqOther
         }
         return ''
     }

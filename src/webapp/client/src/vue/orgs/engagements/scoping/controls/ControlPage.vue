@@ -52,6 +52,7 @@
                     <div v-if="show">
                         <v-tabs>
                             <v-tab :to="overviewTo">Overview</v-tab>
+                            <v-tab :to="relationshipsTo">Relationships</v-tab>
                             <restrict-role-permission-tab
                                 :permissions="commentPermissions"
                                 :to="commentsTo"
@@ -137,6 +138,14 @@ export default class ControlPage extends Vue {
             params: this.$route.params,
         }
     }
+
+    get relationshipsTo() : any {
+        return {
+            name: 'controlRelationships',
+            params: this.$route.params,
+        }
+    }
+
 
     get commentsTo() : any {
         return {

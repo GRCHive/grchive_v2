@@ -52,6 +52,7 @@
                     <div v-if="show">
                         <v-tabs>
                             <v-tab :to="overviewTo">Overview</v-tab>
+                            <v-tab :to="relationshipsTo">Relationships</v-tab>
                             <restrict-role-permission-tab
                                 :permissions="commentPermissions"
                                 :to="commentsTo"
@@ -135,6 +136,13 @@ export default class RiskPage extends Vue {
     get overviewTo() : any {
         return {
             name: 'riskOverview',
+            params: this.$route.params,
+        }
+    }
+
+    get relationshipsTo() : any {
+        return {
+            name: 'riskRelationships',
             params: this.$route.params,
         }
     }

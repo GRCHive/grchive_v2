@@ -177,6 +177,12 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 								singleRiskR,
 								w.acl.ACLUserHasPermissions(roles.PRisksView),
 							)
+
+							w.addRelationshipEndpoints(
+								singleRiskR,
+								backend.RIRisk,
+								backend.RIControl,
+							)
 						}
 					}
 
@@ -212,6 +218,12 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 								backend.RIControl,
 								singleControlR,
 								w.acl.ACLUserHasPermissions(roles.PControlsView),
+							)
+
+							w.addRelationshipEndpoints(
+								singleControlR,
+								backend.RIControl,
+								backend.RIRisk,
 							)
 						}
 					}

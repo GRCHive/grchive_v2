@@ -80,6 +80,9 @@ export enum Permission {
 	PSystemsDelete               = "org.systems.delete",
 	PSystemsCreate               = "org.systems.create",
 	PSystemsList                 = "org.systems.list",
+	PRelRisksControlsDelete      = "org.rel.risks.controls.delete",
+	PRelRisksControlsCreate      = "org.rel.risks.controls.create",
+	PRelRisksControlsList        = "org.rel.risks.controls.list",
     PNull = "null",
 }
 
@@ -90,7 +93,45 @@ export interface Role {
     Description  : string
 }
 
-export function createPermissionListString(permissions : Permission[], roleOr : boolean) : string {
-    const join = roleOr ? ' or ' : ' and '
-    return permissions.map((ele : Permission) => `'${ele}'`).join(join)
+export interface PermissionExpression {
+    toString(): string
+}
+
+export class SinglePermission implements PermissionExpression {
+    permission : Permission
+    constructor(permission : Permission) {
+        this.permission = permission
+    }
+
+    toString() : string {
+        return `'${this.permission}'`
+    }
+}
+
+export class PermissionExpressionBase {
+    permissions : PermissionExpression[]
+
+    constructor(permissions: PermissionExpression[]) {
+        this.permissions = permissions
+    }
+}
+
+export class PermissionAnd extends PermissionExpressionBase implements PermissionExpression {
+    constructor(permissions: PermissionExpression[]) {
+        super(permissions)
+    }
+
+    toString() : string {
+        return '[' + this.permissions.map((ele: PermissionExpression) => ele.toString()).join(', and') + ']'
+    }
+}
+
+export class PermissionOr extends PermissionExpressionBase implements PermissionExpression {
+    constructor(permissions: PermissionExpression[]) {
+        super(permissions)
+    }
+
+    toString() : string {
+        return '[' + this.permissions.map((ele: PermissionExpression) => ele.toString()).join(', or') + ']'
+    }
 }

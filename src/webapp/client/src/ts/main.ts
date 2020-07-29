@@ -35,11 +35,13 @@ const ScopingRisks = () => import( /* webpackChunkName: "ScopingRisks" */ '@clie
 const RiskPage = () => import( /* webpackChunkName: "RiskPage" */ '@client/vue/orgs/engagements/scoping/risks/RiskPage.vue')
 const RiskOverview = () => import( /* webpackChunkName: "RiskOverview" */ '@client/vue/orgs/engagements/scoping/risks/RiskOverview.vue')
 const RiskComments = () => import( /* webpackChunkName: "RiskComments" */ '@client/vue/orgs/engagements/scoping/risks/RiskComments.vue')
+const RiskRelationships = () => import( /* webpackChunkName: "RiskRelationships" */ '@client/vue/orgs/engagements/scoping/risks/RiskRelationships.vue')
 
 const ScopingControls = () => import( /* webpackChunkName: "ScopingControls" */ '@client/vue/orgs/engagements/scoping/ScopingControls.vue')
 const ControlPage = () => import( /* webpackChunkName: "ControlPage" */ '@client/vue/orgs/engagements/scoping/controls/ControlPage.vue')
 const ControlOverview = () => import( /* webpackChunkName: "ControlOverview" */ '@client/vue/orgs/engagements/scoping/controls/ControlOverview.vue')
 const ControlComments = () => import( /* webpackChunkName: "ControlComments" */ '@client/vue/orgs/engagements/scoping/controls/ControlComments.vue')
+const ControlRelationships = () => import( /* webpackChunkName: "ControlRelationships" */ '@client/vue/orgs/engagements/scoping/controls/ControlRelationships.vue')
 
 const ScopingGeneralLedger = () => import( /* webpackChunkName: "ScopingGeneralLedger" */ '@client/vue/orgs/engagements/scoping/ScopingGeneralLedger.vue')
 const GeneralLedgerAccounts = () => import( /* webpackChunkName: "GeneralLedgerAccounts" */ '@client/vue/orgs/engagements/scoping/gl/GeneralLedgerAccounts.vue')
@@ -94,6 +96,8 @@ const SystemOverview = () => import( /* webpackChunkName: "SystemOverview" */ '@
 const SystemComments = () => import( /* webpackChunkName: "SystemComments" */ '@client/vue/orgs/engagements/scoping/systems/SystemComments.vue')
 
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
+const ControlRelationshipsDisplay = () => import( /* webpackChunkName: "ControlRelationshipsDisplay" */ '@client/vue/types/relationships/ControlRelationshipsDisplay.vue')
+const RiskRelationshipsDisplay = () => import( /* webpackChunkName: "RiskRelationshipsDisplay" */ '@client/vue/types/relationships/RiskRelationshipsDisplay.vue')
 
 const store = new Vuex.Store(RootStoreOptions)
 import { ApiClient } from '@client/ts/api/client'
@@ -152,6 +156,18 @@ const router = new VueRouter({
                     component: RiskOverview,
                 },
                 {
+                    name: 'riskRelationships',
+                    path: 'relationships',
+                    component: RiskRelationships,
+                    children : [
+                        {
+                            name: 'riskControlRelationships',
+                            path: 'controls',
+                            component: ControlRelationshipsDisplay,
+                        },
+                    ],
+                },
+                {
                     name: 'riskComments',
                     path: 'comments',
                     component: RiskComments,
@@ -172,6 +188,18 @@ const router = new VueRouter({
                     name: 'controlOverview',
                     path: 'overview',
                     component: ControlOverview,
+                },
+                {
+                    name: 'controlRelationships',
+                    path: 'relationships',
+                    component: ControlRelationships,
+                    children : [
+                        {
+                            name: 'controlRiskRelationships',
+                            path: 'risks',
+                            component: RiskRelationshipsDisplay,
+                        },
+                    ],
                 },
                 {
                     name: 'controlComments',

@@ -34,6 +34,9 @@ export default class EngagementGrid extends Vue {
     get gridOptions() : any {
         return {
             enableCellTextSelection: true,
+            defaultColDef: {
+                resizable: true,
+            },
         }
     }
 
@@ -88,7 +91,7 @@ export default class EngagementGrid extends Vue {
     }
 
     onFirstDataRender(params : any) {
-        params.api.sizeColumnsToFit()
+        params.columnApi.autoSizeAllColumns()
     }
 
     goToEngagement(e : RowEvent) {

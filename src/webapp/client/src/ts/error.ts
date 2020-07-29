@@ -1,7 +1,7 @@
 import { Store } from 'vuex'
 import { RootState } from '@client/ts/stores/store'
 import { v4 as uuidv4 } from 'uuid'
-import { Permission, createPermissionListString} from '@client/ts/types/roles'
+import { Permission, PermissionExpression} from '@client/ts/types/roles'
 
 export enum GrchiveErrorCodes {
 	GECNoError    = 0,
@@ -29,8 +29,8 @@ export class ErrorWrapper {
     }
 }
 
-export function createManualUnauthorizedError(context : string, roles : Permission[], roleOr : boolean) : ErrorWrapper {
-    let ret = new ErrorWrapper(GrchiveErrorCodes.GECUnauthorized, 'Unauthorized. You require: ' + createPermissionListString(roles, roleOr), null, 500)
+export function createManualUnauthorizedError(context : string, roles : PermissionExpression) : ErrorWrapper {
+    let ret = new ErrorWrapper(GrchiveErrorCodes.GECUnauthorized, 'Unauthorized. You require: ' + roles.toString(), null, 500)
     ret.context = context
     return ret
 }

@@ -7,8 +7,8 @@
         :clearable="!readonly"
         deletable-chips
         filled
-        :loading="!validUsers"
-        :items="userItems"
+        :loading="!validRisks"
+        :items="riskItems"
         :rules="rules"
         :readonly="readonly"
     >
@@ -21,45 +21,48 @@ import Vue from 'vue'
 import Component, { mixins } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { VAutocomplete } from 'vuetify/lib'
-import { RawUser } from '@client/ts/types/users'
+import { RawRisk } from '@client/ts/types/risks'
 import { GrchiveApi, ErrorHandler } from '@client/ts/main'
 
 @Component
-export default class SingleUserFinder extends mixins(VAutocomplete) {
+export default class SingleRiskFinder extends mixins(VAutocomplete) {
     @Prop({ required: true })
     orgId! : number
 
-    validUsers: RawUser[] | null = null
+    @Prop({ required: true })
+    engagementId! : number
 
-    get userItems() : any[] {
-        if (!this.validUsers) {
+    validRisks: RawRisk[] | null = null
+
+    get riskItems() : any[] {
+        if (!this.validRisks) {
             return []
         }
-        return this.validUsers.map((ele : RawUser) => ({
-            text : `${ele.FullName} (${ele.Email})`,
+        return this.validRisks.map((ele : RawRisk) => ({
+            text : `${ele.HumanId}: ${ele.Name}`,
             value: ele,
         }))
     }
 
     @Watch('orgId')
-    refreshValidUsers() {
-        GrchiveApi.orgs.getUsersInOrg(this.orgId).then((resp : RawUser[]) => {
-            this.validUsers = resp
+    @Watch('engagementId')
+    refreshValidRisks() {
+        GrchiveApi.risks.listRisks(this.orgId, this.engagementId).then((resp : RawRisk[]) => {
+            this.validRisks = resp
         }).catch((err : any) => {
             ErrorHandler.failurePopupOnError(err, {
-                context: 'Failed to list userse to select.'
+                context: 'Failed to list risks to select.'
             })
         })
     }
 
     mounted() {
-        this.refreshValidUsers()
+        this.refreshValidRisks()
     }
 
-    onInput(v : RawUser) {
+    onInput(v : RawRisk) {
         this.$emit('input', v)
     }
 }
-
 
 </script>

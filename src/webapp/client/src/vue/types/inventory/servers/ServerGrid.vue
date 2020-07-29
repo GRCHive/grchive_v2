@@ -32,6 +32,9 @@ export default class ServerGrid extends Vue {
     get gridOptions() : any {
         return {
             enableCellTextSelection: true,
+            defaultColDef: {
+                resizable: true,
+            },
         }
     }
 
@@ -92,7 +95,7 @@ export default class ServerGrid extends Vue {
     }
 
     onFirstDataRender(params : any) {
-        params.api.sizeColumnsToFit()
+        params.columnApi.autoSizeAllColumns()
     }
 
     goToServer(e : RowEvent) {

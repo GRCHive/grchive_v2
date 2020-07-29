@@ -16,7 +16,7 @@ export function required(v : any) : boolean | string {
             (Array.isArray(v) && v.length > 0) || 
             (!Array.isArray(v) && 
                 (v !== 0) &&
-                (v.trim() !== ""))
+                (!v.trim || v.trim() !== ""))
         ))
     return tst || "Input required.";
 }
