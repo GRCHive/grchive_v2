@@ -36,7 +36,7 @@ export default class GlAccountBreadcrumbs extends Vue {
             return []
         }
 
-        return this.parentAccs.reverse().map((ele : RawGLAccount) => {
+        return this.parentAccs.slice().reverse().map((ele : RawGLAccount) => {
             return {
                 text: `${ele.AccountId}: ${ele.Name}`,
                 to: {

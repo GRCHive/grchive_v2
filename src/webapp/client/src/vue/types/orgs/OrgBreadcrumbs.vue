@@ -26,7 +26,7 @@ export default class OrgBreadcrumbs extends Vue {
             return []
         }
 
-        return this.parentOrgs.reverse().map((ele : RawOrganization) => {
+        return this.parentOrgs.slice().reverse().map((ele : RawOrganization) => {
             return {
                 text: ele.Name,
                 to: {
