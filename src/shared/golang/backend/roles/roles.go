@@ -92,6 +92,11 @@ const (
 	PRelRisksControlsDelete            = "org.rel.risks.controls.delete"
 	PRelRisksControlsCreate            = "org.rel.risks.controls.create"
 	PRelRisksControlsList              = "org.rel.risks.controls.list"
+	PVMView                            = "org.vm.view"
+	PVMUpdate                          = "org.vm.update"
+	PVMDelete                          = "org.vm.delete"
+	PVMCreate                          = "org.vm.create"
+	PVMList                            = "org.vm.list"
 	PNull                              = "null"
 )
 

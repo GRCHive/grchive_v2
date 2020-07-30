@@ -429,6 +429,13 @@ func (w *WebappApplication) registerApiv1(r *gin.Engine) {
 							)
 						}
 					}
+
+					vmR := singleEngR.Group("/vm")
+					{
+						vmR.GET("/",
+							w.acl.ACLUserHasPermissions(roles.PVMList),
+							w.apiv1ListVM)
+					}
 				}
 
 				rolesR := singleOrgR.Group("/roles")

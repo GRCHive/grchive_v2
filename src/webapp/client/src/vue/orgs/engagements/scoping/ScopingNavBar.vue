@@ -133,6 +133,13 @@ export default class ScopingNavBar extends Vue {
                         permissions: [Permission.PDatabasesList],
                     },
                     {
+                        title: 'VMs',
+                        icon: 'mdi-monitor',
+                        path: 'scopingVM',
+                        params: this.baseParams,
+                        permissions: [Permission.PVMList],
+                    },
+                    {
                         title: 'Inventory',
                         icon: 'mdi-warehouse',
                         path: 'scopingInventory',

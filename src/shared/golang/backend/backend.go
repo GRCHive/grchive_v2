@@ -18,6 +18,7 @@ import (
 	"gitlab.com/grchive/grchive-v2/shared/backend/users"
 	"gitlab.com/grchive/grchive-v2/shared/backend/utility"
 	"gitlab.com/grchive/grchive-v2/shared/backend/vendors"
+	"gitlab.com/grchive/grchive-v2/shared/backend/vm"
 )
 
 type BackendInterface struct {
@@ -36,6 +37,7 @@ type BackendInterface struct {
 	Databases    *databases.DatabaseManager
 	Systems      *systems.SystemManager
 	MachineState *machine_state.MachineStateManager
+	VM           *vm.VirtualMachineManager
 }
 
 func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
@@ -55,6 +57,7 @@ func CreateBackendInterface(db *sqlx.DB) *BackendInterface {
 		Databases:    databases.CreateDatabaseManager(db),
 		Systems:      systems.CreateSystemManager(db),
 		MachineState: machine_state.CreateMachineStateManager(db),
+		VM:           vm.CreateVirtualMachineManager(db),
 	}
 }
 

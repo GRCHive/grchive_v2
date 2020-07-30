@@ -11,6 +11,7 @@ import { InventoryApiClient } from '@client/ts/api/inventory'
 import { DatabaseApiClient } from '@client/ts/api/database'
 import { SystemApiClient } from '@client/ts/api/system'
 import { RelationshipApiClient } from '@client/ts/api/relationships'
+import { VMApiClient } from '@client/ts/api/vm'
 import { ApiHttpHandler } from '@client/ts/api/handler'
 
 export class ApiClient {
@@ -28,6 +29,7 @@ export class ApiClient {
     databases : DatabaseApiClient
     systems : SystemApiClient
     relationships : RelationshipApiClient
+    vm : VMApiClient
 
     constructor() {
         this.handler = new ApiHttpHandler()
@@ -44,5 +46,6 @@ export class ApiClient {
         this.databases = new DatabaseApiClient(this.handler)
         this.systems = new SystemApiClient(this.handler)
         this.relationships = new RelationshipApiClient(this.handler)
+        this.vm = new VMApiClient(this.handler)
     }
 }

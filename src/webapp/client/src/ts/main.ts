@@ -95,6 +95,8 @@ const SystemPage = () => import( /* webpackChunkName: "SystemPage" */ '@client/v
 const SystemOverview = () => import( /* webpackChunkName: "SystemOverview" */ '@client/vue/orgs/engagements/scoping/systems/SystemOverview.vue')
 const SystemComments = () => import( /* webpackChunkName: "SystemComments" */ '@client/vue/orgs/engagements/scoping/systems/SystemComments.vue')
 
+const ScopingVM = () => import( /* webpackChunkName: "ScopingVM" */ '@client/vue/orgs/engagements/scoping/ScopingVM.vue')
+
 const ErrorPage = () => import( /* webpackChunkName: "ErrorPage" */ '@client/vue/ErrorPage.vue')
 const ControlRelationshipsDisplay = () => import( /* webpackChunkName: "ControlRelationshipsDisplay" */ '@client/vue/types/relationships/ControlRelationshipsDisplay.vue')
 const RiskRelationshipsDisplay = () => import( /* webpackChunkName: "RiskRelationshipsDisplay" */ '@client/vue/types/relationships/RiskRelationshipsDisplay.vue')
@@ -473,6 +475,7 @@ const router = new VueRouter({
                 },
             ]
         },
+        { name: 'scopingVM', path: '/orgs/:orgId/engagements/:engId/scoping/vm', component: ScopingVM },
         {
             path: '*',
             name: 'errorPage',
