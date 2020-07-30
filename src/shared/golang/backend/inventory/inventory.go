@@ -3,6 +3,7 @@ package inventory
 import (
 	"errors"
 	"github.com/jmoiron/sqlx"
+	"gitlab.com/grchive/grchive-v2/shared/backend/machine_state"
 	"reflect"
 )
 
@@ -38,37 +39,36 @@ type Inventory struct {
 }
 
 type InventoryServer struct {
-	Id               int64     `db:"id"`
-	Inventory        Inventory `db:"inventory"`
-	PhysicalLocation string    `db:"physical_location"`
-	OperatingSystem  string    `db:"operating_system"`
-	Hypervisor       string    `db:"hypervisor"`
-	StaticExternalIp string    `db:"static_external_ip"`
+	Id               int64                      `db:"id"`
+	Inventory        Inventory                  `db:"inventory"`
+	PhysicalLocation string                     `db:"physical_location"`
+	State            machine_state.MachineState `db:"state"`
+	StaticExternalIp *string                    `db:"static_external_ip"`
 }
 
 type InventoryDesktop struct {
-	Id               int64     `db:"id"`
-	Inventory        Inventory `db:"inventory"`
-	PhysicalLocation string    `db:"physical_location"`
-	OperatingSystem  string    `db:"operating_system"`
+	Id               int64                      `db:"id"`
+	Inventory        Inventory                  `db:"inventory"`
+	State            machine_state.MachineState `db:"state"`
+	PhysicalLocation string                     `db:"physical_location"`
 }
 
 type InventoryLaptop struct {
-	Id              int64     `db:"id"`
-	Inventory       Inventory `db:"inventory"`
-	OperatingSystem string    `db:"operating_system"`
+	Id        int64                      `db:"id"`
+	Inventory Inventory                  `db:"inventory"`
+	State     machine_state.MachineState `db:"state"`
 }
 
 type InventoryMobile struct {
-	Id              int64     `db:"id"`
-	Inventory       Inventory `db:"inventory"`
-	OperatingSystem string    `db:"operating_system"`
+	Id        int64                      `db:"id"`
+	Inventory Inventory                  `db:"inventory"`
+	State     machine_state.MachineState `db:"state"`
 }
 
 type InventoryEmbedded struct {
-	Id              int64     `db:"id"`
-	Inventory       Inventory `db:"inventory"`
-	OperatingSystem string    `db:"operating_system"`
+	Id        int64                      `db:"id"`
+	Inventory Inventory                  `db:"inventory"`
+	State     machine_state.MachineState `db:"state"`
 }
 
 func inventoryTypeToTableName(it InventoryType) (string, error) {
@@ -93,27 +93,18 @@ func inventoryToUniqueColumns(it InventoryType) (string, error) {
 	case ITServer:
 		return `
 			tbl.physical_location AS "physical_location",
-			tbl.operating_system AS "operating_system",
-			tbl.hypervisor AS "hypervisor",
 			text(tbl.static_external_ip) AS "static_external_ip",
 		`, nil
 	case ITDesktop:
 		return `
 			tbl.physical_location AS "physical_location",
-			tbl.operating_system AS "operating_system",
 		`, nil
 	case ITLaptop:
-		return `
-			tbl.operating_system AS "operating_system",
-		`, nil
+		fallthrough
 	case ITMobile:
-		return `
-			tbl.operating_system AS "operating_system",
-		`, nil
+		fallthrough
 	case ITEmbedded:
-		return `
-			tbl.operating_system AS "operating_system",
-		`, nil
+		return ``, nil
 	default:
 		return "", errors.New("Inventory type columns not yet supported.")
 	}
@@ -159,6 +150,11 @@ func GetBaseInventory(inv interface{}) *Inventory {
 func GetInventoryId(inv interface{}) int64 {
 	ref := reflect.ValueOf(inv).Elem()
 	return ref.FieldByName("Id").Int()
+}
+
+func GetMachineState(inv interface{}) *machine_state.MachineState {
+	ref := reflect.ValueOf(inv).Elem()
+	return ref.FieldByName("State").Addr().Interface().(*machine_state.MachineState)
 }
 
 func SetInventoryId(inv interface{}, id int64) {

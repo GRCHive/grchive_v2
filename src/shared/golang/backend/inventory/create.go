@@ -58,68 +58,56 @@ func (m *InventoryManager) CreateInventory(tx *sqlx.Tx, it InventoryType, inv in
 			INSERT INTO %s (
 				inventory_id,
 				physical_location,
-				operating_system,
-				hypervisor,
 				static_external_ip
 			)
 			VALUES (
 				:inventory.id,
 				:physical_location,
-				:operating_system,
-				:hypervisor,
 				:static_external_ip
 			)
-			RETURNING id
+			RETURNING id, state_id
 		`, tblName), inv)
 	case ITDesktop:
 		rows, err = tx.NamedQuery(fmt.Sprintf(`
 			INSERT INTO %s (
 				inventory_id,
-				physical_location,
-				operating_system
+				physical_location
 			)
 			VALUES (
 				:inventory.id,
-				:physical_location,
-				:operating_system
+				:physical_location
 			)
-			RETURNING id
+			RETURNING id, state_id
 		`, tblName), inv)
 	case ITLaptop:
 		rows, err = tx.NamedQuery(fmt.Sprintf(`
 			INSERT INTO %s (
-				inventory_id,
-				operating_system
+				inventory_id
 			)
 			VALUES (
-				:inventory.id,
-				:operating_system
+				:inventory.id
 			)
-			RETURNING id
+			RETURNING id, state_id
 		`, tblName), inv)
 	case ITMobile:
 		rows, err = tx.NamedQuery(fmt.Sprintf(`
 			INSERT INTO %s (
-				inventory_id,
-				operating_system
+				inventory_id
 			)
 			VALUES (
-				:inventory.id,
-				:operating_system
+				:inventory.id
 			)
-			RETURNING id
+			RETURNING id, state_id
 		`, tblName), inv)
 	case ITEmbedded:
 		rows, err = tx.NamedQuery(fmt.Sprintf(`
 			INSERT INTO %s (
-				inventory_id,
-				operating_system
+				inventory_id
 			)
 			VALUES (
-				:inventory.id,
-				:operating_system
+				:inventory.id
 			)
-			RETURNING id
+			RETURNING id, state_id
 		`, tblName), inv)
 	default:
 		err = errors.New("Unsupported inventory type for creation.")
@@ -131,5 +119,8 @@ func (m *InventoryManager) CreateInventory(tx *sqlx.Tx, it InventoryType, inv in
 
 	defer rows.Close()
 	rows.Next()
-	return rows.Scan(refInv.FieldByName("Id").Addr().Interface())
+
+	idItf := refInv.FieldByName("Id").Addr().Interface()
+	stateIdItf := refInv.FieldByName("State").FieldByName("Id").Addr().Interface()
+	return rows.Scan(idItf, stateIdItf)
 }

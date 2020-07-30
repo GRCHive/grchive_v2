@@ -19,6 +19,8 @@ import { Prop } from 'vue-property-decorator'
 import { RawServer } from '@client/ts/types/inventory'
 import { RowEvent } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue'
+import MachineStateInfoRenderer from '@client/vue/shared/grid/MachineStateInfoRenderer.vue'
+import MachineStateTypeRenderer from '@client/vue/shared/grid/MachineStateTypeRenderer.vue'
 
 @Component({
     components: {
@@ -40,6 +42,8 @@ export default class ServerGrid extends Vue {
 
     get frameworkComponents() : any {
         return {
+            MachineStateInfoRenderer,
+            MachineStateTypeRenderer
         }
     }
 
@@ -70,16 +74,18 @@ export default class ServerGrid extends Vue {
                 filter: true,
             },
             {
-                headerName: 'OS',
-                field: 'OperatingSystem',
+                headerName: 'State Type',
+                field: 'State',
                 sortable: true,
                 filter: true,
+                cellRenderer: 'MachineStateTypeRenderer'
             },
             {
-                headerName: 'Hypervisor',
-                field: 'Hypervisor',
+                headerName: 'State Info',
+                field: 'State',
                 sortable: true,
                 filter: true,
+                cellRenderer: 'MachineStateInfoRenderer'
             },
             {
                 headerName: 'External IP',

@@ -31,36 +31,18 @@ func (m *InventoryManager) UpdateInventory(tx *sqlx.Tx, it InventoryType, inv in
 		_, err = tx.NamedExec(fmt.Sprintf(`
 			UPDATE %s
 			SET physical_location = :physical_location,
-				operating_system = :operating_system,
-				hypervisor = :hypervisor,
 				static_external_ip = :static_external_ip
 			WHERE id = :id
 		`, tblName), inv)
 	case ITDesktop:
 		_, err = tx.NamedExec(fmt.Sprintf(`
 			UPDATE %s
-			SET physical_location = :physical_location,
-				operating_system = :operating_system
+			SET physical_location = :physical_location
 			WHERE id = :id
 		`, tblName), inv)
 	case ITLaptop:
-		_, err = tx.NamedExec(fmt.Sprintf(`
-			UPDATE %s
-			SET operating_system = :operating_system
-			WHERE id = :id
-		`, tblName), inv)
 	case ITMobile:
-		_, err = tx.NamedExec(fmt.Sprintf(`
-			UPDATE %s
-			SET operating_system = :operating_system
-			WHERE id = :id
-		`, tblName), inv)
 	case ITEmbedded:
-		_, err = tx.NamedExec(fmt.Sprintf(`
-			UPDATE %s
-			SET operating_system = :operating_system
-			WHERE id = :id
-		`, tblName), inv)
 	default:
 		return errors.New("Unsupported inventory for updating.")
 

@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
+import { MachineState, createEmptyMachineState } from '@client/ts/types/machineState'
+
 export interface RawInventory {
     Id:                 number
     EngagementId:       number
@@ -36,9 +38,8 @@ export interface RawBaseInventory {
 
 export interface RawServer extends RawBaseInventory {
     PhysicalLocation:   string
-    OperatingSystem:    string | null
-    Hypervisor:         string | null
     StaticExternalIp:   string | null
+    State:              MachineState
 }
 
 export function createEmptyServer() : RawServer {
@@ -46,15 +47,14 @@ export function createEmptyServer() : RawServer {
         Id: -1,
         Inventory: createEmptyInventory(),
         PhysicalLocation: '',
-        OperatingSystem: null,
-        Hypervisor: null,
         StaticExternalIp: null,
+        State: createEmptyMachineState(),
     }
 }
 
 export interface RawDesktop extends RawBaseInventory {
     PhysicalLocation:   string
-    OperatingSystem:    string
+    State:              MachineState
 }
 
 export function createEmptyDesktop() : RawDesktop {
@@ -62,12 +62,12 @@ export function createEmptyDesktop() : RawDesktop {
         Id: -1,
         Inventory: createEmptyInventory(),
         PhysicalLocation: '',
-        OperatingSystem: '',
+        State: createEmptyMachineState(),
     }
 }
 
 export interface RawLaptop extends RawBaseInventory {
-    OperatingSystem:    string
+    State:              MachineState
 }
 
 
@@ -75,30 +75,30 @@ export function createEmptyLaptop() : RawLaptop {
     return {
         Id: -1,
         Inventory: createEmptyInventory(),
-        OperatingSystem: '',
+        State: createEmptyMachineState(),
     }
 }
 
 export interface RawMobile extends RawBaseInventory {
-    OperatingSystem:    string
+    State:              MachineState
 }
 
 export function createEmptyMobile() : RawMobile {
     return {
         Id: -1,
         Inventory: createEmptyInventory(),
-        OperatingSystem: '',
+        State: createEmptyMachineState(),
     }
 }
 
 export interface RawEmbedded extends RawBaseInventory {
-    OperatingSystem:    string
+    State:              MachineState
 }
 
 export function createEmptyEmbedded() : RawEmbedded {
     return {
         Id: -1,
         Inventory: createEmptyInventory(),
-        OperatingSystem: '',
+        State: createEmptyMachineState(),
     }
 }

@@ -56,6 +56,10 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
                 return
             }
 
+            if (orgId == -1) {
+                return
+            }
+
             GrchiveApi.user.checkCurrentUserPermissions(orgId, engagementId, toLoad).then((resp : boolean) => {
                 context.commit('setHasPermissions', { orgId, engagementId, permissions: toLoad, val: resp })
             }).catch((err : any) => {
@@ -106,6 +110,10 @@ export const PermissionStoreModule : Module<PermissionStoreState, RootState> = {
             return (orgId : number, engagementId : number, permissions: Permission[]) : boolean | null => {
                 if (permissions.length == 0) {
                     return true
+                }
+
+                if (orgId == -1) {
+                    return false
                 }
 
                 if (!(orgId in state.orgPermissionMaps)) {

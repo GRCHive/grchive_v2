@@ -101,6 +101,7 @@ func (w *WebappApplication) apiv1CreateUpdateInventory(resource backend.Resource
 			return
 		}
 		invBase := inventory.GetBaseInventory(inv)
+		invState := inventory.GetMachineState(inv)
 
 		updatedInv := inventory.CreateTypedInventory(it)
 		err = c.BindJSON(updatedInv)
@@ -114,14 +115,21 @@ func (w *WebappApplication) apiv1CreateUpdateInventory(resource backend.Resource
 			return
 		}
 		updatedBase := inventory.GetBaseInventory(updatedInv)
+		updatedState := inventory.GetMachineState(updatedInv)
 
 		inventory.SetInventoryId(updatedInv, inventory.GetInventoryId(inv))
 		updatedBase.Id = invBase.Id
 		updatedBase.EngagementId = invBase.EngagementId
 		updatedBase.UniqueId = invBase.UniqueId
 
+		updatedState.Id = invState.Id
+		updatedState.EngagementId = invState.EngagementId
+		updatedState.UniqueId = invState.UniqueId
+
 		err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
 			return w.backend.itf.Inventory.UpdateInventory(tx, it, updatedInv)
+		}, func(tx *sqlx.Tx) error {
+			return w.backend.itf.MachineState.UpdateMachineState(tx, updatedState)
 		})
 
 		if err != nil {
@@ -210,6 +218,8 @@ func (w *WebappApplication) apiv1CreateCreateInventory(resource backend.Resource
 
 		err = w.backend.itf.WrapDatabaseTx(w.middleware.GetAuditTrailId(c), func(tx *sqlx.Tx) error {
 			return w.backend.itf.Inventory.CreateInventory(tx, it, inv)
+		}, func(tx *sqlx.Tx) error {
+			return w.backend.itf.MachineState.UpdateMachineState(tx, inventory.GetMachineState(inv))
 		})
 
 		if err != nil {

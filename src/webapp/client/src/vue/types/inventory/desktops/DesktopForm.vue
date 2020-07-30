@@ -14,13 +14,11 @@
         >
         </v-text-field>
 
-        <v-text-field
-            label="Operating System"
-            filled
-            v-model="value.OperatingSystem"
+        <machine-state-form
+            v-model="value.State"
             :readonly="readonly"
         >
-        </v-text-field>
+        </machine-state-form>
     </div>
 </template>
 
@@ -32,10 +30,12 @@ import { Prop } from 'vue-property-decorator'
 import { RawDesktop } from '@client/ts/types/inventory'
 import * as rules from '@client/ts/frontend/formRules'
 import InventoryForm from '@client/vue/types/inventory/InventoryForm.vue'
+import MachineStateForm from '@client/vue/types/machineState/MachineStateForm.vue'
 
 @Component({
     components: {
         InventoryForm,
+        MachineStateForm,
     }
 })
 export default class DesktopForm extends Vue {
